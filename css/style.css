@@ -896,3 +896,54 @@ button, .btn {
     padding: 3rem 0 1.5rem;
   }
   }
+/* ========== CURRENCY SELECTOR ========== */
+
+.currency-selector {
+  appearance: none;
+  -webkit-appearance: none;
+
+  min-width: 100px;
+  height: 42px;
+
+  padding: 0 2rem 0 0.85rem;
+
+  background-color: var(--bg-card);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+  background-position:
+    calc(100% - 13px) 17px,
+    calc(100% - 8px) 17px;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  color: var(--text-primary);
+
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.currency-selector:hover {
+  border-color: var(--border-hover);
+  background-color: var(--bg-card-hover);
+}
+
+.currency-selector:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.currency-selector option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
