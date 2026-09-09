@@ -25,6 +25,21 @@
         </ul>
       </nav>
       <div class="nav-actions">
+        <select
+  class="currency-selector"
+  data-currency-selector
+  onchange="setSelectedCurrency(this.value)"
+  aria-label="Select currency"
+>
+  <option value="USD">USD $</option>
+  <option value="EUR">EUR €</option>
+  <option value="GBP">GBP £</option>
+  <option value="NGN">NGN ₦</option>
+  <option value="CAD">CAD $</option>
+  <option value="AUD">AUD $</option>
+  <option value="GHS">GHS ₵</option>
+  <option value="ZAR">ZAR R</option>
+        </select>
         <a href="cart.html" class="cart-btn" aria-label="Shopping cart">
           🛒
           <span class="cart-count">0</span>
@@ -232,6 +247,7 @@
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="js/currency.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
