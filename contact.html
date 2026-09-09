@@ -33,69 +33,82 @@
   </header>
 
   <main>
+    <!-- Hero -->
     <section class="page-hero">
       <div class="container">
         <h1>Contact Us</h1>
-        <p style="color:var(--text-secondary)">Questions about orders, products, or share investment? Reach out.</p>
+        <p style="color:var(--text-secondary);max-width:520px;margin:0 auto;font-size:1.05rem;">
+          Have a question about an order, a product, or investment? We’re here to help.
+        </p>
       </div>
     </section>
 
+    <!-- Content -->
     <section class="section">
       <div class="container">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:960px;margin:0 auto">
-          
-          <!-- Contact Info -->
+        <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:3.5rem;max-width:980px;margin:0 auto;align-items:start;">
+
+          <!-- Contact Information -->
           <div>
-            <h2 class="section-title" style="font-size:1.5rem">Get in Touch</h2>
-            <p style="color:var(--text-secondary);margin-bottom:2rem">
-              Our team typically responds within 24 hours on business days.
+            <h2 class="section-title" style="font-size:1.45rem;margin-bottom:1rem;">Get in Touch</h2>
+            <p style="color:var(--text-secondary);margin-bottom:2.2rem;line-height:1.65;font-size:0.98rem;">
+              Our team typically responds within 24 hours on business days. Choose the most relevant contact method below.
             </p>
 
-            <div style="margin-bottom:1.5rem">
-              <strong style="display:block;margin-bottom:0.3rem">Email</strong>
-              <span style="color:var(--accent)">hello@areaboyz.enterprise</span>
-            </div>
+            <div style="display:grid;gap:1.5rem;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem 1.4rem;">
+                <strong style="display:block;margin-bottom:0.35rem;font-size:0.95rem;">General Enquiries</strong>
+                <span style="color:var(--accent);font-size:0.95rem;">hello@areaboyz.enterprise</span>
+              </div>
 
-            <div style="margin-bottom:1.5rem">
-              <strong style="display:block;margin-bottom:0.3rem">Investment Inquiries</strong>
-              <span style="color:var(--accent)">shares@areaboyz.enterprise</span>
-            </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem 1.4rem;">
+                <strong style="display:block;margin-bottom:0.35rem;font-size:0.95rem;">Investment & Shares</strong>
+                <span style="color:var(--accent);font-size:0.95rem;">shares@areaboyz.enterprise</span>
+              </div>
 
-            <div>
-              <strong style="display:block;margin-bottom:0.3rem">Support Hours</strong>
-              <span style="color:var(--text-secondary)">Mon – Fri · 9:00 – 18:00 (WAT)</span>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem 1.4rem;">
+                <strong style="display:block;margin-bottom:0.35rem;font-size:0.95rem;">Support Hours</strong>
+                <span style="color:var(--text-secondary);font-size:0.95rem;">Monday – Friday · 9:00 – 18:00 (WAT)</span>
+              </div>
             </div>
           </div>
 
           <!-- Contact Form -->
-          <form class="invest-form" onsubmit="event.preventDefault(); showToast('Message sent. We will reply soon.'); this.reset();">
-            <div class="form-group">
-              <label for="c-name">Name</label>
-              <input type="text" id="c-name" class="form-control" required>
-            </div>
+          <div class="invest-form">
+            <h3 style="font-size:1.2rem;margin-bottom:1.4rem;">Send a Message</h3>
 
-            <div class="form-group">
-              <label for="c-email">Email</label>
-              <input type="email" id="c-email" class="form-control" required>
-            </div>
+            <form onsubmit="event.preventDefault(); showToast('Message sent. We will reply soon.'); this.reset();">
+              <div class="form-group">
+                <label for="c-name">Full Name</label>
+                <input type="text" id="c-name" class="form-control" required placeholder="Your name">
+              </div>
 
-            <div class="form-group">
-              <label for="c-subject">Subject</label>
-              <select id="c-subject" class="form-control">
-                <option>General Inquiry</option>
-                <option>Order Support</option>
-                <option>Share Investment</option>
-                <option>Partnership</option>
-              </select>
-            </div>
+              <div class="form-group">
+                <label for="c-email">Email Address</label>
+                <input type="email" id="c-email" class="form-control" required placeholder="you@example.com">
+              </div>
 
-            <div class="form-group">
-              <label for="c-message">Message</label>
-              <textarea id="c-message" class="form-control" rows="4" required></textarea>
-            </div>
+              <div class="form-group">
+                <label for="c-subject">Subject</label>
+                <select id="c-subject" class="form-control">
+                  <option>General Inquiry</option>
+                  <option>Order Support</option>
+                  <option>Product Question</option>
+                  <option>Share Investment</option>
+                  <option>Partnership</option>
+                </select>
+              </div>
 
-            <button type="submit" class="btn btn-primary" style="width:100%">Send Message</button>
-          </form>
+              <div class="form-group">
+                <label for="c-message">Message</label>
+                <textarea id="c-message" class="form-control" rows="5" required placeholder="How can we help you?"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.3rem;">
+                Send Message
+              </button>
+            </form>
+          </div>
 
         </div>
       </div>
@@ -104,7 +117,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-bottom" style="border:none;padding-top:0">
+      <div class="footer-bottom" style="border:none;padding-top:0;">
         <span>© 2026 Area Boyz Enterprise. All rights reserved.</span>
       </div>
     </div>
