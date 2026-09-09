@@ -999,3 +999,25 @@ button, .btn {
   background: var(--bg-secondary);
   color: var(--text-primary);
 }
+@media (max-width: 600px) {
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .currency-selector {
+    min-width: 78px;
+    height: 38px;
+    font-size: 0.72rem;
+    padding-left: 8px;
+    padding-right: 22px;
+  }
+
+  .cart-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .mobile-toggle {
+    font-size: 1.3rem;
+  }
+}
