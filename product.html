@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Discover premium fashion, footwear, jackets and accessories from Area Boyz Enterprise."
+  >
+
+  <title>Product | Area Boyz Enterprise</title>
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <style>
+    /* =====================================================
+       PRODUCT PAGE
+       ===================================================== */
+
+    .product-page {
+      padding: 7rem 0 4rem;
+    }
+
+    .product-breadcrumb {
+      margin-bottom: 2rem;
+      color: var(--text-muted);
+      font-size: .85rem;
+    }
+
+    .product-breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .product-breadcrumb a:hover {
+      color: var(--accent);
+    }
+
+    .product-detail {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .product-gallery {
+      position: sticky;
+      top: 100px;
+    }
+
+    .product-main-image {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      aspect-ratio: 1 / 1;
+    }
+
+    .product-main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-main-badge {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      padding: .45rem .75rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #000;
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .product-info-page {
+      padding-top: .5rem;
+    }
+
+    .product-detail-category {
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: .75rem;
+    }
+
+    .product-detail-title {
+      margin: 0 0 1rem;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.05;
+    }
+
+    .product-detail-price {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+    }
+
+    .product-detail-description {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .product-option {
+      margin-bottom: 1.5rem;
+    }
+
+    .product-option-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .7rem;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+
+    .option-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+    }
+
+    .option-button {
+      min-width: 48px;
+      min-height: 44px;
+      padding: .6rem .9rem;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .option-button:hover,
+    .option-button.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .product-stock {
+      margin: 1rem 0;
+      font-size: .85rem;
+      color: var(--text-secondary);
+    }
+
+    .product-stock strong {
+      color: #67e8a5;
+    }
+
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-card);
+    }
+
+    .quantity-control button {
+      width: 42px;
+      height: 44px;
+      border: 0;
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .quantity-control button:hover {
+      color: var(--accent);
+    }
+
+    .quantity-control span {
+      min-width: 42px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .product-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+    }
+
+    .product-actions button,
+    .product-actions a {
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .product-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .8rem;
+      margin-top: 2rem;
+    }
+
+    .meta-card {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-card);
+    }
+
+    .meta-card span {
+      display: block;
+      color: var(--text-muted);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .35rem;
+    }
+
+    .meta-card strong {
+      font-size: .85rem;
+    }
+
+    .related-section {
+      padding-top: 5rem;
+    }
+
+    .product-error {
+      max-width: 650px;
+      margin: 4rem auto;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg-card);
+    }
+
+    .product-error h1 {
+      margin-bottom: 1rem;
+    }
+
+    .product-error p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 850px) {
+
+      .product-detail {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .product-gallery {
+        position: static;
+      }
+
+      .product-main-image {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+    }
+
+    @media (max-width: 520px) {
+
+      .product-page {
+        padding-top: 6rem;
+      }
+
+      .product-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .product-meta {
+        grid-template-columns: 1fr;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===================================================
+       HEADER
+       =================================================== -->
+
+  <header class="site-header">
+
+    <div class="container nav-wrapper">
+
+      <a
+        href="index.html"
+        class="logo"
+      >
+        <div class="logo-icon">AB</div>
+        <span>Area Boyz</span>
+      </a>
+
+      <nav>
+
+        <ul class="nav-links">
+
+          <li>
+            <a href="index.html">
+              Home
+            </a>
+          </li>
+
+          <li>
+            <a href="shop.html">
+              Shop
+            </a>
+          </li>
+
+          <li>
+            <a href="shares.html">
+              Invest
+            </a>
+          </li>
+
+          <li>
+            <a href="about.html">
+              About
+            </a>
+          </li>
+
+          <li>
+            <a href="contact.html">
+              Contact
+            </a>
+          </li>
+
+        </ul>
+
+      </nav>
+
+      <div class="nav-actions">
+
+        <select
+          class="currency-selector"
+          data-currency-selector
+          onchange="setSelectedCurrency(this.value)"
+          aria-label="Select currency"
+        >
+
+          <option value="USD">
+            USD $
+          </option>
+
+          <option value="EUR">
+            EUR €
+          </option>
+
+          <option value="GBP">
+            GBP £
+          </option>
+
+          <option value="NGN">
+            NGN ₦
+          </option>
+
+          <option value="CAD">
+            CAD $
+          </option>
+
+          <option value="AUD">
+            AUD $
+          </option>
+
+          <option value="GHS">
+            GHS ₵
+          </option>
+
+          <option value="ZAR">
+            ZAR R
+          </option>
+
+        </select>
+
+        <a
+          href="cart.html"
+          class="cart-btn"
+          aria-label="Shopping cart"
+        >
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+
+        <button
+          class="mobile-toggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+          type="button"
+        >
+          ☰
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- ===================================================
+       MAIN
+       =================================================== -->
+
+  <main>
+
+    <section class="product-page">
+
+      <div class="container">
+
+        <div
+          id="product-container"
+          class="product-detail"
+        >
+          <!-- JavaScript loads product here -->
+        </div>
+
+        <div
+          id="product-error"
+          class="product-error"
+          style="display:none"
+        >
+
+          <h1>Product Not Found</h1>
+
+          <p>
+            We couldn't find the product you're looking for.
+            It may have been removed or the link may be invalid.
+          </p>
+
+          <a
+            href="shop.html"
+            class="btn btn-primary"
+          >
+            Return to Shop
+          </a>
+
+        </div>
+
+        <!-- RELATED PRODUCTS -->
+
+        <section
+          id="related-section"
+          class="related-section"
+          style="display:none"
+        >
+
+          <h2 class="section-title">
+            You May Also Like
+          </h2>
+
+          <p class="section-subtitle">
+            Explore more pieces from this collection.
+          </p>
+
+          <div
+            id="related-products"
+            class="products-grid"
+          ></div>
+
+        </section>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ===================================================
+       FOOTER
+       =================================================== -->
+
+  <footer class="site-footer">
+
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+
+          <a
+            href="index.html"
+            class="logo"
+          >
+            <div class="logo-icon">
+              AB
+            </div>
+
+            <span>
+              Area Boyz
+            </span>
+          </a>
+
+          <p>
+            Premium fashion, streetwear,
+            footwear, accessories and
+            lifestyle goods.
+          </p>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <h4>Shop</h4>
+
+          <ul>
+
+            <li>
+              <a href="shop.html">
+                All Products
+              </a>
+            </li>
+
+            <li>
+              <a href="shop.html?category=Clothing">
+                Clothing
+              </a>
+            </li>
+
+            <li>
+              <a href="shop.html?category=Jackets">
+                Jackets
+              </a>
+            </li>
+
+            <li>
+              <a href="shop.html?category=Footwear">
+                Footwear
+              </a>
+            </li>
+
+            <li>
+              <a href="shop.html?category=Accessories">
+                Accessories
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <h4>Company</h4>
+
+          <ul>
+
+            <li>
+              <a href="about.html">
+                About Us
+              </a>
+            </li>
+
+            <li>
+              <a href="shares.html">
+                Invest / Shares
+              </a>
+            </li>
+
+            <li>
+              <a href="contact.html">
+                Contact
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <h4>Support</h4>
+
+          <ul>
+
+            <li>
+              <a href="cart.html">
+                Cart
+              </a>
+            </li>
+
+            <li>
+              <a href="checkout.html">
+                Checkout
+              </a>
+            </li>
+
+            <li>
+              <a href="contact.html">
+                Help Center
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer-bottom">
+
+        <span>
+          © 2026 Area Boyz Enterprise.
+          All rights reserved.
+        </span>
+
+        <span>
+          Built with semantic HTML • Vanilla JS
+        </span>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- ===================================================
+       SCRIPTS
+       =================================================== -->
+
+  <script src="js/currency.js"></script>
+
+  <script src="js/main.js"></script>
+
+
+  <!-- ===================================================
+       PRODUCT PAGE ENGINE
+       =================================================== -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        /*
+         * Get product ID from URL.
+         *
+         * Example:
+         * product.html?id=p10
+         */
+
+        const params =
+          new URLSearchParams(
+            window.location.search
+          );
+
+        const productId =
+          params.get("id");
+
+        const product =
+          typeof getProductById === "function"
+            ? getProductById(productId)
+            : null;
+
+        const container =
+          document.getElementById(
+            "product-container"
+          );
+
+        const error =
+          document.getElementById(
+            "product-error"
+          );
+
+        const relatedSection =
+          document.getElementById(
+            "related-section"
+          );
+
+        const relatedContainer =
+          document.getElementById(
+            "related-products"
+          );
+
+
+        /*
+         * Product does not exist.
+         */
+
+        if (!product) {
+
+          if (container) {
+            container.style.display =
+              "none";
+          }
+
+          if (error) {
+            error.style.display =
+              "block";
+          }
+
+          return;
+        }
+
+
+        /*
+         * Update browser title.
+         */
+
+        document.title =
+          product.name +
+          " | Area Boyz Enterprise";
+
+
+        /*
+         * Product page HTML.
+         */
+
+        container.innerHTML = `
+
+          <!-- PRODUCT GALLERY -->
+
+          <div class="product-gallery">
+
+            <div class="product-breadcrumb">
+
+              <a href="shop.html">
+                Shop
+              </a>
+
+              <span> / </span>
+
+              <a href="shop.html?category=${encodeURIComponent(product.category)}">
+                ${product.category}
+              </a>
+
+              <span> / </span>
+
+              <span>
+                ${product.name}
+              </span>
+
+            </div>
+
+            <div class="product-main-image">
+
+              ${
+                product.badge
+                  ? `<span class="product-main-badge">
+                      ${product.badge}
+                     </span>`
+                  : ""
+              }
+
+              <img
+                src="${product.img}"
+                alt="${product.name}"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- PRODUCT INFORMATION -->
+
+          <div class="product-info-page">
+
+            <div class="product-detail-category">
+              ${product.subcategory || product.category}
+            </div>
+
+            <h1 class="product-detail-title">
+              ${product.name}
+            </h1>
+
+            <div
+              class="product-detail-price"
+              data-price-usd="${product.price}"
+            >
+              ${formatPriceSafe(product.price)}
+            </div>
+
+            <p class="product-detail-description">
+              ${product.description || "A premium Area Boyz Enterprise piece designed for distinctive personal style."}
+            </p>
+
+
+            <!-- SIZE -->
+
+            ${
+              product.sizes &&
+              product.sizes.length
+                ? `
+
+              <div class="product-option">
+
+                <div class="product-option-label">
+
+                  <span>
+                    Select Size
+                  </span>
+
+                  <span id="selected-size">
+                    ${product.sizes[0]}
+                  </span>
+
+                </div>
+
+                <div
+                  class="option-buttons"
+                  id="size-options"
+                >
+
+                  ${product.sizes
+                    .map(
+                      (size, index) => `
+                        <button
+                          type="button"
+                          class="option-button ${index === 0 ? "active" : ""}"
+                          data-size="${size}"
+                        >
+                          ${size}
+                        </button>
+                      `
+                    )
+                    .join("")}
+
+                </div>
+
+              </div>
+
+            `
+                : ""
+            }
+
+
+            <!-- COLOR -->
+
+            ${
+              product.colors &&
+              product.colors.length
+                ? `
+
+              <div class="product-option">
+
+                <div class="product-option-label">
+
+                  <span>
+                    Color
+                  </span>
+
+                  <span id="selected-color">
+                    ${product.colors[0]}
+                  </span>
+
+                </div>
+
+                <div
+                  class="option-buttons"
+                  id="color-options"
+                >
+
+                  ${product.colors
+                    .map(
+                      (color, index) => `
+                        <button
+                          type="button"
+                          class="option-button ${index === 0 ? "active" : ""}"
+                          data-color="${color}"
+                        >
+                          ${color}
+                        </button>
+                      `
+                    )
+                    .join("")}
+
+                </div>
+
+              </div>
+
+            `
+                : ""
+            }
+
+
+            <!-- STOCK -->
+
+            <div class="product-stock">
+
+              ${
+                Number(product.stock) > 0
+                  ? `<strong>In stock</strong> • ${product.stock} available`
+                  : `<strong style="color:#ff5b6e">
+                       Out of stock
+                     </strong>`
+              }
+
+            </div>
+
+
+            <!-- QUANTITY -->
+
+            <div class="quantity-row">
+
+              <div class="quantity-control">
+
+                <button
+                  type="button"
+                  id="quantity-minus"
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+
+                <span id="product-quantity">
+                  1
+                </span>
+
+                <button
+                  type="button"
+                  id="quantity-plus"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="product-actions">
+
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="add-product-cart"
+                ${
+                  Number(product.stock) <= 0
+                    ? "disabled"
+                    : ""
+                }
+              >
+                Add to Cart
+              </button>
+
+              <a
+                href="cart.html"
+                class="btn btn-secondary"
+              >
+                View Cart
+              </a>
+
+            </div>
+
+
+            <!-- PRODUCT META -->
+
+            <div class="product-meta">
+
+              <div class="meta-card">
+
+                <span>
+                  Category
+                </span>
+
+                <strong>
+                  ${product.category}
+                </strong>
+
+              </div>
+
+              <div class="meta-card">
+
+                <span>
+                  Collection
+                </span>
+
+                <strong>
+                  ${product.collection || "Area Boyz"}
+                </strong>
+
+              </div>
+
+              <div class="meta-card">
+
+                <span>
+                  Shipping
+                </span>
+
+                <strong>
+                  Global Delivery
+                </strong>
+
+              </div>
+
+              <div class="meta-card">
+
+                <span>
+                  Payment
+                </span>
+
+                <strong>
+                  Secure Checkout
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+
+
+        /* =================================================
+           SIZE SELECTOR
+           ================================================= */
+
+        document
+          .querySelectorAll(
+            "#size-options .option-button"
+          )
+          .forEach(button => {
+
+            button.addEventListener(
+              "click",
+              function () {
+
+                document
+                  .querySelectorAll(
+                    "#size-options .option-button"
+                  )
+                  .forEach(item => {
+
+                    item.classList.remove(
+                      "active"
+                    );
+
+                  });
+
+                button.classList.add(
+                  "active"
+                );
+
+                const selected =
+                  document.getElementById(
+                    "selected-size"
+                  );
+
+                if (selected) {
+                  selected.textContent =
+                    button.dataset.size;
+                }
+
+              }
+            );
+
+          });
+
+
+        /* =================================================
+           COLOR SELECTOR
+           ================================================= */
+
+        document
+          .querySelectorAll(
+            "#color-options .option-button"
+          )
+          .forEach(button => {
+
+            button.addEventListener(
+              "click",
+              function () {
+
+                document
+                  .querySelectorAll(
+                    "#color-options .option-button"
+                  )
+                  .forEach(item => {
+
+                    item.classList.remove(
+                      "active"
+                    );
+
+                  });
+
+                button.classList.add(
+                  "active"
+                );
+
+                const selected =
+                  document.getElementById(
+                    "selected-color"
+                  );
+
+                if (selected) {
+                  selected.textContent =
+                    button.dataset.color;
+                }
+
+              }
+            );
+
+          });
+
+
+        /* =================================================
+           QUANTITY
+           ================================================= */
+
+        let quantity = 1;
+
+        const quantityDisplay =
+          document.getElementById(
+            "product-quantity"
+          );
+
+        const minus =
+          document.getElementById(
+            "quantity-minus"
+          );
+
+        const plus =
+          document.getElementById(
+            "quantity-plus"
+          );
+
+
+        function updateQuantity() {
+
+          if (quantity < 1) {
+            quantity = 1;
+          }
+
+          if (
+            Number(product.stock) > 0 &&
+            quantity > Number(product.stock)
+          ) {
+            quantity =
+              Number(product.stock);
+          }
+
+          quantityDisplay.textContent =
+            quantity;
+        }
+
+
+        if (minus) {
+
+          minus.addEventListener(
+            "click",
+            function () {
+
+              quantity--;
+
+              updateQuantity();
+
+            }
+          );
+
+        }
+
+
+        if (plus) {
+
+          plus.addEventListener(
+            "click",
+            function () {
+
+              quantity++;
+
+              updateQuantity();
+
+            }
+          );
+
+        }
+
+
+        /* =================================================
+           ADD TO CART
+           ================================================= */
+
+        const addButton =
+          document.getElementById(
+            "add-product-cart"
+          );
+
+
+        if (addButton) {
+
+          addButton.addEventListener(
+            "click",
+            function () {
+
+              if (
+                Number(product.stock) <= 0
+              ) {
+
+                showToast(
+                  "This product is currently out of stock."
+                );
+
+                return;
+              }
+
+
+              /*
+               * Add the selected quantity.
+               */
+
+              for (
+                let i = 0;
+                i < quantity;
+                i++
+              ) {
+
+                addToCart(product);
+
+              }
+
+
+              showToast(
+                quantity +
+                " × " +
+                product.name +
+                " added to cart."
+              );
+
+            }
+          );
+
+        }
+
+
+        /* =================================================
+           RELATED PRODUCTS
+           ================================================= */
+
+        const related =
+          PRODUCTS
+            .filter(
+              item =>
+                item.category ===
+                  product.category &&
+                item.id !==
+                  product.id
+            )
+            .slice(0, 4);
+
+
+        if (
+          related.length &&
+          relatedContainer &&
+          relatedSection
+        ) {
+
+          relatedSection.style.display =
+            "block";
+
+          related.forEach(item => {
+
+            relatedContainer.appendChild(
+              createProductCard(item)
+            );
+
+          });
+
+        }
+
+
+        /*
+         * Refresh currency after product
+         * content has been created.
+         */
+
+        if (
+          typeof updateCurrencyDisplay ===
+          "function"
+        ) {
+
+          updateCurrencyDisplay();
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+  </html>
