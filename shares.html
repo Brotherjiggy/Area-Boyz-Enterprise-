@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invest & Shares | Area Boyz Enterprise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrapper">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">AB</div>
+        <span>Area Boyz</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="shares.html" class="active">Invest</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-btn" aria-label="Shopping cart">
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+        <button class="mobile-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
 
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Company Shares</h1>
+        <p style="color:var(--text-secondary);max-width:600px;margin:0 auto">Participate in Area Boyz Enterprise growth. A transparent $756,000 equity pool is available. Returns scale with your investment size.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="shares-grid" style="margin-bottom:4rem">
+          <div>
+            <h2 class="section-title" style="font-size:1.8rem">How It Works</h2>
+            <p style="color:var(--text-secondary);margin-bottom:1.5rem">Area Boyz Enterprise is offering a fixed equity allocation of $756,000. Shareholders receive projected annual returns based on the amount committed. Ownership percentage is calculated proportionally against the total pool.</p>
+            <div class="share-tiers" style="max-width:420px">
+              <div class="tier">
+                <span>$100 – $4,999</span>
+                <strong>9% projected p.a.</strong>
+              </div>
+              <div class="tier">
+                <span>$5,000 – $19,999</span>
+                <strong>12% projected p.a.</strong>
+              </div>
+              <div class="tier">
+                <span>$20,000 – $49,999</span>
+                <strong>15% projected p.a.</strong>
+              </div>
+              <div class="tier">
+                <span>$50,000 and above</span>
+                <strong>18% projected p.a.</strong>
+              </div>
+            </div>
+            <p style="margin-top:1.5rem;font-size:0.9rem;color:var(--text-secondary)">* Returns are projected based on current business performance models and are not guaranteed. Past performance does not indicate future results. Please review all terms before investing.</p>
+          </div>
+
+          <div>
+            <div class="calc-box">
+              <h3 style="margin-bottom:1rem">Investment Calculator</h3>
+              <div class="form-group">
+                <label for="share-amount">Investment Amount (USD)</label>
+                <input type="number" id="share-amount" class="form-control" min="100" step="100" value="5000" placeholder="Enter amount">
+              </div>
+              <div id="calc-result" class="calc-result">
+                <!-- JS filled -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Investment Interest Form -->
+        <div class="invest-form" style="max-width:720px;margin:0 auto">
+          <h2 class="section-title" style="font-size:1.6rem;text-align:center;margin-bottom:0.5rem">Express Interest</h2>
+          <p style="text-align:center;color:var(--text-secondary);margin-bottom:2rem">Complete the form below. Our team will contact you with share documentation and next steps.</p>
+          <form id="invest-form" onsubmit="event.preventDefault(); showToast('Interest registered. We will contact you shortly.'); this.reset();">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+              <div class="form-group">
+                <label for="inv-name">Full Name</label>
+                <input type="text" id="inv-name" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="inv-email">Email</label>
+                <input type="email" id="inv-email" class="form-control" required>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+              <div class="form-group">
+                <label for="inv-phone">Phone</label>
+                <input type="tel" id="inv-phone" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="inv-amount">Intended Investment ($)</label>
+                <input type="number" id="inv-amount" class="form-control" min="100" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inv-message">Additional Notes</label>
+              <textarea id="inv-message" class="form-control" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%">Submit Interest</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">AB</div>
+            <span>Area Boyz</span>
+          </a>
+          <p>Multipurpose enterprise uniting premium fashion retail with transparent equity investment opportunities.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html">All Products</a></li>
+            <li><a href="shop.html">Formal</a></li>
+            <li><a href="shop.html">Streetwear</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="shares.html">Invest / Shares</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="checkout.html">Checkout</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Area Boyz Enterprise. All rights reserved.</span>
+        <span>Built with semantic HTML • Vanilla JS</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
