@@ -1,97 +1,667 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shop | Area Boyz Enterprise</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <header class="site-header">
-    <div class="container nav-wrapper">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">AB</div>
-        <span>Area Boyz</span>
-      </a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="shop.html" class="active">Shop</a></li>
-          <li><a href="shares.html">Invest</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="cart.html" class="cart-btn" aria-label="Shopping cart">
-          🛒
-          <span class="cart-count">0</span>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta
+name="description"
+content="Shop Area Boyz Enterprise — premium fashion, streetwear, accessories and curated collections."
+
+«»
+
+  <meta name="theme-color" content="#08080d">  <title>Shop | Area Boyz Enterprise</title>  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  <link rel="stylesheet" href="css/style.css">
+</head><body>  <!-- =====================================================
+       HEADER
+       ===================================================== -->  <header class="site-header"><div class="container nav-wrapper">
+
+  <a href="index.html" class="logo" aria-label="Area Boyz Enterprise home">
+    <div class="logo-icon">AB</div>
+    <span>Area Boyz</span>
+  </a>
+
+  <nav aria-label="Primary navigation">
+
+    <ul class="nav-links">
+
+      <li>
+        <a href="index.html">Home</a>
+      </li>
+
+      <li>
+        <a href="shop.html" class="active" aria-current="page">
+          Shop
         </a>
-        <button class="mobile-toggle" aria-label="Menu">☰</button>
+      </li>
+
+      <li>
+        <a href="shares.html">Invest</a>
+      </li>
+
+      <li>
+        <a href="about.html">About</a>
+      </li>
+
+      <li>
+        <a href="contact.html">Contact</a>
+      </li>
+
+    </ul>
+
+  </nav>
+
+  <div class="nav-actions">
+
+    <!-- Global Currency -->
+    <label
+      for="currency-selector"
+      class="sr-only"
+    >
+      Select currency
+    </label>
+
+    <select
+      id="currency-selector"
+      class="currency-selector"
+      data-currency-selector
+      onchange="setSelectedCurrency(this.value)"
+      aria-label="Select currency"
+    >
+      <option value="USD">USD $</option>
+      <option value="EUR">EUR €</option>
+      <option value="GBP">GBP £</option>
+      <option value="NGN">NGN ₦</option>
+      <option value="CAD">CAD $</option>
+      <option value="AUD">AUD $</option>
+      <option value="GHS">GHS ₵</option>
+      <option value="ZAR">ZAR R</option>
+    </select>
+
+    <!-- Cart -->
+    <a
+      href="cart.html"
+      class="cart-btn"
+      aria-label="Shopping cart"
+    >
+      🛒
+      <span
+        class="cart-count"
+        aria-label="0 items in cart"
+      >
+        0
+      </span>
+    </a>
+
+    <!-- Mobile menu -->
+    <button
+      type="button"
+      class="mobile-toggle"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+    >
+      ☰
+    </button>
+
+  </div>
+
+</div>
+
+  </header>  <!-- =====================================================
+       MAIN
+       ===================================================== -->  <main><!-- Page Hero -->
+
+<section class="page-hero">
+
+  <div class="container">
+
+    <span
+      style="
+        display:inline-block;
+        color:var(--accent);
+        font-size:.75rem;
+        font-weight:700;
+        letter-spacing:.12em;
+        text-transform:uppercase;
+        margin-bottom:.7rem;
+      "
+    >
+      AREA BOYZ COLLECTION
+    </span>
+
+    <h1>Shop the Collection</h1>
+
+    <p
+      style="
+        color:var(--text-secondary);
+        max-width:600px;
+        margin:0 auto;
+        font-size:1.05rem;
+        line-height:1.7;
+      "
+    >
+      Discover premium fashion, statement streetwear,
+      accessories and limited pieces designed for impact.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     SHOP CONTROLS
+     ===================================================== -->
+
+<section
+  class="section"
+  style="padding-top:2rem;"
+>
+
+  <div class="container">
+
+    <div
+      style="
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:space-between;
+        align-items:center;
+        gap:1rem;
+        margin-bottom:2rem;
+      "
+    >
+
+      <!-- Search -->
+
+      <div
+        style="
+          flex:1 1 280px;
+          max-width:430px;
+          position:relative;
+        "
+      >
+
+        <label
+          for="product-search"
+          class="sr-only"
+        >
+          Search products
+        </label>
+
+        <input
+          type="search"
+          id="product-search"
+          class="form-control"
+          placeholder="Search the collection..."
+          autocomplete="off"
+          aria-label="Search products"
+        >
+
       </div>
+
+
+      <!-- Sort -->
+
+      <div
+        style="
+          display:flex;
+          align-items:center;
+          gap:.6rem;
+        "
+      >
+
+        <label
+          for="product-sort"
+          style="
+            color:var(--text-secondary);
+            font-size:.85rem;
+            white-space:nowrap;
+          "
+        >
+          Sort
+        </label>
+
+        <select
+          id="product-sort"
+          class="form-control"
+          style="width:auto;min-width:170px;"
+          aria-label="Sort products"
+        >
+
+          <option value="featured">
+            Featured
+          </option>
+
+          <option value="price-low">
+            Price: Low to High
+          </option>
+
+          <option value="price-high">
+            Price: High to Low
+          </option>
+
+          <option value="name">
+            Name: A–Z
+          </option>
+
+        </select>
+
+      </div>
+
     </div>
-  </header>
 
-  <main>
-    <section class="page-hero">
-      <div class="container">
-        <h1>The Collection</h1>
-        <p style="color:var(--text-secondary);max-width:560px;margin:0 auto">From couture suits to limited streetwear and statement footwear — every piece is curated for impact.</p>
+
+    <!-- =================================================
+         CATEGORY FILTERS
+         ================================================= -->
+
+    <div
+      role="group"
+      aria-label="Product categories"
+      style="
+        display:flex;
+        flex-wrap:wrap;
+        gap:.6rem;
+        margin-bottom:2.2rem;
+      "
+    >
+
+      <button
+        type="button"
+        class="btn btn-primary shop-filter active"
+        data-category="all"
+      >
+        All
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary shop-filter"
+        data-category="formal"
+      >
+        Formal
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary shop-filter"
+        data-category="streetwear"
+      >
+        Streetwear
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary shop-filter"
+        data-category="accessories"
+      >
+        Accessories
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary shop-filter"
+        data-category="footwear"
+      >
+        Footwear
+      </button>
+
+    </div>
+
+
+    <!-- =================================================
+         RESULTS INFORMATION
+         ================================================= -->
+
+    <div
+      style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:1rem;
+        margin-bottom:1.2rem;
+      "
+    >
+
+      <p
+        id="shop-results-count"
+        style="
+          color:var(--text-secondary);
+          font-size:.88rem;
+        "
+        aria-live="polite"
+      >
+        Loading collection...
+      </p>
+
+      <span
+        style="
+          color:var(--text-muted);
+          font-size:.78rem;
+        "
+      >
+        Global pricing enabled
+      </span>
+
+    </div>
+
+
+    <!-- =================================================
+         PRODUCT GRID
+         ================================================= -->
+
+    <div
+      class="products-grid"
+      id="shop-products"
+      aria-live="polite"
+    >
+
+      <!--
+        Products are populated by main.js.
+
+        Each product price should use:
+
+        data-price-usd="49.99"
+
+        so currency.js can convert the
+        display price for the customer.
+      -->
+
+    </div>
+
+
+    <!-- Empty State -->
+
+    <div
+      id="shop-empty"
+      hidden
+      style="
+        text-align:center;
+        padding:5rem 1rem;
+      "
+    >
+
+      <div
+        style="
+          width:64px;
+          height:64px;
+          margin:0 auto 1.2rem;
+          border-radius:50%;
+          background:var(--accent-dim);
+          display:grid;
+          place-items:center;
+          font-size:1.5rem;
+        "
+      >
+        🔎
       </div>
-    </section>
 
-    <section class="section" style="padding-top:1rem">
-      <div class="container">
-        <div class="products-grid" id="shop-products">
-          <!-- JS populated -->
+      <h2
+        style="
+          font-size:1.3rem;
+          margin-bottom:.5rem;
+        "
+      >
+        No products found
+      </h2>
+
+      <p
+        style="
+          color:var(--text-secondary);
+          max-width:420px;
+          margin:0 auto 1.5rem;
+        "
+      >
+        Try another search term or choose a different
+        category.
+      </p>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        id="clear-shop-filters"
+      >
+        Clear Filters
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     GLOBAL COMMERCE TRUST SECTION
+     ===================================================== -->
+
+<section
+  class="section"
+  style="
+    background:var(--bg-secondary);
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+  "
+>
+
+  <div class="container">
+
+    <div
+      style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+        gap:1rem;
+      "
+    >
+
+      <div class="feature-card">
+
+        <div class="feature-icon">
+          🌍
         </div>
-      </div>
-    </section>
-  </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a href="index.html" class="logo">
-            <div class="logo-icon">AB</div>
-            <span>Area Boyz</span>
+        <h3>Global Shopping</h3>
+
+        <p>
+          Browse Area Boyz from anywhere with
+          international currency support.
+        </p>
+
+      </div>
+
+
+      <div class="feature-card">
+
+        <div class="feature-icon">
+          💳
+        </div>
+
+        <h3>Secure Checkout</h3>
+
+        <p>
+          Payments will be processed through
+          secure payment infrastructure.
+        </p>
+
+      </div>
+
+
+      <div class="feature-card">
+
+        <div class="feature-icon">
+          📦
+        </div>
+
+        <h3>Order Fulfillment</h3>
+
+        <p>
+          Built for a scalable shopping and
+          fulfillment experience.
+        </p>
+
+      </div>
+
+
+      <div class="feature-card">
+
+        <div class="feature-icon">
+          🛡️
+        </div>
+
+        <h3>Protected Orders</h3>
+
+        <p>
+          Order records and payment confirmation
+          will be verified server-side.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+  </main>  <!-- =====================================================
+       FOOTER
+       ===================================================== -->  <footer class="site-footer"><div class="container">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand">
+
+      <a href="index.html" class="logo">
+
+        <div class="logo-icon">
+          AB
+        </div>
+
+        <span>
+          Area Boyz
+        </span>
+
+      </a>
+
+      <p>
+        Area Boyz Enterprise brings together
+        premium fashion, modern commerce and
+        global customer experiences.
+      </p>
+
+    </div>
+
+
+    <div class="footer-col">
+
+      <h4>Shop</h4>
+
+      <ul>
+
+        <li>
+          <a href="shop.html">
+            All Products
           </a>
-          <p>Multipurpose enterprise uniting premium fashion retail with transparent equity investment opportunities.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Shop</h4>
-          <ul>
-            <li><a href="shop.html">All Products</a></li>
-            <li><a href="shop.html">Formal</a></li>
-            <li><a href="shop.html">Streetwear</a></li>
-            <li><a href="shop.html">Accessories</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="shares.html">Invest / Shares</a></li>
-            <li><a href="contact.html">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="cart.html">Cart</a></li>
-            <li><a href="checkout.html">Checkout</a></li>
-            <li><a href="contact.html">Help Center</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 Area Boyz Enterprise. All rights reserved.</span>
-        <span>Built with semantic HTML • Vanilla JS</span>
-      </div>
-    </div>
-  </footer>
+        </li>
 
-  <script src="js/main.js"></script>
-</body>
+        <li>
+          <a href="shop.html?category=formal">
+            Formal
+          </a>
+        </li>
+
+        <li>
+          <a href="shop.html?category=streetwear">
+            Streetwear
+          </a>
+        </li>
+
+        <li>
+          <a href="shop.html?category=accessories">
+            Accessories
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+
+
+    <div class="footer-col">
+
+      <h4>Company</h4>
+
+      <ul>
+
+        <li>
+          <a href="about.html">
+            About Us
+          </a>
+        </li>
+
+        <li>
+          <a href="shares.html">
+            Invest / Shares
+          </a>
+        </li>
+
+        <li>
+          <a href="contact.html">
+            Contact
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+
+
+    <div class="footer-col">
+
+      <h4>Customer</h4>
+
+      <ul>
+
+        <li>
+          <a href="cart.html">
+            Cart
+          </a>
+        </li>
+
+        <li>
+          <a href="checkout.html">
+            Checkout
+          </a>
+        </li>
+
+        <li>
+          <a href="contact.html">
+            Support
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+  <div class="footer-bottom">
+
+    <span>
+      © 2026 Area Boyz Enterprise.
+      All rights reserved.
+    </span>
+
+    <span>
+      Global Commerce • Vanilla JS
+    </span>
+
+  </div>
+
+</div>
+
+  </footer>  <!-- =====================================================
+       SCRIPTS
+       IMPORTANT: currency.js loads BEFORE main.js
+       ===================================================== -->  <script src="js/currency.js"></script>  <script src="js/main.js"></script></body>
 </html>
