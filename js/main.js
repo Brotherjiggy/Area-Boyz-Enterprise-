@@ -1,1484 +1,1034 @@
 /* =========================================================
-AREA BOYZ ENTERPRISE
-CORE WEBSITE + COMMERCE ENGINE
-========================================================= */
+   AREA BOYZ ENTERPRISE
+   CORE WEBSITE ENGINE
+   Version 2.0.0
+   Vanilla JavaScript
+   ========================================================= */
 
 "use strict";
 
+/* =========================================================
+   CART SYSTEM
+   ========================================================= */
+
 const CART_KEY = "areaboyz_cart";
 
-/* =========================================================
-PRODUCT DATABASE
-Prices are stored internally in USD.
-Currency conversion is display-only on the frontend.
-========================================================= */
-
-const PRODUCTS = [
-{ id:"p1", name:"Emerald Brocade Vest Ensemble", category:"Formal", price:890, img:"images/formal-green-vest.jpg" },
-{ id:"p2", name:"Black Mandarin Collar Suit", category:"Formal", price:1250, img:"images/black-mandarin-suit.jpg" },
-{ id:"p3", name:"Nike Air Force 1 Blue Patent", category:"Footwear", price:220, img:"images/nike-blue-af1-1.jpg" },
-{ id:"p4", name:"Chanel Beige Anorak", category:"Outerwear", price:3200, img:"images/chanel-beige-jacket.jpg" },
-{ id:"p5", name:"Polka Dot & Pink Pleated Set", category:"Contemporary", price:480, img:"images/polka-pink-outfit.jpg" },
-{ id:"p6", name:"Dior Gray Leather Vest", category:"Luxury", price:2750, img:"images/dior-gray-vest.jpg" },
-{ id:"p7", name:"Lace-Trim Wide-Leg Jeans", category:"Denim", price:340, img:"images/lace-jeans-full.jpg" },
-{ id:"p8", name:"Marvel Varsity Collection", category:"Streetwear", price:420, img:"images/marvel-varsity-jackets.jpg" },
-{ id:"p9", name:"Spider-Man Comic Tee", category:"Streetwear", price:85, img:"images/spiderman-tshirt.jpg" },
-{ id:"p10", name:"Red Spider Hoodie", category:"Streetwear", price:195, img:"images/spiderman-hoodie.jpg" },
-{ id:"p11", name:"Zipper Utility Cap", category:"Accessories", price:65, img:"images/zipper-cap.jpg" },
-{ id:"p12", name:"Black Gold Branch Suit", category:"Couture", price:1850, img:"images/black-gold-suit.jpg" },
-{ id:"p13", name:"Ivory Bamboo Suit", category:"Couture", price:1680, img:"images/white-bamboo-suit.jpg" },
-{ id:"p14", name:"Gold Mirror Vest Look", category:"Avant-Garde", price:980, img:"images/gold-vest-outfit.jpg" },
-{ id:"p15", name:"Cyber Geometric Coat", category:"Avant-Garde", price:1450, img:"images/blue-patterned-coat.jpg" },
-{ id:"p16", name:"Charcoal Pleated Trousers", category:"Bottoms", price:290, img:"images/gray-pleated-pants.jpg" }
-];
-
-/* =========================================================
-SECURITY / HTML HELPER
-========================================================= */
-
-function escapeHTML(value) {
-return String(value ?? "")
-.replace(/&/g, "&")
-.replace(/</g, "<")
-.replace(/>/g, ">")
-.replace(/"/g, """)
-.replace(/'/g, "'");
-}
-
-/* =========================================================
-CART
-========================================================= */
-
 function getCart() {
-try {
-const saved = localStorage.getItem(CART_KEY);
-
-if (!saved) return [];
-
-const cart = JSON.parse(saved);
-
-if (!Array.isArray(cart)) return [];
-
-return cart.filter(function(item) {
-  return (
-    item &&
-    typeof item.id === "string" &&
-    Number.isFinite(Number(item.price)) &&
-    Number(item.qty) > 0
-  );
-});
-
-} catch (error) {
-console.warn("Cart could not be loaded:", error);
-return [];
-}
+  try {
+    const saved = localStorage.getItem(CART_KEY);
+    const cart = saved ? JSON.parse(saved) : [];
+    return Array.isArray(cart) ? cart : [];
+  } catch (error) {
+    console.error("Unable to read cart:", error);
+    return [];
+  }
 }
 
 function saveCart(cart) {
-localStorage.setItem(
-CART_KEY,
-JSON.stringify(cart)
-);
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  } catch (error) {
+    console.error("Unable to save cart:", error);
+  }
 
-updateCartUI();
+  updateCartUI();
 }
 
 function addToCart(product) {
-if (!product) return;
+  if (!product || !product.id) return;
 
-const cart = getCart();
+  const cart = getCart();
 
-const existing = cart.find(function(item) {
-return item.id === product.id;
-});
+  const existing = cart.find(function (item) {
+    return item.id === product.id;
+  });
 
-if (existing) {
-existing.qty += 1;
-} else {
-cart.push({
-id: product.id,
-name: product.name,
-category: product.category,
-price: Number(product.price),
-img: product.img,
-qty: 1
-});
-}
+  if (existing) {
+    existing.qty = Number(existing.qty || 1) + 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      price: Number(product.price),
+      img: product.img,
+      qty: 1
+    });
+  }
 
-saveCart(cart);
+  saveCart(cart);
 
-showToast(
-product.name + " added to cart"
-);
+  showToast(product.name + " added to cart.");
 }
 
 function removeFromCart(id) {
-const cart = getCart().filter(function(item) {
-return item.id !== id;
-});
+  const cart = getCart().filter(function (item) {
+    return item.id !== id;
+  });
 
-saveCart(cart);
-renderCartPage();
+  saveCart(cart);
 }
 
 function updateQty(id, delta) {
-const cart = getCart();
+  const cart = getCart();
 
-const item = cart.find(function(product) {
-return product.id === id;
-});
+  const item = cart.find(function (product) {
+    return product.id === id;
+  });
 
-if (!item) return;
+  if (!item) return;
 
-item.qty += Number(delta);
+  item.qty = Number(item.qty || 1) + delta;
 
-if (item.qty <= 0) {
-removeFromCart(id);
-return;
-}
+  if (item.qty <= 0) {
+    const updated = cart.filter(function (product) {
+      return product.id !== id;
+    });
 
-saveCart(cart);
-renderCartPage();
-}
+    saveCart(updated);
+    return;
+  }
 
-function getCartQuantity() {
-return getCart().reduce(function(total, item) {
-return total + Number(item.qty || 0);
-}, 0);
+  saveCart(cart);
 }
 
 function getCartTotal() {
-return getCart().reduce(function(total, item) {
-return total +
-Number(item.price || 0) *
-Number(item.qty || 0);
-}, 0);
+  return getCart().reduce(function (total, item) {
+    return total + Number(item.price || 0) * Number(item.qty || 1);
+  }, 0);
+}
+
+function getCartQuantity() {
+  return getCart().reduce(function (total, item) {
+    return total + Number(item.qty || 1);
+  }, 0);
 }
 
 function updateCartUI() {
-const quantity = getCartQuantity();
+  const quantity = getCartQuantity();
 
-document.querySelectorAll(".cart-count")
-.forEach(function(element) {
-
-  element.textContent = quantity;
-
-  element.style.display =
-    quantity > 0 ? "grid" : "none";
-});
-
+  document.querySelectorAll(".cart-count").forEach(function (counter) {
+    counter.textContent = quantity;
+  });
 }
+
 
 /* =========================================================
-CURRENCY
-========================================================= */
-
-function displayMoney(amount) {
-
-if (typeof formatCurrency === "function") {
-return formatCurrency(amount);
-}
-
-return "$" + Number(amount).toLocaleString(
-"en-US",
-{
-minimumFractionDigits: 2,
-maximumFractionDigits: 2
-}
-);
-}
-
-function refreshPrices() {
-
-document.querySelectorAll(
-"[data-price-usd]"
-).forEach(function(element) {
-
-const amount =
-  Number(element.dataset.priceUsd);
-
-if (!Number.isNaN(amount)) {
-  element.textContent =
-    displayMoney(amount);
-}
-
-});
-}
-
-window.addEventListener(
-"currencyChanged",
-function() {
-
-refreshPrices();
-updateCartUI();
-renderCartPage();
-
-const checkoutTotal =
-  document.getElementById("checkout-total");
-
-if (checkoutTotal) {
-  checkoutTotal.textContent =
-    displayMoney(getCartTotal());
-}
-
-}
-);
-
-/* =========================================================
-TOAST
-========================================================= */
+   TOAST NOTIFICATION
+   ========================================================= */
 
 function showToast(message) {
+  let toast = document.getElementById("area-boyz-toast");
 
-let toast =
-document.querySelector(".toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "area-boyz-toast";
 
-if (!toast) {
+    toast.style.position = "fixed";
+    toast.style.bottom = "24px";
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%) translateY(20px)";
+    toast.style.zIndex = "99999";
+    toast.style.padding = "12px 18px";
+    toast.style.borderRadius = "10px";
+    toast.style.background = "#16161f";
+    toast.style.color = "#f4f4f6";
+    toast.style.border = "1px solid rgba(255,255,255,.12)";
+    toast.style.boxShadow = "0 12px 35px rgba(0,0,0,.35)";
+    toast.style.fontSize = "14px";
+    toast.style.fontWeight = "600";
+    toast.style.opacity = "0";
+    toast.style.transition = "all .25s ease";
 
-toast =
-  document.createElement("div");
+    document.body.appendChild(toast);
+  }
 
-toast.className = "toast";
+  toast.textContent = message;
 
-document.body.appendChild(toast);
+  requestAnimationFrame(function () {
+    toast.style.opacity = "1";
+    toast.style.transform =
+      "translateX(-50%) translateY(0)";
+  });
 
+  clearTimeout(window.areaBoyzToastTimer);
+
+  window.areaBoyzToastTimer = setTimeout(function () {
+    toast.style.opacity = "0";
+    toast.style.transform =
+      "translateX(-50%) translateY(20px)";
+  }, 2500);
 }
 
-toast.textContent = message;
-
-toast.classList.remove("show");
-
-void toast.offsetWidth;
-
-toast.classList.add("show");
-
-clearTimeout(
-window.areaBoyzToastTimer
-);
-
-window.areaBoyzToastTimer =
-setTimeout(function() {
-
-  toast.classList.remove("show");
-
-}, 2800);
-
-}
 
 /* =========================================================
-HERO SLIDER
-IMPORTANT: Compatible with original HTML
-========================================================= */
-
-function initSlider() {
-
-const slides =
-document.querySelectorAll(".slide");
-
-const dots =
-document.querySelectorAll(".dot");
-
-if (!slides.length) {
-return;
-}
-
-let current = 0;
-let timer = null;
-
-/* Make sure the first slide is visible */
-slides.forEach(function(slide, index) {
-
-slide.classList.toggle(
-  "active",
-  index === 0
-);
-
-});
-
-dots.forEach(function(dot, index) {
-
-dot.classList.toggle(
-  "active",
-  index === 0
-);
-
-});
-
-function showSlide(index) {
-
-slides[current].classList.remove(
-  "active"
-);
-
-if (dots[current]) {
-  dots[current].classList.remove(
-    "active"
-  );
-}
-
-current =
-  (index + slides.length) %
-  slides.length;
-
-slides[current].classList.add(
-  "active"
-);
-
-if (dots[current]) {
-  dots[current].classList.add(
-    "active"
-  );
-}
-
-}
-
-function nextSlide() {
-showSlide(current + 1);
-}
-
-function previousSlide() {
-showSlide(current - 1);
-}
-
-function restartSlider() {
-
-clearInterval(timer);
-
-if (slides.length > 1) {
-
-  timer =
-    setInterval(
-      nextSlide,
-      5000
-    );
-}
-
-}
-
-const nextButton =
-document.querySelector(
-".hero-nav.next"
-);
-
-const previousButton =
-document.querySelector(
-".hero-nav.prev"
-);
-
-if (nextButton) {
-
-nextButton.addEventListener(
-  "click",
-  function(event) {
-
-    event.preventDefault();
-
-    nextSlide();
-
-    restartSlider();
-  }
-);
-
-}
-
-if (previousButton) {
-
-previousButton.addEventListener(
-  "click",
-  function(event) {
-
-    event.preventDefault();
-
-    previousSlide();
-
-    restartSlider();
-  }
-);
-
-}
-
-dots.forEach(function(dot, index) {
-
-dot.addEventListener(
-  "click",
-  function(event) {
-
-    event.preventDefault();
-
-    showSlide(index);
-
-    restartSlider();
-  }
-);
-
-});
-
-restartSlider();
-
-/* Pause while user is interacting */
-const hero =
-document.querySelector(".hero");
-
-if (hero) {
-
-hero.addEventListener(
-  "mouseenter",
-  function() {
-    clearInterval(timer);
-  }
-);
-
-hero.addEventListener(
-  "mouseleave",
-  function() {
-    restartSlider();
-  }
-);
-
-}
-}
-
-/* =========================================================
-MOBILE NAVIGATION
-========================================================= */
+   MOBILE NAVIGATION
+   ========================================================= */
 
 function initMobileNav() {
+  const toggle = document.querySelector(".mobile-toggle");
+  const links = document.querySelector(".nav-links");
 
-const toggle =
-document.querySelector(
-".mobile-toggle"
-);
-
-const links =
-document.querySelector(
-".nav-links"
-);
-
-if (!toggle || !links) {
-return;
-}
-
-function closeMenu() {
-
-links.classList.remove("open");
-
-toggle.setAttribute(
-  "aria-expanded",
-  "false"
-);
-
-}
-
-toggle.setAttribute(
-"aria-expanded",
-"false"
-);
-
-toggle.addEventListener(
-"click",
-function(event) {
-
-  event.preventDefault();
-
-  event.stopPropagation();
-
-  const isOpen =
-    links.classList.toggle("open");
-
-  toggle.setAttribute(
-    "aria-expanded",
-    isOpen ? "true" : "false"
-  );
-}
-
-);
-
-links.querySelectorAll("a")
-.forEach(function(link) {
-
-  link.addEventListener(
-    "click",
-    closeMenu
-  );
-});
-
-document.addEventListener(
-"click",
-function(event) {
-
-  if (
-    links.classList.contains("open") &&
-    !links.contains(event.target) &&
-    !toggle.contains(event.target)
-  ) {
-    closeMenu();
+  if (!toggle || !links) {
+    console.warn("Mobile navigation elements not found.");
+    return;
   }
+
+  /*
+   * Prevent duplicate event listeners if this function
+   * is accidentally called more than once.
+   */
+
+  if (toggle.dataset.navReady === "true") {
+    return;
+  }
+
+  toggle.dataset.navReady = "true";
+
+  toggle.setAttribute("aria-expanded", "false");
+
+  toggle.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const isOpen = links.classList.toggle("open");
+
+    toggle.setAttribute(
+      "aria-expanded",
+      isOpen ? "true" : "false"
+    );
+
+    toggle.setAttribute(
+      "aria-label",
+      isOpen ? "Close menu" : "Open menu"
+    );
+  });
+
+  /*
+   * Close menu after selecting a page.
+   */
+
+  links.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", function () {
+      links.classList.remove("open");
+
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open menu");
+    });
+  });
+
+  /*
+   * Close menu when clicking outside navigation.
+   */
+
+  document.addEventListener("click", function (event) {
+    if (
+      !links.contains(event.target) &&
+      !toggle.contains(event.target)
+    ) {
+      links.classList.remove("open");
+
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open menu");
+    }
+  });
+
+  /*
+   * Close menu when screen becomes desktop size.
+   */
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 900) {
+      links.classList.remove("open");
+
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open menu");
+    }
+  });
 }
 
-);
-}
 
 /* =========================================================
-PRODUCT CARD
-========================================================= */
+   HERO SLIDER
+   ========================================================= */
+
+function initSlider() {
+  const slider = document.querySelector(".hero-slider");
+  const slides = document.querySelectorAll(".hero-slider .slide");
+  const dots = document.querySelectorAll(".hero-controls .dot");
+  const nextButton = document.querySelector(".hero-nav.next");
+  const prevButton = document.querySelector(".hero-nav.prev");
+
+  if (!slider || !slides.length) {
+    console.warn("Hero slider elements not found.");
+    return;
+  }
+
+  let current = 0;
+  let timer = null;
+
+  function showSlide(index) {
+    /*
+     * Keep index inside the valid range.
+     */
+
+    if (index >= slides.length) {
+      index = 0;
+    }
+
+    if (index < 0) {
+      index = slides.length - 1;
+    }
+
+    current = index;
+
+    slides.forEach(function (slide, i) {
+      slide.classList.toggle("active", i === current);
+    });
+
+    dots.forEach(function (dot, i) {
+      dot.classList.toggle("active", i === current);
+    });
+  }
+
+  function nextSlide() {
+    showSlide(current + 1);
+  }
+
+  function previousSlide() {
+    showSlide(current - 1);
+  }
+
+  function startAutoPlay() {
+    stopAutoPlay();
+
+    timer = setInterval(function () {
+      nextSlide();
+    }, 5500);
+  }
+
+  function stopAutoPlay() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function restartAutoPlay() {
+    startAutoPlay();
+  }
+
+  if (nextButton) {
+    nextButton.addEventListener("click", function () {
+      nextSlide();
+      restartAutoPlay();
+    });
+  }
+
+  if (prevButton) {
+    prevButton.addEventListener("click", function () {
+      previousSlide();
+      restartAutoPlay();
+    });
+  }
+
+  dots.forEach(function (dot, index) {
+    dot.addEventListener("click", function () {
+      showSlide(index);
+      restartAutoPlay();
+    });
+  });
+
+  /*
+   * Pause while the user is interacting with the slider.
+   */
+
+  slider.addEventListener("mouseenter", stopAutoPlay);
+
+  slider.addEventListener("mouseleave", startAutoPlay);
+
+  /*
+   * Touch/swipe support for phones.
+   */
+
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  slider.addEventListener(
+    "touchstart",
+    function (event) {
+      touchStartX = event.changedTouches[0].screenX;
+      stopAutoPlay();
+    },
+    { passive: true }
+  );
+
+  slider.addEventListener(
+    "touchend",
+    function (event) {
+      touchEndX = event.changedTouches[0].screenX;
+
+      const distance = touchEndX - touchStartX;
+
+      if (Math.abs(distance) > 50) {
+        if (distance < 0) {
+          nextSlide();
+        } else {
+          previousSlide();
+        }
+      }
+
+      startAutoPlay();
+    },
+    { passive: true }
+  );
+
+  /*
+   * Keyboard controls.
+   */
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "ArrowRight") {
+      nextSlide();
+      restartAutoPlay();
+    }
+
+    if (event.key === "ArrowLeft") {
+      previousSlide();
+      restartAutoPlay();
+    }
+  });
+
+  /*
+   * Always make sure first slide is active.
+   */
+
+  showSlide(0);
+
+  /*
+   * Start automatic movement.
+   */
+
+  startAutoPlay();
+}
+
+
+/* =========================================================
+   PRODUCT DATABASE
+   ========================================================= */
+
+const PRODUCTS = [
+
+  {
+    id: "p1",
+    name: "Emerald Brocade Vest Ensemble",
+    category: "Formal",
+    price: 890,
+    img: "images/formal-green-vest.jpg"
+  },
+
+  {
+    id: "p2",
+    name: "Black Mandarin Collar Suit",
+    category: "Formal",
+    price: 1250,
+    img: "images/black-mandarin-suit.jpg"
+  },
+
+  {
+    id: "p3",
+    name: "Nike Air Force 1 Blue Patent",
+    category: "Footwear",
+    price: 220,
+    img: "images/nike-blue-af1-1.jpg"
+  },
+
+  {
+    id: "p4",
+    name: "Chanel Beige Anorak",
+    category: "Outerwear",
+    price: 3200,
+    img: "images/chanel-beige-jacket.jpg"
+  },
+
+  {
+    id: "p5",
+    name: "Polka Dot & Pink Pleated Set",
+    category: "Contemporary",
+    price: 480,
+    img: "images/polka-pink-outfit.jpg"
+  },
+
+  {
+    id: "p6",
+    name: "Dior Gray Leather Vest",
+    category: "Luxury",
+    price: 2750,
+    img: "images/dior-gray-vest.jpg"
+  },
+
+  {
+    id: "p7",
+    name: "Lace-Trim Wide-Leg Jeans",
+    category: "Denim",
+    price: 340,
+    img: "images/lace-jeans-full.jpg"
+  },
+
+  {
+    id: "p8",
+    name: "Marvel Varsity Collection",
+    category: "Streetwear",
+    price: 420,
+    img: "images/marvel-varsity-jackets.jpg"
+  },
+
+  {
+    id: "p9",
+    name: "Spider-Man Comic Tee",
+    category: "Streetwear",
+    price: 85,
+    img: "images/spiderman-tshirt.jpg"
+  },
+
+  {
+    id: "p10",
+    name: "Red Spider Hoodie",
+    category: "Streetwear",
+    price: 195,
+    img: "images/spiderman-hoodie.jpg"
+  },
+
+  {
+    id: "p11",
+    name: "Zipper Utility Cap",
+    category: "Accessories",
+    price: 65,
+    img: "images/zipper-cap.jpg"
+  },
+
+  {
+    id: "p12",
+    name: "Black Gold Branch Suit",
+    category: "Couture",
+    price: 1850,
+    img: "images/black-gold-suit.jpg"
+  },
+
+  {
+    id: "p13",
+    name: "Ivory Bamboo Suit",
+    category: "Couture",
+    price: 1680,
+    img: "images/white-bamboo-suit.jpg"
+  },
+
+  {
+    id: "p14",
+    name: "Gold Mirror Vest Look",
+    category: "Avant-Garde",
+    price: 980,
+    img: "images/gold-vest-outfit.jpg"
+  },
+
+  {
+    id: "p15",
+    name: "Cyber Geometric Coat",
+    category: "Avant-Garde",
+    price: 1450,
+    img: "images/blue-patterned-coat.jpg"
+  },
+
+  {
+    id: "p16",
+    name: "Charcoal Pleated Trousers",
+    category: "Bottoms",
+    price: 290,
+    img: "images/gray-pleated-pants.jpg"
+  }
+
+];
+
+
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
 
 function createProductCard(product) {
+  const article = document.createElement("article");
+  article.className = "product-card";
 
-const badge =
-product.price > 1000
-? '<span class="product-badge">Luxury</span>'
-: "";
+  const imageWrapper = document.createElement("div");
+  imageWrapper.className = "product-img";
 
-return `
-<article
-class="product-card"
-data-product-id="${escapeHTML(product.id)}"
->
+  const image = document.createElement("img");
+  image.src = product.img;
+  image.alt = product.name;
+  image.loading = "lazy";
 
-  <div class="product-img">
+  image.onerror = function () {
+    this.style.opacity = "0.35";
+  };
 
-    <img
-      src="${escapeHTML(product.img)}"
-      alt="${escapeHTML(product.name)}"
-      loading="lazy"
-    >
+  imageWrapper.appendChild(image);
 
-    ${badge}
-
-  </div>
-
-  <div class="product-info">
-
-    <div class="product-category">
-      ${escapeHTML(product.category)}
-    </div>
-
-    <h3 class="product-name">
-      ${escapeHTML(product.name)}
-    </h3>
-
-    <div class="product-price">
-
-      <span
-        class="price"
-        data-price-usd="${product.price}"
-      >
-        ${displayMoney(product.price)}
-      </span>
-
-      <button
-        type="button"
-        class="add-to-cart"
-        data-id="${escapeHTML(product.id)}"
-        aria-label="Add ${escapeHTML(product.name)} to cart"
-      >
-        ＋
-      </button>
-
-    </div>
-
-  </div>
-
-</article>
-
-`;
-}
-
-function bindCartButtons(container) {
-
-if (!container) return;
-
-container.querySelectorAll(
-".add-to-cart"
-).forEach(function(button) {
-
-button.addEventListener(
-  "click",
-  function(event) {
-
-    event.preventDefault();
-
-    const product =
-      PRODUCTS.find(function(item) {
-
-        return item.id ===
-          button.dataset.id;
-      });
-
-    if (!product) {
-      showToast(
-        "Product unavailable"
-      );
-      return;
-    }
-
-    addToCart(product);
+  if (Number(product.price) > 1000) {
+    const badge = document.createElement("span");
+    badge.className = "product-badge";
+    badge.textContent = "Luxury";
+    imageWrapper.appendChild(badge);
   }
-);
 
-});
+  const info = document.createElement("div");
+  info.className = "product-info";
+
+  const category = document.createElement("div");
+  category.className = "product-category";
+  category.textContent = product.category;
+
+  const name = document.createElement("h3");
+  name.className = "product-name";
+  name.textContent = product.name;
+
+  const priceRow = document.createElement("div");
+  priceRow.className = "product-price";
+
+  const price = document.createElement("span");
+  price.className = "price";
+
+  /*
+   * Currency engine will replace this when available.
+   */
+
+  price.dataset.priceUsd = product.price;
+
+  if (
+    typeof window.formatCurrency === "function"
+  ) {
+    price.textContent =
+      window.formatCurrency(product.price);
+  } else {
+    price.textContent =
+      "$" + Number(product.price).toLocaleString();
+  }
+
+  const button = document.createElement("button");
+
+  button.type = "button";
+  button.className = "add-to-cart";
+  button.dataset.id = product.id;
+  button.setAttribute(
+    "aria-label",
+    "Add " + product.name + " to cart"
+  );
+  button.textContent = "＋";
+
+  button.addEventListener("click", function () {
+    addToCart(product);
+  });
+
+  priceRow.appendChild(price);
+  priceRow.appendChild(button);
+
+  info.appendChild(category);
+  info.appendChild(name);
+  info.appendChild(priceRow);
+
+  article.appendChild(imageWrapper);
+  article.appendChild(info);
+
+  return article;
 }
+
 
 /* =========================================================
-STANDARD PRODUCT RENDER
-========================================================= */
+   PRODUCT RENDERER
+   ========================================================= */
 
-function renderProducts(
-containerId,
-limit
-) {
+function renderProducts(containerId, limit) {
+  const container = document.getElementById(containerId);
 
-const container =
-document.getElementById(
-containerId
-);
-
-if (!container) return;
-
-let products =
-PRODUCTS.slice();
-
-if (limit) {
-products =
-products.slice(0, limit);
-}
-
-container.innerHTML =
-products
-.map(createProductCard)
-.join("");
-
-bindCartButtons(container);
-
-refreshPrices();
-}
-
-/* =========================================================
-ADVANCED SHOP
-========================================================= */
-
-function initShop() {
-
-const container =
-document.getElementById(
-"shop-products"
-);
-
-if (!container) return;
-
-const searchInput =
-document.getElementById(
-"product-search"
-);
-
-const sortSelect =
-document.getElementById(
-"product-sort"
-);
-
-const resultCount =
-document.getElementById(
-"shop-results-count"
-);
-
-const emptyState =
-document.getElementById(
-"shop-empty"
-);
-
-const clearButton =
-document.getElementById(
-"clear-shop-filters"
-);
-
-const filters =
-document.querySelectorAll(
-".shop-filter"
-);
-
-let category = "all";
-let search = "";
-let sort = "featured";
-
-function render() {
-
-let products =
-  PRODUCTS.slice();
-
-
-if (category !== "all") {
-
-  products =
-    products.filter(
-      function(product) {
-
-        return product.category
-          .toLowerCase() ===
-          category;
-      }
-    );
-}
-
-
-if (search) {
-
-  const term =
-    search.toLowerCase();
-
-  products =
-    products.filter(
-      function(product) {
-
-        return (
-          product.name
-            .toLowerCase()
-            .includes(term) ||
-
-          product.category
-            .toLowerCase()
-            .includes(term)
-        );
-      }
-    );
-}
-
-
-if (sort === "price-low") {
-
-  products.sort(
-    function(a, b) {
-      return a.price - b.price;
-    }
-  );
-
-} else if (sort === "price-high") {
-
-  products.sort(
-    function(a, b) {
-      return b.price - a.price;
-    }
-  );
-
-} else if (sort === "name") {
-
-  products.sort(
-    function(a, b) {
-      return a.name.localeCompare(
-        b.name
-      );
-    }
-  );
-}
-
-
-if (resultCount) {
-
-  resultCount.textContent =
-    products.length +
-    (
-      products.length === 1
-        ? " product"
-        : " products"
-    );
-}
-
-
-if (!products.length) {
+  if (!container) {
+    return;
+  }
 
   container.innerHTML = "";
 
-  if (emptyState) {
-    emptyState.hidden = false;
+  let products = PRODUCTS.slice();
+
+  if (typeof limit === "number") {
+    products = products.slice(0, limit);
   }
 
-  return;
-}
-
-
-if (emptyState) {
-  emptyState.hidden = true;
-}
-
-
-container.innerHTML =
-  products
-    .map(createProductCard)
-    .join("");
-
-bindCartButtons(container);
-
-refreshPrices();
-
-}
-
-filters.forEach(
-function(button) {
-
-  button.addEventListener(
-    "click",
-    function() {
-
-      filters.forEach(
-        function(item) {
-          item.classList.remove(
-            "active"
-          );
-        }
-      );
-
-      button.classList.add(
-        "active"
-      );
-
-      category =
-        (
-          button.dataset.category ||
-          "all"
-        ).toLowerCase();
-
-      render();
-    }
-  );
-}
-
-);
-
-if (searchInput) {
-
-searchInput.addEventListener(
-  "input",
-  function() {
-
-    search =
-      searchInput.value
-        .trim();
-
-    render();
-  }
-);
-
-}
-
-if (sortSelect) {
-
-sortSelect.addEventListener(
-  "change",
-  function() {
-
-    sort =
-      sortSelect.value;
-
-    render();
-  }
-);
-
-}
-
-if (clearButton) {
-
-clearButton.addEventListener(
-  "click",
-  function() {
-
-    category = "all";
-    search = "";
-    sort = "featured";
-
-
-    if (searchInput) {
-      searchInput.value = "";
-    }
-
-
-    if (sortSelect) {
-      sortSelect.value =
-        "featured";
-    }
-
-
-    filters.forEach(
-      function(button) {
-
-        button.classList.toggle(
-          "active",
-          (
-            button.dataset.category ||
-            "all"
-          ).toLowerCase() ===
-          "all"
-        );
-      }
+  products.forEach(function (product) {
+    container.appendChild(
+      createProductCard(product)
     );
-
-
-    render();
-  }
-);
-
+  });
 }
 
-render();
-}
 
 /* =========================================================
-CART PAGE
-========================================================= */
+   CART PAGE
+   ========================================================= */
 
 function renderCartPage() {
+  const container = document.getElementById("cart-items");
+  const empty = document.getElementById("cart-empty");
+  const summary = document.getElementById("cart-summary");
 
-const tbody =
-document.getElementById(
-"cart-items"
-);
-
-const summary =
-document.getElementById(
-"cart-summary"
-);
-
-if (!tbody) return;
-
-const cart =
-getCart();
-
-if (!cart.length) {
-
-tbody.innerHTML = `
-  <tr>
-    <td
-      colspan="5"
-      style="text-align:center;padding:3rem;color:#a0a0b0;"
-    >
-      Your cart is empty.
-      <a
-        href="shop.html"
-        style="color:#00f0ff;"
-      >
-        Browse the collection
-      </a>
-    </td>
-  </tr>
-`;
-
-if (summary) {
-  summary.innerHTML = "";
-}
-
-return;
-
-}
-
-tbody.innerHTML =
-cart.map(function(item) {
-
-  const lineTotal =
-    item.price * item.qty;
-
-  return `
-    <tr>
-
-      <td>
-        <img
-          src="${escapeHTML(item.img)}"
-          alt="${escapeHTML(item.name)}"
-          class="cart-item-img"
-          loading="lazy"
-        >
-      </td>
-
-      <td>
-        <strong>
-          ${escapeHTML(item.name)}
-        </strong>
-        <br>
-        <small style="color:#a0a0b0;">
-          ${escapeHTML(item.category)}
-        </small>
-      </td>
-
-      <td
-        data-price-usd="${item.price}"
-      >
-        ${displayMoney(item.price)}
-      </td>
-
-      <td>
-
-        <div class="qty-control">
-
-          <button
-            type="button"
-            data-id="${escapeHTML(item.id)}"
-            data-delta="-1"
-          >
-            −
-          </button>
-
-          <span>
-            ${item.qty}
-          </span>
-
-          <button
-            type="button"
-            data-id="${escapeHTML(item.id)}"
-            data-delta="1"
-          >
-            +
-          </button>
-
-        </div>
-
-      </td>
-
-      <td
-        data-price-usd="${lineTotal}"
-      >
-        ${displayMoney(lineTotal)}
-      </td>
-
-    </tr>
-  `;
-
-}).join("");
-
-tbody.querySelectorAll(
-".qty-control button"
-).forEach(function(button) {
-
-button.addEventListener(
-  "click",
-  function() {
-
-    updateQty(
-      button.dataset.id,
-      Number(button.dataset.delta)
-    );
+  if (!container) {
+    return;
   }
-);
 
-});
+  const cart = getCart();
 
-const total =
-getCartTotal();
+  container.innerHTML = "";
 
-if (summary) {
+  if (!cart.length) {
+    if (empty) {
+      empty.style.display = "block";
+    }
 
-summary.innerHTML = `
-
-  <h3 style="margin-bottom:1.25rem">
-    Order Summary
-  </h3>
-
-  <div
-    style="
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:.75rem;
-    "
-  >
-    <span style="color:#a0a0b0">
-      Subtotal
-    </span>
-
-    <span data-price-usd="${total}">
-      ${displayMoney(total)}
-    </span>
-  </div>
-
-  <div
-    style="
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:.75rem;
-    "
-  >
-    <span style="color:#a0a0b0">
-      Shipping
-    </span>
-
-    <span>
-      Calculated at checkout
-    </span>
-  </div>
-
-  <div
-    style="
-      display:flex;
-      justify-content:space-between;
-      font-size:1.25rem;
-      font-weight:700;
-      margin:1.25rem 0;
-      padding-top:1rem;
-      border-top:1px solid rgba(255,255,255,.08);
-    "
-  >
-
-    <span>Total</span>
-
-    <span
-      style="color:#00f0ff"
-      data-price-usd="${total}"
-    >
-      ${displayMoney(total)}
-    </span>
-
-  </div>
-
-  <a
-    href="checkout.html"
-    class="btn btn-primary"
-    style="width:100%;margin-top:.5rem"
-  >
-    Proceed to Checkout
-  </a>
-`;
-
-}
-
-refreshPrices();
-}
-
-/* =========================================================
-SHARES CALCULATOR
-========================================================= */
-
-function initSharesCalc() {
-
-const input =
-document.getElementById(
-"share-amount"
-);
-
-const result =
-document.getElementById(
-"calc-result"
-);
-
-if (!input || !result) return;
-
-const TOTAL_EQUITY_POOL =
-756000;
-
-function calculate() {
-
-const amount =
-  Number.parseFloat(
-    input.value
-  ) || 0;
-
-
-if (amount < 100) {
-
-  result.innerHTML = `
-    <p style="color:#a0a0b0">
-      Minimum investment:
-      ${displayMoney(100)}
-    </p>
-  `;
-
-  return;
-}
-
-
-let rate = 0.09;
-
-if (amount >= 50000) {
-  rate = 0.18;
-} else if (amount >= 20000) {
-  rate = 0.15;
-} else if (amount >= 5000) {
-  rate = 0.12;
-}
-
-
-const annual =
-  amount * rate;
-
-
-const ownership =
-  (
-    (amount / TOTAL_EQUITY_POOL) *
-    100
-  ).toFixed(4);
-
-
-result.innerHTML = `
-
-  <div
-    class="value"
-    data-price-usd="${annual}"
-  >
-    ${displayMoney(annual)}
-  </div>
-
-  <p
-    style="
-      margin:.5rem 0;
-      color:#a0a0b0;
-    "
-  >
-    Projected annual return
-    (${rate * 100}%)
-  </p>
-
-  <p
-    style="
-      font-size:.9rem;
-      color:#a0a0b0;
-    "
-  >
-    Ownership:
-    ${ownership}%
-    of company equity pool
-  </p>
-`;
-
-refreshPrices();
-
-}
-
-input.addEventListener(
-"input",
-calculate
-);
-
-window.addEventListener(
-"currencyChanged",
-calculate
-);
-
-calculate();
-}
-
-/* =========================================================
-CHECKOUT DISPLAY
-========================================================= */
-
-function updateCheckoutTotal() {
-
-const total =
-document.getElementById(
-"checkout-total"
-);
-
-if (!total) return;
-
-total.textContent =
-displayMoney(
-getCartTotal()
-);
-}
-
-/* =========================================================
-CHECKOUT
-========================================================= */
-
-function initCheckout() {
-
-const form =
-document.getElementById(
-"checkout-form"
-);
-
-if (!form) return;
-
-updateCheckoutTotal();
-
-window.addEventListener(
-"currencyChanged",
-updateCheckoutTotal
-);
-
-form.addEventListener(
-"submit",
-function(event) {
-
-  event.preventDefault();
-
-
-  if (!getCart().length) {
-
-    showToast(
-      "Your cart is empty."
-    );
+    if (summary) {
+      summary.style.display = "none";
+    }
 
     return;
   }
 
-
-  /*
-    IMPORTANT:
-
-    This is NOT a real payment confirmation.
-
-    Production flow:
-
-    Browser
-      ↓
-    Secure backend
-      ↓
-    Server validates product IDs
-      ↓
-    Server calculates USD/base amount
-      ↓
-    Payment provider
-      ↓
-    Webhook verification
-      ↓
-    Order created
-  */
-
-  showToast(
-    "Checkout ready for secure payment."
-  );
-}
-
-);
-}
-
-/* =========================================================
-CURRENCY SELECTOR
-========================================================= */
-
-function initCurrencySelector() {
-
-const selectors =
-document.querySelectorAll(
-"[data-currency-selector]"
-);
-
-if (!selectors.length) return;
-
-if (
-typeof getSelectedCurrency ===
-"function"
-) {
-
-const selected =
-  getSelectedCurrency();
-
-selectors.forEach(
-  function(selector) {
-    selector.value = selected;
+  if (empty) {
+    empty.style.display = "none";
   }
-);
 
+  if (summary) {
+    summary.style.display = "";
+  }
+
+  cart.forEach(function (item) {
+    const row = document.createElement("article");
+    row.className = "cart-item";
+
+    row.innerHTML = `
+      <div class="cart-item-image">
+        <img
+          src="${item.img}"
+          alt="${item.name}"
+          loading="lazy"
+        >
+      </div>
+
+      <div class="cart-item-info">
+        <div class="product-category">
+          ${item.category || ""}
+        </div>
+
+        <h3>${item.name}</h3>
+
+        <div class="cart-item-price"
+             data-price-usd="${Number(item.price)}">
+          ${formatPriceSafe(Number(item.price))}
+        </div>
+
+        <div class="cart-quantity">
+          <button
+            type="button"
+            data-cart-minus="${item.id}"
+            aria-label="Decrease quantity"
+          >
+            −
+          </button>
+
+          <span>${Number(item.qty || 1)}</span>
+
+          <button
+            type="button"
+            data-cart-plus="${item.id}"
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="remove-cart-item"
+          data-cart-remove="${item.id}"
+        >
+          Remove
+        </button>
+      </div>
+    `;
+
+    container.appendChild(row);
+  });
+
+  container.querySelectorAll("[data-cart-minus]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      updateQty(button.dataset.cartMinus, -1);
+      renderCartPage();
+    });
+  });
+
+  container.querySelectorAll("[data-cart-plus]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      updateQty(button.dataset.cartPlus, 1);
+      renderCartPage();
+    });
+  });
+
+  container.querySelectorAll("[data-cart-remove]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      removeFromCart(button.dataset.cartRemove);
+      renderCartPage();
+      showToast("Item removed from cart.");
+    });
+  });
+
+  updateCartTotals();
 }
 
-selectors.forEach(
-function(selector) {
+function updateCartTotals() {
+  const total = getCartTotal();
 
-  selector.addEventListener(
-    "change",
-    function() {
+  document.querySelectorAll("[data-cart-total]").forEach(function (element) {
+    element.textContent = formatPriceSafe(total);
+  });
+}
 
-      if (
-        typeof setSelectedCurrency ===
-        "function"
-      ) {
+function formatPriceSafe(amount) {
+  if (typeof window.formatCurrency === "function") {
+    return window.formatCurrency(amount);
+  }
 
-        setSelectedCurrency(
-          selector.value
-        );
-      }
+  return "$" + Number(amount).toLocaleString(
+    undefined,
+    {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }
   );
 }
 
-);
-}
 
 /* =========================================================
-ACTIVE NAVIGATION
-========================================================= */
+   SHARE CALCULATOR
+   ========================================================= */
+
+function initSharesCalc() {
+  const amountInput = document.getElementById("investment-amount");
+  const result = document.getElementById("investment-result");
+
+  if (!amountInput || !result) {
+    return;
+  }
+
+  function calculate() {
+    const amount = Number(amountInput.value);
+
+    if (!amount || amount < 100) {
+      result.textContent =
+        "Minimum investment: $100";
+      return;
+    }
+
+    let rate = 0.09;
+
+    if (amount >= 50000) {
+      rate = 0.18;
+    } else if (amount >= 20000) {
+      rate = 0.15;
+    } else if (amount >= 5000) {
+      rate = 0.12;
+    }
+
+    const annualReturn = amount * rate;
+
+    result.textContent =
+      "Estimated annual return: " +
+      formatPriceSafe(annualReturn);
+  }
+
+  amountInput.addEventListener("input", calculate);
+
+  calculate();
+}
+
+
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
+
+function initCheckout() {
+  const form = document.getElementById("checkout-form");
+
+  if (!form) {
+    return;
+  }
+
+  form.addEventListener("submit", function (event) {
+    /*
+     * Prevent accidental fake payment submission.
+     *
+     * Real payment processing should happen through
+     * your secure backend/payment provider.
+     */
+
+    event.preventDefault();
+
+    showToast(
+      "Checkout is ready for secure payment processing."
+    );
+  });
+}
+
+
+/* =========================================================
+   ACTIVE NAVIGATION
+   ========================================================= */
 
 function initActiveNavigation() {
+  const currentPage =
+    window.location.pathname
+      .split("/")
+      .pop()
+      .toLowerCase() || "index.html";
 
-const current =
-window.location.pathname
-.split("/")
-.pop() ||
-"index.html";
+  document.querySelectorAll(".nav-links a").forEach(function (link) {
+    const href =
+      link.getAttribute("href") || "";
 
-document.querySelectorAll(
-".nav-links a"
-).forEach(function(link) {
+    const cleanHref =
+      href.split("#")[0]
+        .split("?")[0]
+        .toLowerCase();
 
-const href =
-  link.getAttribute("href");
+    link.classList.remove("active");
 
-if (!href) return;
-
-const page =
-  href.split("/").pop();
-
-if (page === current) {
-  link.classList.add("active");
+    if (
+      cleanHref === currentPage ||
+      (
+        currentPage === "" &&
+        cleanHref === "index.html"
+      )
+    ) {
+      link.classList.add("active");
+    }
+  });
 }
 
-});
-}
 
 /* =========================================================
-GLOBAL STORE API
-========================================================= */
+   CURRENCY UPDATE HOOK
+   ========================================================= */
 
-window.AreaBoyzStore = {
+function refreshProductCurrency() {
+  document.querySelectorAll(
+    "[data-price-usd]"
+  ).forEach(function (element) {
+    const amount =
+      Number(element.dataset.priceUsd);
 
-products: PRODUCTS,
+    if (
+      !Number.isNaN(amount) &&
+      typeof window.formatCurrency === "function"
+    ) {
+      element.textContent =
+        window.formatCurrency(amount);
+    }
+  });
 
-getCart: getCart,
+  updateCartTotals();
+}
 
-addToCart: addToCart,
-
-removeFromCart: removeFromCart,
-
-updateQty: updateQty,
-
-getCartTotal: getCartTotal,
-
-getCartQuantity: getCartQuantity
-
-};
 
 /* =========================================================
-START APPLICATION
-========================================================= */
+   GLOBAL CURRENCY EVENT
+   ========================================================= */
 
-document.addEventListener(
-"DOMContentLoaded",
-function() {
-
-updateCartUI();
-
-initMobileNav();
-
-initSlider();
-
-initSharesCalc();
-
-initCheckout();
-
-initCurrencySelector();
-
-initActiveNavigation();
-
-renderProducts(
-  "featured-products",
-  8
+window.addEventListener(
+  "currencyChanged",
+  function () {
+    refreshProductCurrency();
+  }
 );
 
-initShop();
 
-renderCartPage();
+/* =========================================================
+   APPLICATION STARTUP
+   ========================================================= */
 
-updateCheckoutTotal();
+function initAreaBoyz() {
+  console.log(
+    "Area Boyz Enterprise — website engine initialized."
+  );
 
-refreshPrices();
+  /*
+   * Core UI
+   */
 
-console.log(
-  "Area Boyz Enterprise initialized successfully."
-);
+  updateCartUI();
+  initMobileNav();
+  initSlider();
+  initActiveNavigation();
+
+  /*
+   * Homepage collection
+   */
+
+  renderProducts(
+    "featured-products",
+    8
+  );
+
+  /*
+   * Shop collection
+   */
+
+  renderProducts(
+    "shop-products"
+  );
+
+  /*
+   * Other pages
+   */
+
+  renderCartPage();
+  initSharesCalc();
+  initCheckout();
+
+  /*
+   * Currency display refresh.
+   */
+
+  if (
+    typeof window.updateCurrencyDisplay === "function"
+  ) {
+    window.updateCurrencyDisplay();
+  }
+
+  /*
+   * Make sure the cart UI is correct
+   * after everything loads.
+   */
+
+  updateCartUI();
+}
+
+
+/* =========================================================
+   DOM READY
+   ========================================================= */
+
+if (document.readyState === "loading") {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    initAreaBoyz
+  );
+
+} else {
+
+  initAreaBoyz();
 
 }
-);
