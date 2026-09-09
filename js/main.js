@@ -1,134 +1,39 @@
 /* =========================================================
 AREA BOYZ ENTERPRISE
-Enterprise Commerce Core
-Version 2.0
+CORE WEBSITE + COMMERCE ENGINE
 ========================================================= */
 
 "use strict";
 
-/* =========================================================
-CONFIGURATION
-========================================================= */
-
 const CART_KEY = "areaboyz_cart";
 
+/* =========================================================
+PRODUCT DATABASE
+Prices are stored internally in USD.
+Currency conversion is display-only on the frontend.
+========================================================= */
+
 const PRODUCTS = [
-{
-id: "p1",
-name: "Emerald Brocade Vest Ensemble",
-category: "Formal",
-price: 890,
-img: "images/formal-green-vest.jpg"
-},
-{
-id: "p2",
-name: "Black Mandarin Collar Suit",
-category: "Formal",
-price: 1250,
-img: "images/black-mandarin-suit.jpg"
-},
-{
-id: "p3",
-name: "Nike Air Force 1 Blue Patent",
-category: "Footwear",
-price: 220,
-img: "images/nike-blue-af1-1.jpg"
-},
-{
-id: "p4",
-name: "Chanel Beige Anorak",
-category: "Outerwear",
-price: 3200,
-img: "images/chanel-beige-jacket.jpg"
-},
-{
-id: "p5",
-name: "Polka Dot & Pink Pleated Set",
-category: "Contemporary",
-price: 480,
-img: "images/polka-pink-outfit.jpg"
-},
-{
-id: "p6",
-name: "Dior Gray Leather Vest",
-category: "Luxury",
-price: 2750,
-img: "images/dior-gray-vest.jpg"
-},
-{
-id: "p7",
-name: "Lace-Trim Wide-Leg Jeans",
-category: "Denim",
-price: 340,
-img: "images/lace-jeans-full.jpg"
-},
-{
-id: "p8",
-name: "Marvel Varsity Collection",
-category: "Streetwear",
-price: 420,
-img: "images/marvel-varsity-jackets.jpg"
-},
-{
-id: "p9",
-name: "Spider-Man Comic Tee",
-category: "Streetwear",
-price: 85,
-img: "images/spiderman-tshirt.jpg"
-},
-{
-id: "p10",
-name: "Red Spider Hoodie",
-category: "Streetwear",
-price: 195,
-img: "images/spiderman-hoodie.jpg"
-},
-{
-id: "p11",
-name: "Zipper Utility Cap",
-category: "Accessories",
-price: 65,
-img: "images/zipper-cap.jpg"
-},
-{
-id: "p12",
-name: "Black Gold Branch Suit",
-category: "Couture",
-price: 1850,
-img: "images/black-gold-suit.jpg"
-},
-{
-id: "p13",
-name: "Ivory Bamboo Suit",
-category: "Couture",
-price: 1680,
-img: "images/white-bamboo-suit.jpg"
-},
-{
-id: "p14",
-name: "Gold Mirror Vest Look",
-category: "Avant-Garde",
-price: 980,
-img: "images/gold-vest-outfit.jpg"
-},
-{
-id: "p15",
-name: "Cyber Geometric Coat",
-category: "Avant-Garde",
-price: 1450,
-img: "images/blue-patterned-coat.jpg"
-},
-{
-id: "p16",
-name: "Charcoal Pleated Trousers",
-category: "Bottoms",
-price: 290,
-img: "images/gray-pleated-pants.jpg"
-}
+{ id:"p1", name:"Emerald Brocade Vest Ensemble", category:"Formal", price:890, img:"images/formal-green-vest.jpg" },
+{ id:"p2", name:"Black Mandarin Collar Suit", category:"Formal", price:1250, img:"images/black-mandarin-suit.jpg" },
+{ id:"p3", name:"Nike Air Force 1 Blue Patent", category:"Footwear", price:220, img:"images/nike-blue-af1-1.jpg" },
+{ id:"p4", name:"Chanel Beige Anorak", category:"Outerwear", price:3200, img:"images/chanel-beige-jacket.jpg" },
+{ id:"p5", name:"Polka Dot & Pink Pleated Set", category:"Contemporary", price:480, img:"images/polka-pink-outfit.jpg" },
+{ id:"p6", name:"Dior Gray Leather Vest", category:"Luxury", price:2750, img:"images/dior-gray-vest.jpg" },
+{ id:"p7", name:"Lace-Trim Wide-Leg Jeans", category:"Denim", price:340, img:"images/lace-jeans-full.jpg" },
+{ id:"p8", name:"Marvel Varsity Collection", category:"Streetwear", price:420, img:"images/marvel-varsity-jackets.jpg" },
+{ id:"p9", name:"Spider-Man Comic Tee", category:"Streetwear", price:85, img:"images/spiderman-tshirt.jpg" },
+{ id:"p10", name:"Red Spider Hoodie", category:"Streetwear", price:195, img:"images/spiderman-hoodie.jpg" },
+{ id:"p11", name:"Zipper Utility Cap", category:"Accessories", price:65, img:"images/zipper-cap.jpg" },
+{ id:"p12", name:"Black Gold Branch Suit", category:"Couture", price:1850, img:"images/black-gold-suit.jpg" },
+{ id:"p13", name:"Ivory Bamboo Suit", category:"Couture", price:1680, img:"images/white-bamboo-suit.jpg" },
+{ id:"p14", name:"Gold Mirror Vest Look", category:"Avant-Garde", price:980, img:"images/gold-vest-outfit.jpg" },
+{ id:"p15", name:"Cyber Geometric Coat", category:"Avant-Garde", price:1450, img:"images/blue-patterned-coat.jpg" },
+{ id:"p16", name:"Charcoal Pleated Trousers", category:"Bottoms", price:290, img:"images/gray-pleated-pants.jpg" }
 ];
 
 /* =========================================================
-SAFE HELPERS
+SECURITY / HTML HELPER
 ========================================================= */
 
 function escapeHTML(value) {
@@ -140,27 +45,19 @@ return String(value ?? "")
 .replace(/'/g, "'");
 }
 
-function getElement(id) {
-return document.getElementById(id);
-}
-
 /* =========================================================
-CART SYSTEM
+CART
 ========================================================= */
 
 function getCart() {
 try {
-const stored = localStorage.getItem(CART_KEY);
+const saved = localStorage.getItem(CART_KEY);
 
-if (!stored) {
-  return [];
-}
+if (!saved) return [];
 
-const cart = JSON.parse(stored);
+const cart = JSON.parse(saved);
 
-if (!Array.isArray(cart)) {
-  return [];
-}
+if (!Array.isArray(cart)) return [];
 
 return cart.filter(function(item) {
   return (
@@ -172,26 +69,22 @@ return cart.filter(function(item) {
 });
 
 } catch (error) {
-console.warn("Unable to read cart:", error);
+console.warn("Cart could not be loaded:", error);
 return [];
 }
 }
 
 function saveCart(cart) {
-try {
-localStorage.setItem(CART_KEY, JSON.stringify(cart));
-} catch (error) {
-console.error("Unable to save cart:", error);
-showToast("Unable to save cart on this device.");
-}
+localStorage.setItem(
+CART_KEY,
+JSON.stringify(cart)
+);
 
 updateCartUI();
 }
 
 function addToCart(product) {
-if (!product || !product.id) {
-return;
-}
+if (!product) return;
 
 const cart = getCart();
 
@@ -214,9 +107,9 @@ qty: 1
 
 saveCart(cart);
 
-showToast(product.name + " added to cart");
-
-renderCartPage();
+showToast(
+product.name + " added to cart"
+);
 }
 
 function removeFromCart(id) {
@@ -226,8 +119,6 @@ return item.id !== id;
 
 saveCart(cart);
 renderCartPage();
-
-showToast("Item removed from cart");
 }
 
 function updateQty(id, delta) {
@@ -237,9 +128,7 @@ const item = cart.find(function(product) {
 return product.id === id;
 });
 
-if (!item) {
-return;
-}
+if (!item) return;
 
 item.qty += Number(delta);
 
@@ -260,93 +149,99 @@ return total + Number(item.qty || 0);
 
 function getCartTotal() {
 return getCart().reduce(function(total, item) {
-return total + Number(item.price || 0) * Number(item.qty || 0);
+return total +
+Number(item.price || 0) *
+Number(item.qty || 0);
 }, 0);
 }
 
 function updateCartUI() {
 const quantity = getCartQuantity();
 
-document.querySelectorAll(".cart-count").forEach(function(element) {
-element.textContent = quantity;
-element.style.display = quantity > 0 ? "grid" : "none";
-element.setAttribute("aria-label", quantity + " items in cart");
+document.querySelectorAll(".cart-count")
+.forEach(function(element) {
+
+  element.textContent = quantity;
+
+  element.style.display =
+    quantity > 0 ? "grid" : "none";
 });
+
 }
 
 /* =========================================================
-CURRENCY DISPLAY
+CURRENCY
 ========================================================= */
 
-/*
-currency.js handles:
+function displayMoney(amount) {
 
-- selected currency
-- conversion
-- formatting
-- localStorage persistence
-
-This function safely uses it when available.
-*/
-
-function formatMoney(amountUSD) {
 if (typeof formatCurrency === "function") {
-return formatCurrency(Number(amountUSD) || 0);
+return formatCurrency(amount);
 }
 
-return "$" + Number(amountUSD || 0).toLocaleString("en-US", {
+return "$" + Number(amount).toLocaleString(
+"en-US",
+{
 minimumFractionDigits: 2,
 maximumFractionDigits: 2
+}
+);
+}
+
+function refreshPrices() {
+
+document.querySelectorAll(
+"[data-price-usd]"
+).forEach(function(element) {
+
+const amount =
+  Number(element.dataset.priceUsd);
+
+if (!Number.isNaN(amount)) {
+  element.textContent =
+    displayMoney(amount);
+}
+
 });
 }
 
-function getCurrentCurrency() {
-if (typeof getSelectedCurrency === "function") {
-return getSelectedCurrency();
-}
+window.addEventListener(
+"currencyChanged",
+function() {
 
-return "USD";
-}
-
-function refreshCommerceCurrency() {
+refreshPrices();
 updateCartUI();
 renderCartPage();
 
-const checkoutTotal = getElement("checkout-total");
+const checkoutTotal =
+  document.getElementById("checkout-total");
 
 if (checkoutTotal) {
-checkoutTotal.textContent = formatMoney(getCartTotal());
+  checkoutTotal.textContent =
+    displayMoney(getCartTotal());
 }
 
-updateCurrencyPrices();
 }
-
-function updateCurrencyPrices() {
-document.querySelectorAll("[data-price-usd]").forEach(function(element) {
-const amount = Number(element.dataset.priceUsd);
-
-if (!Number.isNaN(amount)) {
-  element.textContent = formatMoney(amount);
-}
-
-});
-}
-
-window.addEventListener("currencyChanged", function() {
-refreshCommerceCurrency();
-});
+);
 
 /* =========================================================
-TOAST SYSTEM
+TOAST
 ========================================================= */
 
 function showToast(message) {
-let toast = document.querySelector(".toast");
+
+let toast =
+document.querySelector(".toast");
 
 if (!toast) {
-toast = document.createElement("div");
+
+toast =
+  document.createElement("div");
+
 toast.className = "toast";
+
 document.body.appendChild(toast);
+
 }
 
 toast.textContent = message;
@@ -357,20 +252,31 @@ void toast.offsetWidth;
 
 toast.classList.add("show");
 
-clearTimeout(window.areaBoyzToastTimer);
+clearTimeout(
+window.areaBoyzToastTimer
+);
 
-window.areaBoyzToastTimer = setTimeout(function() {
-toast.classList.remove("show");
+window.areaBoyzToastTimer =
+setTimeout(function() {
+
+  toast.classList.remove("show");
+
 }, 2800);
+
 }
 
 /* =========================================================
 HERO SLIDER
+IMPORTANT: Compatible with original HTML
 ========================================================= */
 
 function initSlider() {
-const slides = document.querySelectorAll(".slide");
-const dots = document.querySelectorAll(".dot");
+
+const slides =
+document.querySelectorAll(".slide");
+
+const dots =
+document.querySelectorAll(".dot");
 
 if (!slides.length) {
 return;
@@ -379,61 +285,157 @@ return;
 let current = 0;
 let timer = null;
 
-function goTo(index) {
-slides[current].classList.remove("active");
+/* Make sure the first slide is visible */
+slides.forEach(function(slide, index) {
+
+slide.classList.toggle(
+  "active",
+  index === 0
+);
+
+});
+
+dots.forEach(function(dot, index) {
+
+dot.classList.toggle(
+  "active",
+  index === 0
+);
+
+});
+
+function showSlide(index) {
+
+slides[current].classList.remove(
+  "active"
+);
 
 if (dots[current]) {
-  dots[current].classList.remove("active");
+  dots[current].classList.remove(
+    "active"
+  );
 }
 
-current = (index + slides.length) % slides.length;
+current =
+  (index + slides.length) %
+  slides.length;
 
-slides[current].classList.add("active");
+slides[current].classList.add(
+  "active"
+);
 
 if (dots[current]) {
-  dots[current].classList.add("active");
+  dots[current].classList.add(
+    "active"
+  );
 }
 
 }
 
-function next() {
-goTo(current + 1);
+function nextSlide() {
+showSlide(current + 1);
 }
 
-function previous() {
-goTo(current - 1);
+function previousSlide() {
+showSlide(current - 1);
 }
 
-function resetTimer() {
+function restartSlider() {
+
 clearInterval(timer);
-timer = setInterval(next, 5500);
+
+if (slides.length > 1) {
+
+  timer =
+    setInterval(
+      nextSlide,
+      5000
+    );
 }
 
-const nextButton = document.querySelector(".hero-nav.next");
-const previousButton = document.querySelector(".hero-nav.prev");
+}
+
+const nextButton =
+document.querySelector(
+".hero-nav.next"
+);
+
+const previousButton =
+document.querySelector(
+".hero-nav.prev"
+);
 
 if (nextButton) {
-nextButton.addEventListener("click", function() {
-next();
-resetTimer();
-});
+
+nextButton.addEventListener(
+  "click",
+  function(event) {
+
+    event.preventDefault();
+
+    nextSlide();
+
+    restartSlider();
+  }
+);
+
 }
 
 if (previousButton) {
-previousButton.addEventListener("click", function() {
-previous();
-resetTimer();
-});
+
+previousButton.addEventListener(
+  "click",
+  function(event) {
+
+    event.preventDefault();
+
+    previousSlide();
+
+    restartSlider();
+  }
+);
+
 }
 
 dots.forEach(function(dot, index) {
-dot.addEventListener("click", function() {
-goTo(index);
-resetTimer();
-});
+
+dot.addEventListener(
+  "click",
+  function(event) {
+
+    event.preventDefault();
+
+    showSlide(index);
+
+    restartSlider();
+  }
+);
+
 });
 
-resetTimer();
+restartSlider();
+
+/* Pause while user is interacting */
+const hero =
+document.querySelector(".hero");
+
+if (hero) {
+
+hero.addEventListener(
+  "mouseenter",
+  function() {
+    clearInterval(timer);
+  }
+);
+
+hero.addEventListener(
+  "mouseleave",
+  function() {
+    restartSlider();
+  }
+);
+
+}
 }
 
 /* =========================================================
@@ -441,63 +443,79 @@ MOBILE NAVIGATION
 ========================================================= */
 
 function initMobileNav() {
-const toggle = document.querySelector(".mobile-toggle");
-const links = document.querySelector(".nav-links");
+
+const toggle =
+document.querySelector(
+".mobile-toggle"
+);
+
+const links =
+document.querySelector(
+".nav-links"
+);
 
 if (!toggle || !links) {
 return;
 }
 
 function closeMenu() {
+
 links.classList.remove("open");
-toggle.setAttribute("aria-expanded", "false");
-}
-
-toggle.setAttribute("aria-expanded", "false");
-
-toggle.addEventListener("click", function() {
-const open = links.classList.toggle("open");
 
 toggle.setAttribute(
   "aria-expanded",
-  open ? "true" : "false"
+  "false"
 );
 
-});
-
-links.querySelectorAll("a").forEach(function(link) {
-link.addEventListener("click", closeMenu);
-});
-
-document.addEventListener("click", function(event) {
-if (
-links.classList.contains("open") &&
-!links.contains(event.target) &&
-!toggle.contains(event.target)
-) {
-closeMenu();
-}
-});
-
-window.addEventListener("scroll", function() {
-if (links.classList.contains("open")) {
-closeMenu();
-}
-});
 }
 
-/* =========================================================
-PRODUCT UTILITIES
-========================================================= */
+toggle.setAttribute(
+"aria-expanded",
+"false"
+);
 
-function findProduct(id) {
-return PRODUCTS.find(function(product) {
-return product.id === id;
-});
+toggle.addEventListener(
+"click",
+function(event) {
+
+  event.preventDefault();
+
+  event.stopPropagation();
+
+  const isOpen =
+    links.classList.toggle("open");
+
+  toggle.setAttribute(
+    "aria-expanded",
+    isOpen ? "true" : "false"
+  );
 }
 
-function getProductCategory(product) {
-return String(product.category || "").toLowerCase();
+);
+
+links.querySelectorAll("a")
+.forEach(function(link) {
+
+  link.addEventListener(
+    "click",
+    closeMenu
+  );
+});
+
+document.addEventListener(
+"click",
+function(event) {
+
+  if (
+    links.classList.contains("open") &&
+    !links.contains(event.target) &&
+    !toggle.contains(event.target)
+  ) {
+    closeMenu();
+  }
+}
+
+);
 }
 
 /* =========================================================
@@ -505,13 +523,17 @@ PRODUCT CARD
 ========================================================= */
 
 function createProductCard(product) {
-const luxuryBadge =
-Number(product.price) > 1000
+
+const badge =
+product.price > 1000
 ? '<span class="product-badge">Luxury</span>'
 : "";
 
 return `
-<article class="product-card" data-product-id="${escapeHTML(product.id)}">
+<article
+class="product-card"
+data-product-id="${escapeHTML(product.id)}"
+>
 
   <div class="product-img">
 
@@ -519,10 +541,9 @@ return `
       src="${escapeHTML(product.img)}"
       alt="${escapeHTML(product.name)}"
       loading="lazy"
-      onerror="this.style.opacity='0.2';"
     >
 
-    ${luxuryBadge}
+    ${badge}
 
   </div>
 
@@ -540,9 +561,9 @@ return `
 
       <span
         class="price"
-        data-price-usd="${Number(product.price)}"
+        data-price-usd="${product.price}"
       >
-        ${formatMoney(product.price)}
+        ${displayMoney(product.price)}
       </span>
 
       <button
@@ -563,151 +584,207 @@ return `
 `;
 }
 
-/* =========================================================
-PRODUCT EVENT BINDING
-========================================================= */
+function bindCartButtons(container) {
 
-function bindProductButtons(container) {
-if (!container) {
-return;
-}
+if (!container) return;
 
-container.querySelectorAll(".add-to-cart").forEach(function(button) {
-button.addEventListener("click", function(event) {
-event.preventDefault();
+container.querySelectorAll(
+".add-to-cart"
+).forEach(function(button) {
 
-  const product = findProduct(
-    button.getAttribute("data-id")
-  );
+button.addEventListener(
+  "click",
+  function(event) {
 
-  if (!product) {
-    showToast("Product unavailable.");
-    return;
+    event.preventDefault();
+
+    const product =
+      PRODUCTS.find(function(item) {
+
+        return item.id ===
+          button.dataset.id;
+      });
+
+    if (!product) {
+      showToast(
+        "Product unavailable"
+      );
+      return;
+    }
+
+    addToCart(product);
   }
-
-  addToCart(product);
-
-  button.classList.add("added");
-
-  setTimeout(function() {
-    button.classList.remove("added");
-  }, 450);
-});
+);
 
 });
 }
 
 /* =========================================================
-BASIC PRODUCT RENDERER
+STANDARD PRODUCT RENDER
 ========================================================= */
 
-function renderProducts(containerId, limit) {
-const container = getElement(containerId);
+function renderProducts(
+containerId,
+limit
+) {
 
-if (!container) {
-return;
-}
+const container =
+document.getElementById(
+containerId
+);
 
-let products = PRODUCTS.slice();
+if (!container) return;
+
+let products =
+PRODUCTS.slice();
 
 if (limit) {
-products = products.slice(0, limit);
+products =
+products.slice(0, limit);
 }
 
-if (!products.length) {
-container.innerHTML = "";
-return;
-}
-
-container.innerHTML = products
+container.innerHTML =
+products
 .map(createProductCard)
 .join("");
 
-bindProductButtons(container);
+bindCartButtons(container);
 
-updateCurrencyPrices();
+refreshPrices();
 }
 
 /* =========================================================
-ADVANCED SHOP ENGINE
+ADVANCED SHOP
 ========================================================= */
 
 function initShop() {
-const container = getElement("shop-products");
 
-if (!container) {
-return;
-}
+const container =
+document.getElementById(
+"shop-products"
+);
 
-const searchInput = getElement("product-search");
-const sortSelect = getElement("product-sort");
-const resultCount = getElement("shop-results-count");
-const emptyState = getElement("shop-empty");
-const clearButton = getElement("clear-shop-filters");
+if (!container) return;
 
-const filterButtons = document.querySelectorAll(".shop-filter");
+const searchInput =
+document.getElementById(
+"product-search"
+);
 
-let activeCategory = "all";
-let searchTerm = "";
-let sortMode = "featured";
+const sortSelect =
+document.getElementById(
+"product-sort"
+);
 
-function getFilteredProducts() {
-let products = PRODUCTS.slice();
+const resultCount =
+document.getElementById(
+"shop-results-count"
+);
 
-if (activeCategory !== "all") {
-  products = products.filter(function(product) {
-    return getProductCategory(product) === activeCategory;
-  });
-}
+const emptyState =
+document.getElementById(
+"shop-empty"
+);
 
-if (searchTerm) {
-  const search = searchTerm.toLowerCase();
+const clearButton =
+document.getElementById(
+"clear-shop-filters"
+);
 
-  products = products.filter(function(product) {
-    return (
-      product.name.toLowerCase().includes(search) ||
-      product.category.toLowerCase().includes(search)
+const filters =
+document.querySelectorAll(
+".shop-filter"
+);
+
+let category = "all";
+let search = "";
+let sort = "featured";
+
+function render() {
+
+let products =
+  PRODUCTS.slice();
+
+
+if (category !== "all") {
+
+  products =
+    products.filter(
+      function(product) {
+
+        return product.category
+          .toLowerCase() ===
+          category;
+      }
     );
-  });
 }
 
-switch (sortMode) {
-  case "price-low":
-    products.sort(function(a, b) {
+
+if (search) {
+
+  const term =
+    search.toLowerCase();
+
+  products =
+    products.filter(
+      function(product) {
+
+        return (
+          product.name
+            .toLowerCase()
+            .includes(term) ||
+
+          product.category
+            .toLowerCase()
+            .includes(term)
+        );
+      }
+    );
+}
+
+
+if (sort === "price-low") {
+
+  products.sort(
+    function(a, b) {
       return a.price - b.price;
-    });
-    break;
+    }
+  );
 
-  case "price-high":
-    products.sort(function(a, b) {
+} else if (sort === "price-high") {
+
+  products.sort(
+    function(a, b) {
       return b.price - a.price;
-    });
-    break;
+    }
+  );
 
-  case "name":
-    products.sort(function(a, b) {
-      return a.name.localeCompare(b.name);
-    });
-    break;
+} else if (sort === "name") {
 
-  default:
-    break;
+  products.sort(
+    function(a, b) {
+      return a.name.localeCompare(
+        b.name
+      );
+    }
+  );
 }
 
-return products;
-
-}
-
-function renderShop() {
-const products = getFilteredProducts();
 
 if (resultCount) {
+
   resultCount.textContent =
     products.length +
-    (products.length === 1 ? " product" : " products");
+    (
+      products.length === 1
+        ? " product"
+        : " products"
+    );
 }
 
+
 if (!products.length) {
+
   container.innerHTML = "";
 
   if (emptyState) {
@@ -717,77 +794,130 @@ if (!products.length) {
   return;
 }
 
+
 if (emptyState) {
   emptyState.hidden = true;
 }
 
-container.innerHTML = products
-  .map(createProductCard)
-  .join("");
 
-bindProductButtons(container);
+container.innerHTML =
+  products
+    .map(createProductCard)
+    .join("");
 
-updateCurrencyPrices();
+bindCartButtons(container);
+
+refreshPrices();
 
 }
 
-filterButtons.forEach(function(button) {
-button.addEventListener("click", function() {
-filterButtons.forEach(function(item) {
-item.classList.remove("active");
-});
+filters.forEach(
+function(button) {
 
-  button.classList.add("active");
+  button.addEventListener(
+    "click",
+    function() {
 
-  activeCategory =
-    String(button.dataset.category || "all").toLowerCase();
+      filters.forEach(
+        function(item) {
+          item.classList.remove(
+            "active"
+          );
+        }
+      );
 
-  renderShop();
-});
+      button.classList.add(
+        "active"
+      );
 
-});
+      category =
+        (
+          button.dataset.category ||
+          "all"
+        ).toLowerCase();
+
+      render();
+    }
+  );
+}
+
+);
 
 if (searchInput) {
-searchInput.addEventListener("input", function() {
-searchTerm = searchInput.value.trim();
-renderShop();
-});
+
+searchInput.addEventListener(
+  "input",
+  function() {
+
+    search =
+      searchInput.value
+        .trim();
+
+    render();
+  }
+);
+
 }
 
 if (sortSelect) {
-sortSelect.addEventListener("change", function() {
-sortMode = sortSelect.value;
-renderShop();
-});
+
+sortSelect.addEventListener(
+  "change",
+  function() {
+
+    sort =
+      sortSelect.value;
+
+    render();
+  }
+);
+
 }
 
 if (clearButton) {
-clearButton.addEventListener("click", function() {
-activeCategory = "all";
-searchTerm = "";
-sortMode = "featured";
 
-  if (searchInput) {
-    searchInput.value = "";
-  }
+clearButton.addEventListener(
+  "click",
+  function() {
 
-  if (sortSelect) {
-    sortSelect.value = "featured";
-  }
+    category = "all";
+    search = "";
+    sort = "featured";
 
-  filterButtons.forEach(function(button) {
-    button.classList.toggle(
-      "active",
-      String(button.dataset.category).toLowerCase() === "all"
+
+    if (searchInput) {
+      searchInput.value = "";
+    }
+
+
+    if (sortSelect) {
+      sortSelect.value =
+        "featured";
+    }
+
+
+    filters.forEach(
+      function(button) {
+
+        button.classList.toggle(
+          "active",
+          (
+            button.dataset.category ||
+            "all"
+          ).toLowerCase() ===
+          "all"
+        );
+      }
     );
-  });
 
-  renderShop();
-});
+
+    render();
+  }
+);
 
 }
 
-renderShop();
+render();
 }
 
 /* =========================================================
@@ -795,17 +925,40 @@ CART PAGE
 ========================================================= */
 
 function renderCartPage() {
-const tbody = getElement("cart-items");
-const summary = getElement("cart-summary");
 
-if (!tbody) {
-return;
-}
+const tbody =
+document.getElementById(
+"cart-items"
+);
 
-const cart = getCart();
+const summary =
+document.getElementById(
+"cart-summary"
+);
+
+if (!tbody) return;
+
+const cart =
+getCart();
 
 if (!cart.length) {
-tbody.innerHTML = "<tr> <td colspan="5" style="text-align:center;padding:3rem;color:#a0a0b0;" > Your cart is empty. <a href="shop.html" style="color:#00f0ff;" > Browse the collection </a> </td> </tr>";
+
+tbody.innerHTML = `
+  <tr>
+    <td
+      colspan="5"
+      style="text-align:center;padding:3rem;color:#a0a0b0;"
+    >
+      Your cart is empty.
+      <a
+        href="shop.html"
+        style="color:#00f0ff;"
+      >
+        Browse the collection
+      </a>
+    </td>
+  </tr>
+`;
 
 if (summary) {
   summary.innerHTML = "";
@@ -815,96 +968,112 @@ return;
 
 }
 
-tbody.innerHTML = cart.map(function(item) {
-const lineTotal =
-Number(item.price) * Number(item.qty);
+tbody.innerHTML =
+cart.map(function(item) {
 
-return `
-  <tr>
+  const lineTotal =
+    item.price * item.qty;
 
-    <td>
-      <img
-        src="${escapeHTML(item.img)}"
-        alt="${escapeHTML(item.name)}"
-        class="cart-item-img"
-        loading="lazy"
+  return `
+    <tr>
+
+      <td>
+        <img
+          src="${escapeHTML(item.img)}"
+          alt="${escapeHTML(item.name)}"
+          class="cart-item-img"
+          loading="lazy"
+        >
+      </td>
+
+      <td>
+        <strong>
+          ${escapeHTML(item.name)}
+        </strong>
+        <br>
+        <small style="color:#a0a0b0;">
+          ${escapeHTML(item.category)}
+        </small>
+      </td>
+
+      <td
+        data-price-usd="${item.price}"
       >
-    </td>
+        ${displayMoney(item.price)}
+      </td>
 
-    <td>
-      <strong>${escapeHTML(item.name)}</strong>
-      <br>
-      <small style="color:#a0a0b0;">
-        ${escapeHTML(item.category)}
-      </small>
-    </td>
+      <td>
 
-    <td>
-      <span data-price-usd="${Number(item.price)}">
-        ${formatMoney(item.price)}
-      </span>
-    </td>
+        <div class="qty-control">
 
-    <td>
-      <div class="qty-control">
+          <button
+            type="button"
+            data-id="${escapeHTML(item.id)}"
+            data-delta="-1"
+          >
+            −
+          </button>
 
-        <button
-          type="button"
-          data-id="${escapeHTML(item.id)}"
-          data-delta="-1"
-          aria-label="Decrease quantity"
-        >
-          −
-        </button>
+          <span>
+            ${item.qty}
+          </span>
 
-        <span>${Number(item.qty)}</span>
+          <button
+            type="button"
+            data-id="${escapeHTML(item.id)}"
+            data-delta="1"
+          >
+            +
+          </button>
 
-        <button
-          type="button"
-          data-id="${escapeHTML(item.id)}"
-          data-delta="1"
-          aria-label="Increase quantity"
-        >
-          +
-        </button>
+        </div>
 
-      </div>
-    </td>
+      </td>
 
-    <td>
-      <span data-price-usd="${lineTotal}">
-        ${formatMoney(lineTotal)}
-      </span>
-    </td>
+      <td
+        data-price-usd="${lineTotal}"
+      >
+        ${displayMoney(lineTotal)}
+      </td>
 
-  </tr>
-`;
+    </tr>
+  `;
 
 }).join("");
 
-tbody.querySelectorAll(".qty-control button").forEach(function(button) {
-button.addEventListener("click", function() {
-const id = button.getAttribute("data-id");
-const delta = Number(button.getAttribute("data-delta"));
+tbody.querySelectorAll(
+".qty-control button"
+).forEach(function(button) {
 
-  updateQty(id, delta);
+button.addEventListener(
+  "click",
+  function() {
+
+    updateQty(
+      button.dataset.id,
+      Number(button.dataset.delta)
+    );
+  }
+);
+
 });
 
-});
-
-const total = getCartTotal();
+const total =
+getCartTotal();
 
 if (summary) {
+
 summary.innerHTML = `
-<h3 style="margin-bottom:1.25rem">
-Order Summary
-</h3>
+
+  <h3 style="margin-bottom:1.25rem">
+    Order Summary
+  </h3>
 
   <div
     style="
       display:flex;
       justify-content:space-between;
-      margin-bottom:0.75rem;
+      margin-bottom:.75rem;
     "
   >
     <span style="color:#a0a0b0">
@@ -912,7 +1081,7 @@ Order Summary
     </span>
 
     <span data-price-usd="${total}">
-      ${formatMoney(total)}
+      ${displayMoney(total)}
     </span>
   </div>
 
@@ -920,7 +1089,7 @@ Order Summary
     style="
       display:flex;
       justify-content:space-between;
-      margin-bottom:0.75rem;
+      margin-bottom:.75rem;
     "
   >
     <span style="color:#a0a0b0">
@@ -940,23 +1109,25 @@ Order Summary
       font-weight:700;
       margin:1.25rem 0;
       padding-top:1rem;
-      border-top:1px solid rgba(255,255,255,0.08);
+      border-top:1px solid rgba(255,255,255,.08);
     "
   >
+
     <span>Total</span>
 
     <span
       style="color:#00f0ff"
       data-price-usd="${total}"
     >
-      ${formatMoney(total)}
+      ${displayMoney(total)}
     </span>
+
   </div>
 
   <a
     href="checkout.html"
     class="btn btn-primary"
-    style="width:100%;margin-top:0.5rem"
+    style="width:100%;margin-top:.5rem"
   >
     Proceed to Checkout
   </a>
@@ -964,7 +1135,7 @@ Order Summary
 
 }
 
-updateCurrencyPrices();
+refreshPrices();
 }
 
 /* =========================================================
@@ -972,26 +1143,42 @@ SHARES CALCULATOR
 ========================================================= */
 
 function initSharesCalc() {
-const input = getElement("share-amount");
-const result = getElement("calc-result");
 
-if (!input || !result) {
-return;
-}
+const input =
+document.getElementById(
+"share-amount"
+);
 
-const TOTAL_EQUITY_POOL = 756000;
+const result =
+document.getElementById(
+"calc-result"
+);
+
+if (!input || !result) return;
+
+const TOTAL_EQUITY_POOL =
+756000;
 
 function calculate() {
-const amount = Number.parseFloat(input.value) || 0;
+
+const amount =
+  Number.parseFloat(
+    input.value
+  ) || 0;
+
 
 if (amount < 100) {
+
   result.innerHTML = `
     <p style="color:#a0a0b0">
-      Minimum investment: ${formatMoney(100)}
+      Minimum investment:
+      ${displayMoney(100)}
     </p>
   `;
+
   return;
 }
+
 
 let rate = 0.09;
 
@@ -1003,23 +1190,30 @@ if (amount >= 50000) {
   rate = 0.12;
 }
 
-const annualReturn = amount * rate;
+
+const annual =
+  amount * rate;
+
 
 const ownership =
-  ((amount / TOTAL_EQUITY_POOL) * 100)
-    .toFixed(4);
+  (
+    (amount / TOTAL_EQUITY_POOL) *
+    100
+  ).toFixed(4);
+
 
 result.innerHTML = `
+
   <div
     class="value"
-    data-price-usd="${annualReturn}"
+    data-price-usd="${annual}"
   >
-    ${formatMoney(annualReturn)}
+    ${displayMoney(annual)}
   </div>
 
   <p
     style="
-      margin:0.5rem 0;
+      margin:.5rem 0;
       color:#a0a0b0;
     "
   >
@@ -1029,7 +1223,7 @@ result.innerHTML = `
 
   <p
     style="
-      font-size:0.9rem;
+      font-size:.9rem;
       color:#a0a0b0;
     "
   >
@@ -1039,13 +1233,19 @@ result.innerHTML = `
   </p>
 `;
 
-updateCurrencyPrices();
+refreshPrices();
 
 }
 
-input.addEventListener("input", calculate);
+input.addEventListener(
+"input",
+calculate
+);
 
-window.addEventListener("currencyChanged", calculate);
+window.addEventListener(
+"currencyChanged",
+calculate
+);
 
 calculate();
 }
@@ -1055,14 +1255,18 @@ CHECKOUT DISPLAY
 ========================================================= */
 
 function updateCheckoutTotal() {
-const totalElement = getElement("checkout-total");
 
-if (!totalElement) {
-return;
-}
+const total =
+document.getElementById(
+"checkout-total"
+);
 
-totalElement.textContent =
-formatMoney(getCartTotal());
+if (!total) return;
+
+total.textContent =
+displayMoney(
+getCartTotal()
+);
 }
 
 /* =========================================================
@@ -1070,11 +1274,13 @@ CHECKOUT
 ========================================================= */
 
 function initCheckout() {
-const form = getElement("checkout-form");
 
-if (!form) {
-return;
-}
+const form =
+document.getElementById(
+"checkout-form"
+);
+
+if (!form) return;
 
 updateCheckoutTotal();
 
@@ -1083,56 +1289,130 @@ window.addEventListener(
 updateCheckoutTotal
 );
 
-form.addEventListener("submit", function(event) {
-event.preventDefault();
+form.addEventListener(
+"submit",
+function(event) {
 
-const cart = getCart();
+  event.preventDefault();
 
-if (!cart.length) {
-  showToast("Your cart is empty.");
-  return;
+
+  if (!getCart().length) {
+
+    showToast(
+      "Your cart is empty."
+    );
+
+    return;
+  }
+
+
+  /*
+    IMPORTANT:
+
+    This is NOT a real payment confirmation.
+
+    Production flow:
+
+    Browser
+      ↓
+    Secure backend
+      ↓
+    Server validates product IDs
+      ↓
+    Server calculates USD/base amount
+      ↓
+    Payment provider
+      ↓
+    Webhook verification
+      ↓
+    Order created
+  */
+
+  showToast(
+    "Checkout ready for secure payment."
+  );
 }
 
-/*
-  IMPORTANT:
-  This is intentionally only the current frontend
-  confirmation behavior.
-
-  Production payment processing must:
-  1. Send cart/product IDs to the backend.
-  2. Recalculate prices server-side.
-  3. Validate inventory.
-  4. Create the payment session server-side.
-  5. Verify payment through the payment provider.
-  6. Create the order only after verified payment.
-*/
-
-showToast(
-  "Checkout submitted. Payment gateway integration required."
 );
-
-});
 }
 
 /* =========================================================
-NAV ACTIVE STATE
+CURRENCY SELECTOR
+========================================================= */
+
+function initCurrencySelector() {
+
+const selectors =
+document.querySelectorAll(
+"[data-currency-selector]"
+);
+
+if (!selectors.length) return;
+
+if (
+typeof getSelectedCurrency ===
+"function"
+) {
+
+const selected =
+  getSelectedCurrency();
+
+selectors.forEach(
+  function(selector) {
+    selector.value = selected;
+  }
+);
+
+}
+
+selectors.forEach(
+function(selector) {
+
+  selector.addEventListener(
+    "change",
+    function() {
+
+      if (
+        typeof setSelectedCurrency ===
+        "function"
+      ) {
+
+        setSelectedCurrency(
+          selector.value
+        );
+      }
+    }
+  );
+}
+
+);
+}
+
+/* =========================================================
+ACTIVE NAVIGATION
 ========================================================= */
 
 function initActiveNavigation() {
-const currentPath =
-window.location.pathname.split("/").pop() ||
+
+const current =
+window.location.pathname
+.split("/")
+.pop() ||
 "index.html";
 
-document.querySelectorAll(".nav-links a").forEach(function(link) {
-const href = link.getAttribute("href");
+document.querySelectorAll(
+".nav-links a"
+).forEach(function(link) {
 
-if (!href) {
-  return;
-}
+const href =
+  link.getAttribute("href");
 
-const targetPath = href.split("/").pop();
+if (!href) return;
 
-if (targetPath === currentPath) {
+const page =
+  href.split("/").pop();
+
+if (page === current) {
   link.classList.add("active");
 }
 
@@ -1140,52 +1420,34 @@ if (targetPath === currentPath) {
 }
 
 /* =========================================================
-CURRENCY SELECTOR FALLBACK
-========================================================= */
-
-function initCurrencySelector() {
-const selectors =
-document.querySelectorAll("[data-currency-selector]");
-
-if (!selectors.length) {
-return;
-}
-
-const current =
-getCurrentCurrency();
-
-selectors.forEach(function(selector) {
-selector.value = current;
-
-selector.addEventListener("change", function() {
-  if (typeof setSelectedCurrency === "function") {
-    setSelectedCurrency(selector.value);
-  }
-});
-
-});
-}
-
-/* =========================================================
-GLOBAL PRODUCT QUICK ACCESS
+GLOBAL STORE API
 ========================================================= */
 
 window.AreaBoyzStore = {
+
 products: PRODUCTS,
+
 getCart: getCart,
+
 addToCart: addToCart,
+
 removeFromCart: removeFromCart,
+
 updateQty: updateQty,
+
 getCartTotal: getCartTotal,
-getCartQuantity: getCartQuantity,
-findProduct: findProduct
+
+getCartQuantity: getCartQuantity
+
 };
 
 /* =========================================================
-APPLICATION STARTUP
+START APPLICATION
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener(
+"DOMContentLoaded",
+function() {
 
 updateCartUI();
 
@@ -1201,30 +1463,22 @@ initCurrencySelector();
 
 initActiveNavigation();
 
-/*
-Homepage featured products
-*/
 renderProducts(
-"featured-products",
-8
+  "featured-products",
+  8
 );
 
-/*
-Full shop page
-*/
 initShop();
 
-/*
-Cart page
-*/
 renderCartPage();
 
-/*
-Any existing price elements
-*/
-updateCurrencyPrices();
+updateCheckoutTotal();
+
+refreshPrices();
 
 console.log(
-"Area Boyz Enterprise Commerce Core initialized."
+  "Area Boyz Enterprise initialized successfully."
 );
-});
+
+}
+);
