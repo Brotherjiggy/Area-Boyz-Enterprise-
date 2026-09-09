@@ -1,1 +1,81 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart | Area Boyz Enterprise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrapper">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">AB</div>
+        <span>Area Boyz</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="shares.html">Invest</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-btn" aria-label="Shopping cart">
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+        <button class="mobile-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Your Cart</h1>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:1rem">
+      <div class="container">
+        <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:2.5rem;align-items:start">
+          <div style="overflow-x:auto">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="cart-items">
+                <!-- JS will fill this -->
+              </tbody>
+            </table>
+          </div>
+          <div id="cart-summary" class="checkout-summary">
+            <!-- JS will fill this -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none;padding-top:0">
+        <span>© 2026 Area Boyz Enterprise</span>
+        <span><a href="shop.html" style="color:var(--accent)">Continue Shopping</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
