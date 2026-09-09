@@ -947,3 +947,55 @@ button, .btn {
   background: var(--bg-secondary);
   color: var(--text-primary);
 }
+/* ========== GLOBAL CURRENCY SELECTOR ========== */
+
+.currency-selector {
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 92px;
+  height: 42px;
+  padding: 0 28px 0 10px;
+
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: var(--transition);
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+
+  background-position:
+    calc(100% - 12px) 18px,
+    calc(100% - 7px) 18px;
+
+  background-size:
+    5px 5px,
+    5px 5px;
+
+  background-repeat: no-repeat;
+}
+
+.currency-selector:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.currency-selector:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.currency-selector option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
