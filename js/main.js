@@ -1,14 +1,13 @@
 /* =========================================================
    AREA BOYZ ENTERPRISE
-   CORE WEBSITE ENGINE
-   Version 2.0.0
-   Vanilla JavaScript
+   SCALABLE PRODUCT + CART ENGINE
+   Version 2.1.0
    ========================================================= */
 
 "use strict";
 
 /* =========================================================
-   CART SYSTEM
+   CART
    ========================================================= */
 
 const CART_KEY = "areaboyz_cart";
@@ -19,18 +18,13 @@ function getCart() {
     const cart = saved ? JSON.parse(saved) : [];
     return Array.isArray(cart) ? cart : [];
   } catch (error) {
-    console.error("Unable to read cart:", error);
+    console.error("Cart error:", error);
     return [];
   }
 }
 
 function saveCart(cart) {
-  try {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  } catch (error) {
-    console.error("Unable to save cart:", error);
-  }
-
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
   updateCartUI();
 }
 
@@ -39,9 +33,7 @@ function addToCart(product) {
 
   const cart = getCart();
 
-  const existing = cart.find(function (item) {
-    return item.id === product.id;
-  });
+  const existing = cart.find(item => item.id === product.id);
 
   if (existing) {
     existing.qty = Number(existing.qty || 1) + 1;
@@ -50,6 +42,7 @@ function addToCart(product) {
       id: product.id,
       name: product.name,
       category: product.category,
+      subcategory: product.subcategory,
       price: Number(product.price),
       img: product.img,
       qty: 1
@@ -62,59 +55,56 @@ function addToCart(product) {
 }
 
 function removeFromCart(id) {
-  const cart = getCart().filter(function (item) {
-    return item.id !== id;
-  });
-
-  saveCart(cart);
+  saveCart(
+    getCart().filter(item => item.id !== id)
+  );
 }
 
-function updateQty(id, delta) {
+function updateQty(id, amount) {
   const cart = getCart();
 
-  const item = cart.find(function (product) {
-    return product.id === id;
-  });
+  const item = cart.find(product => product.id === id);
 
   if (!item) return;
 
-  item.qty = Number(item.qty || 1) + delta;
+  item.qty = Number(item.qty || 1) + amount;
 
   if (item.qty <= 0) {
-    const updated = cart.filter(function (product) {
-      return product.id !== id;
-    });
-
-    saveCart(updated);
+    removeFromCart(id);
     return;
   }
 
   saveCart(cart);
 }
 
-function getCartTotal() {
-  return getCart().reduce(function (total, item) {
-    return total + Number(item.price || 0) * Number(item.qty || 1);
-  }, 0);
+function getCartQuantity() {
+  return getCart().reduce(
+    (total, item) => total + Number(item.qty || 1),
+    0
+  );
 }
 
-function getCartQuantity() {
-  return getCart().reduce(function (total, item) {
-    return total + Number(item.qty || 1);
-  }, 0);
+function getCartTotal() {
+  return getCart().reduce(
+    (total, item) =>
+      total +
+      Number(item.price || 0) *
+      Number(item.qty || 1),
+    0
+  );
 }
 
 function updateCartUI() {
   const quantity = getCartQuantity();
 
-  document.querySelectorAll(".cart-count").forEach(function (counter) {
+  document.querySelectorAll(".cart-count").forEach(counter => {
     counter.textContent = quantity;
   });
 }
 
 
 /* =========================================================
-   TOAST NOTIFICATION
+   NOTIFICATIONS
    ========================================================= */
 
 function showToast(message) {
@@ -122,30 +112,33 @@ function showToast(message) {
 
   if (!toast) {
     toast = document.createElement("div");
+
     toast.id = "area-boyz-toast";
 
-    toast.style.position = "fixed";
-    toast.style.bottom = "24px";
-    toast.style.left = "50%";
-    toast.style.transform = "translateX(-50%) translateY(20px)";
-    toast.style.zIndex = "99999";
-    toast.style.padding = "12px 18px";
-    toast.style.borderRadius = "10px";
-    toast.style.background = "#16161f";
-    toast.style.color = "#f4f4f6";
-    toast.style.border = "1px solid rgba(255,255,255,.12)";
-    toast.style.boxShadow = "0 12px 35px rgba(0,0,0,.35)";
-    toast.style.fontSize = "14px";
-    toast.style.fontWeight = "600";
-    toast.style.opacity = "0";
-    toast.style.transition = "all .25s ease";
+    Object.assign(toast.style, {
+      position: "fixed",
+      bottom: "24px",
+      left: "50%",
+      transform: "translateX(-50%) translateY(20px)",
+      zIndex: "99999",
+      padding: "13px 20px",
+      borderRadius: "12px",
+      background: "#16161f",
+      color: "#f4f4f6",
+      border: "1px solid rgba(255,255,255,.12)",
+      boxShadow: "0 15px 40px rgba(0,0,0,.4)",
+      fontSize: "14px",
+      fontWeight: "600",
+      opacity: "0",
+      transition: "all .25s ease"
+    });
 
     document.body.appendChild(toast);
   }
 
   toast.textContent = message;
 
-  requestAnimationFrame(function () {
+  requestAnimationFrame(() => {
     toast.style.opacity = "1";
     toast.style.transform =
       "translateX(-50%) translateY(0)";
@@ -153,7 +146,7 @@ function showToast(message) {
 
   clearTimeout(window.areaBoyzToastTimer);
 
-  window.areaBoyzToastTimer = setTimeout(function () {
+  window.areaBoyzToastTimer = setTimeout(() => {
     toast.style.opacity = "0";
     toast.style.transform =
       "translateX(-50%) translateY(20px)";
@@ -162,89 +155,731 @@ function showToast(message) {
 
 
 /* =========================================================
+   PRODUCT DATABASE
+   =========================================================
+   
+   This structure is designed to scale to hundreds
+   or thousands of products later.
+   ========================================================= */
+
+const PRODUCTS = [
+
+  /* ===================== CLOTHING ===================== */
+
+  {
+    id: "p1",
+    name: "Emerald Brocade Vest Ensemble",
+    category: "Clothing",
+    subcategory: "Formal",
+    collection: "Formal",
+    price: 890,
+    img: "images/formal-green-vest.jpg",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Emerald"],
+    stock: 18,
+    badge: "Featured",
+    description:
+      "A refined emerald brocade ensemble combining traditional influence with modern tailoring.",
+    featured: true
+  },
+
+  {
+    id: "p2",
+    name: "Black Mandarin Collar Suit",
+    category: "Clothing",
+    subcategory: "Suits",
+    collection: "Formal",
+    price: 1250,
+    img: "images/black-mandarin-suit.jpg",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Black"],
+    stock: 12,
+    badge: "Luxury",
+    description:
+      "A sharp black tailored suit featuring a distinctive Mandarin collar.",
+    featured: true
+  },
+
+  {
+    id: "p5",
+    name: "Polka Dot & Pink Pleated Set",
+    category: "Clothing",
+    subcategory: "Contemporary",
+    collection: "Contemporary",
+    price: 480,
+    img: "images/polka-pink-outfit.jpg",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Pink", "White"],
+    stock: 22,
+    badge: "New",
+    description:
+      "A contemporary pleated set designed for expressive everyday style.",
+    featured: true
+  },
+
+  {
+    id: "p7",
+    name: "Lace-Trim Wide-Leg Jeans",
+    category: "Clothing",
+    subcategory: "Jeans",
+    collection: "Denim",
+    price: 340,
+    img: "images/lace-jeans-full.jpg",
+    sizes: ["28", "30", "32", "34", "36", "38"],
+    colors: ["Denim"],
+    stock: 30,
+    badge: "Trending",
+    description:
+      "Wide-leg denim with distinctive lace detailing and a contemporary silhouette.",
+    featured: true
+  },
+
+  {
+    id: "p9",
+    name: "Spider-Man Comic Tee",
+    category: "Clothing",
+    subcategory: "T-Shirts",
+    collection: "Streetwear",
+    price: 85,
+    img: "images/spiderman-tshirt.jpg",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Black", "Red"],
+    stock: 60,
+    badge: "Street",
+    description:
+      "Graphic streetwear tee inspired by comic-book culture.",
+    featured: true
+  },
+
+  {
+    id: "p10",
+    name: "Red Spider Hoodie",
+    category: "Clothing",
+    subcategory: "Hoodies",
+    collection: "Streetwear",
+    price: 195,
+    img: "images/spiderman-hoodie.jpg",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Red"],
+    stock: 40,
+    badge: "Limited Drop",
+    description:
+      "A bold graphic hoodie built for modern streetwear wardrobes.",
+    featured: true
+  },
+
+  {
+    id: "p12",
+    name: "Black Gold Branch Suit",
+    category: "Clothing",
+    subcategory: "Couture",
+    collection: "Couture",
+    price: 1850,
+    img: "images/black-gold-suit.jpg",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Black", "Gold"],
+    stock: 8,
+    badge: "Couture",
+    description:
+      "A statement couture suit combining black tailoring with gold botanical detailing.",
+    featured: true
+  },
+
+  {
+    id: "p13",
+    name: "Ivory Bamboo Suit",
+    category: "Clothing",
+    subcategory: "Couture",
+    collection: "Eastern Modern",
+    price: 1680,
+    img: "images/white-bamboo-suit.jpg",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Ivory"],
+    stock: 7,
+    badge: "Couture",
+    description:
+      "Fluid ivory tailoring featuring an elegant bamboo-inspired print.",
+    featured: true
+  },
+
+  {
+    id: "p14",
+    name: "Gold Mirror Vest Look",
+    category: "Clothing",
+    subcategory: "Avant-Garde",
+    collection: "Future Form",
+    price: 980,
+    img: "images/gold-vest-outfit.jpg",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Gold"],
+    stock: 10,
+    badge: "Avant-Garde",
+    description:
+      "A reflective statement vest designed for high-impact evening looks.",
+    featured: true
+  },
+
+  {
+    id: "p16",
+    name: "Charcoal Pleated Trousers",
+    category: "Clothing",
+    subcategory: "Trousers",
+    collection: "Formal",
+    price: 290,
+    img: "images/gray-pleated-pants.jpg",
+    sizes: ["28", "30", "32", "34", "36", "38"],
+    colors: ["Charcoal"],
+    stock: 35,
+    badge: "Essential",
+    description:
+      "Clean charcoal pleated trousers with a modern relaxed silhouette.",
+    featured: false
+  },
+
+
+  /* ===================== JACKETS ===================== */
+
+  {
+    id: "p4",
+    name: "Chanel Beige Anorak",
+    category: "Jackets",
+    subcategory: "Anoraks",
+    collection: "Luxury Outerwear",
+    price: 3200,
+    img: "images/chanel-beige-jacket.jpg",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Beige"],
+    stock: 5,
+    badge: "Luxury",
+    description:
+      "A premium beige anorak-inspired outerwear statement.",
+    featured: true
+  },
+
+  {
+    id: "p8",
+    name: "Marvel Varsity Collection",
+    category: "Jackets",
+    subcategory: "Varsity",
+    collection: "Streetwear",
+    price: 420,
+    img: "images/marvel-varsity-jackets.jpg",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Black", "Red"],
+    stock: 25,
+    badge: "Street",
+    description:
+      "Varsity-inspired outerwear blending comic culture with modern street style.",
+    featured: true
+  },
+
+  {
+    id: "p15",
+    name: "Cyber Geometric Coat",
+    category: "Jackets",
+    subcategory: "Coats",
+    collection: "Future Form",
+    price: 1450,
+    img: "images/blue-patterned-coat.jpg",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Blue"],
+    stock: 9,
+    badge: "Future",
+    description:
+      "A futuristic geometric coat created for bold architectural styling.",
+    featured: true
+  },
+
+
+  /* ===================== FOOTWEAR ===================== */
+
+  {
+    id: "p3",
+    name: "Nike Air Force 1 Blue Patent",
+    category: "Footwear",
+    subcategory: "Sneakers",
+    collection: "Footwear",
+    price: 220,
+    img: "images/nike-blue-af1-1.jpg",
+    sizes: ["39", "40", "41", "42", "43", "44", "45"],
+    colors: ["Patent Blue"],
+    stock: 20,
+    badge: "Featured",
+    description:
+      "Classic sneaker styling with a bold blue patent finish.",
+    featured: true
+  },
+
+
+  /* ===================== ACCESSORIES ===================== */
+
+  {
+    id: "p11",
+    name: "Zipper Utility Cap",
+    category: "Accessories",
+    subcategory: "Caps",
+    collection: "Accessories",
+    price: 65,
+    img: "images/zipper-cap.jpg",
+    sizes: ["One Size"],
+    colors: ["Black"],
+    stock: 50,
+    badge: "Essential",
+    description:
+      "Utility-inspired cap with functional zipper detailing.",
+    featured: false
+  },
+
+
+  /* ===================== FUTURE PRODUCT PLACEHOLDERS ===================== */
+
+  {
+    id: "p17",
+    name: "Area Boyz Signature Hoodie",
+    category: "Clothing",
+    subcategory: "Hoodies",
+    collection: "Area Boyz Originals",
+    price: 150,
+    img: "images/signature-hoodie.jpg",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Black", "Yellow"],
+    stock: 50,
+    badge: "AB Original",
+    description:
+      "The signature Area Boyz hoodie designed for everyday movement.",
+    featured: false
+  },
+
+  {
+    id: "p18",
+    name: "Area Boyz Street Runner",
+    category: "Footwear",
+    subcategory: "Sneakers",
+    collection: "Area Boyz Originals",
+    price: 180,
+    img: "images/street-runner.jpg",
+    sizes: ["39", "40", "41", "42", "43", "44", "45"],
+    colors: ["Black", "White"],
+    stock: 35,
+    badge: "New",
+    description:
+      "A modern street sneaker concept from the Area Boyz Originals collection.",
+    featured: false
+  },
+
+  {
+    id: "p19",
+    name: "Area Boyz Crossbody Bag",
+    category: "Accessories",
+    subcategory: "Bags",
+    collection: "Area Boyz Originals",
+    price: 95,
+    img: "images/crossbody-bag.jpg",
+    sizes: ["One Size"],
+    colors: ["Black"],
+    stock: 45,
+    badge: "New",
+    description:
+      "Compact crossbody bag built for everyday street movement.",
+    featured: false
+  },
+
+  {
+    id: "p20",
+    name: "Area Boyz Statement Jacket",
+    category: "Jackets",
+    subcategory: "Bomber",
+    collection: "Area Boyz Originals",
+    price: 350,
+    img: "images/statement-jacket.jpg",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Black", "Yellow"],
+    stock: 20,
+    badge: "AB Original",
+    description:
+      "A signature bomber jacket combining utility construction with Area Boyz identity.",
+    featured: false
+  }
+
+];
+
+
+/* =========================================================
+   FIND PRODUCT
+   ========================================================= */
+
+function getProductById(id) {
+  return PRODUCTS.find(product => product.id === id);
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
+
+function createProductCard(product) {
+
+  const article = document.createElement("article");
+
+  article.className = "product-card";
+
+  /*
+   * Entire card becomes clickable.
+   */
+
+  article.setAttribute(
+    "data-product-id",
+    product.id
+  );
+
+  article.setAttribute(
+    "tabindex",
+    "0"
+  );
+
+  article.setAttribute(
+    "role",
+    "link"
+  );
+
+  const imageWrapper =
+    document.createElement("div");
+
+  imageWrapper.className =
+    "product-img";
+
+  const image =
+    document.createElement("img");
+
+  image.src = product.img;
+
+  image.alt = product.name;
+
+  image.loading = "lazy";
+
+  imageWrapper.appendChild(image);
+
+
+  /*
+   * Badge
+   */
+
+  if (product.badge) {
+
+    const badge =
+      document.createElement("span");
+
+    badge.className =
+      "product-badge";
+
+    badge.textContent =
+      product.badge;
+
+    imageWrapper.appendChild(badge);
+  }
+
+
+  /*
+   * Product information
+   */
+
+  const info =
+    document.createElement("div");
+
+  info.className =
+    "product-info";
+
+
+  const category =
+    document.createElement("div");
+
+  category.className =
+    "product-category";
+
+  category.textContent =
+    product.subcategory ||
+    product.category;
+
+
+  const name =
+    document.createElement("h3");
+
+  name.className =
+    "product-name";
+
+  name.textContent =
+    product.name;
+
+
+  const priceRow =
+    document.createElement("div");
+
+  priceRow.className =
+    "product-price";
+
+
+  const price =
+    document.createElement("span");
+
+  price.className =
+    "price";
+
+  price.dataset.priceUsd =
+    product.price;
+
+  price.textContent =
+    formatPriceSafe(product.price);
+
+
+  /*
+   * Add button
+   */
+
+  const button =
+    document.createElement("button");
+
+  button.type = "button";
+
+  button.className =
+    "add-to-cart";
+
+  button.textContent =
+    "＋";
+
+  button.setAttribute(
+    "aria-label",
+    "Add " +
+    product.name +
+    " to cart"
+  );
+
+
+  /*
+   * Prevent button click from opening
+   * product page.
+   */
+
+  button.addEventListener(
+    "click",
+    function (event) {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      addToCart(product);
+    }
+  );
+
+
+  priceRow.appendChild(price);
+
+  priceRow.appendChild(button);
+
+  info.appendChild(category);
+
+  info.appendChild(name);
+
+  info.appendChild(priceRow);
+
+  article.appendChild(imageWrapper);
+
+  article.appendChild(info);
+
+
+  /*
+   * Open product detail page.
+   */
+
+  function openProduct() {
+
+    window.location.href =
+      "product.html?id=" +
+      encodeURIComponent(product.id);
+  }
+
+
+  article.addEventListener(
+    "click",
+    function (event) {
+
+      if (
+        event.target.closest(
+          ".add-to-cart"
+        )
+      ) {
+        return;
+      }
+
+      openProduct();
+    }
+  );
+
+
+  article.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (
+        event.key === "Enter" ||
+        event.key === " "
+      ) {
+
+        event.preventDefault();
+
+        openProduct();
+      }
+    }
+  );
+
+
+  return article;
+}
+
+
+/* =========================================================
+   RENDER PRODUCTS
+   ========================================================= */
+
+function renderProducts(
+  containerId,
+  limit
+) {
+
+  const container =
+    document.getElementById(
+      containerId
+    );
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  let products =
+    PRODUCTS.slice();
+
+  if (
+    typeof limit === "number"
+  ) {
+
+    products =
+      products.slice(0, limit);
+  }
+
+  products.forEach(product => {
+
+    container.appendChild(
+      createProductCard(product)
+    );
+
+  });
+}
+
+
+/* =========================================================
    MOBILE NAVIGATION
    ========================================================= */
 
 function initMobileNav() {
-  const toggle = document.querySelector(".mobile-toggle");
-  const links = document.querySelector(".nav-links");
 
-  if (!toggle || !links) {
-    console.warn("Mobile navigation elements not found.");
+  const toggle =
+    document.querySelector(
+      ".mobile-toggle"
+    );
+
+  const links =
+    document.querySelector(
+      ".nav-links"
+    );
+
+  if (!toggle || !links) return;
+
+  if (
+    toggle.dataset.navReady === "true"
+  ) {
     return;
   }
 
-  /*
-   * Prevent duplicate event listeners if this function
-   * is accidentally called more than once.
-   */
+  toggle.dataset.navReady =
+    "true";
 
-  if (toggle.dataset.navReady === "true") {
-    return;
-  }
+  toggle.setAttribute(
+    "aria-expanded",
+    "false"
+  );
 
-  toggle.dataset.navReady = "true";
+  toggle.addEventListener(
+    "click",
+    function (event) {
 
-  toggle.setAttribute("aria-expanded", "false");
+      event.preventDefault();
 
-  toggle.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
+      event.stopPropagation();
 
-    const isOpen = links.classList.toggle("open");
+      const open =
+        links.classList.toggle(
+          "open"
+        );
 
-    toggle.setAttribute(
-      "aria-expanded",
-      isOpen ? "true" : "false"
-    );
+      toggle.setAttribute(
+        "aria-expanded",
+        open ? "true" : "false"
+      );
 
-    toggle.setAttribute(
-      "aria-label",
-      isOpen ? "Close menu" : "Open menu"
-    );
-  });
+      toggle.setAttribute(
+        "aria-label",
+        open
+          ? "Close menu"
+          : "Open menu"
+      );
+    }
+  );
 
-  /*
-   * Close menu after selecting a page.
-   */
 
-  links.querySelectorAll("a").forEach(function (link) {
-    link.addEventListener("click", function () {
-      links.classList.remove("open");
+  links.querySelectorAll("a")
+    .forEach(link => {
 
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open menu");
+      link.addEventListener(
+        "click",
+        function () {
+
+          links.classList.remove(
+            "open"
+          );
+
+          toggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+        }
+      );
+
     });
-  });
 
-  /*
-   * Close menu when clicking outside navigation.
-   */
 
-  document.addEventListener("click", function (event) {
-    if (
-      !links.contains(event.target) &&
-      !toggle.contains(event.target)
-    ) {
-      links.classList.remove("open");
+  document.addEventListener(
+    "click",
+    function (event) {
 
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open menu");
+      if (
+        !links.contains(
+          event.target
+        ) &&
+        !toggle.contains(
+          event.target
+        )
+      ) {
+
+        links.classList.remove(
+          "open"
+        );
+
+        toggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
     }
-  });
-
-  /*
-   * Close menu when screen becomes desktop size.
-   */
-
-  window.addEventListener("resize", function () {
-    if (window.innerWidth > 900) {
-      links.classList.remove("open");
-
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open menu");
-    }
-  });
+  );
 }
 
 
@@ -253,419 +888,269 @@ function initMobileNav() {
    ========================================================= */
 
 function initSlider() {
-  const slider = document.querySelector(".hero-slider");
-  const slides = document.querySelectorAll(".hero-slider .slide");
-  const dots = document.querySelectorAll(".hero-controls .dot");
-  const nextButton = document.querySelector(".hero-nav.next");
-  const prevButton = document.querySelector(".hero-nav.prev");
 
-  if (!slider || !slides.length) {
-    console.warn("Hero slider elements not found.");
+  const slider =
+    document.querySelector(
+      ".hero-slider"
+    );
+
+  const slides =
+    document.querySelectorAll(
+      ".hero-slider .slide"
+    );
+
+  const dots =
+    document.querySelectorAll(
+      ".hero-controls .dot"
+    );
+
+  const next =
+    document.querySelector(
+      ".hero-nav.next"
+    );
+
+  const previous =
+    document.querySelector(
+      ".hero-nav.prev"
+    );
+
+  if (
+    !slider ||
+    !slides.length
+  ) {
     return;
   }
 
   let current = 0;
+
   let timer = null;
 
-  function showSlide(index) {
-    /*
-     * Keep index inside the valid range.
-     */
 
-    if (index >= slides.length) {
+  function showSlide(index) {
+
+    if (
+      index >= slides.length
+    ) {
       index = 0;
     }
 
     if (index < 0) {
-      index = slides.length - 1;
+      index =
+        slides.length - 1;
     }
 
     current = index;
 
-    slides.forEach(function (slide, i) {
-      slide.classList.toggle("active", i === current);
-    });
+    slides.forEach(
+      (slide, i) => {
 
-    dots.forEach(function (dot, i) {
-      dot.classList.toggle("active", i === current);
-    });
-  }
+        slide.classList.toggle(
+          "active",
+          i === current
+        );
 
-  function nextSlide() {
-    showSlide(current + 1);
-  }
-
-  function previousSlide() {
-    showSlide(current - 1);
-  }
-
-  function startAutoPlay() {
-    stopAutoPlay();
-
-    timer = setInterval(function () {
-      nextSlide();
-    }, 5500);
-  }
-
-  function stopAutoPlay() {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
-  }
-
-  function restartAutoPlay() {
-    startAutoPlay();
-  }
-
-  if (nextButton) {
-    nextButton.addEventListener("click", function () {
-      nextSlide();
-      restartAutoPlay();
-    });
-  }
-
-  if (prevButton) {
-    prevButton.addEventListener("click", function () {
-      previousSlide();
-      restartAutoPlay();
-    });
-  }
-
-  dots.forEach(function (dot, index) {
-    dot.addEventListener("click", function () {
-      showSlide(index);
-      restartAutoPlay();
-    });
-  });
-
-  /*
-   * Pause while the user is interacting with the slider.
-   */
-
-  slider.addEventListener("mouseenter", stopAutoPlay);
-
-  slider.addEventListener("mouseleave", startAutoPlay);
-
-  /*
-   * Touch/swipe support for phones.
-   */
-
-  let touchStartX = 0;
-  let touchEndX = 0;
-
-  slider.addEventListener(
-    "touchstart",
-    function (event) {
-      touchStartX = event.changedTouches[0].screenX;
-      stopAutoPlay();
-    },
-    { passive: true }
-  );
-
-  slider.addEventListener(
-    "touchend",
-    function (event) {
-      touchEndX = event.changedTouches[0].screenX;
-
-      const distance = touchEndX - touchStartX;
-
-      if (Math.abs(distance) > 50) {
-        if (distance < 0) {
-          nextSlide();
-        } else {
-          previousSlide();
-        }
       }
+    );
 
-      startAutoPlay();
-    },
-    { passive: true }
+
+    dots.forEach(
+      (dot, i) => {
+
+        dot.classList.toggle(
+          "active",
+          i === current
+        );
+
+      }
+    );
+  }
+
+
+  function start() {
+
+    clearInterval(timer);
+
+    timer =
+      setInterval(
+        () => {
+
+          showSlide(
+            current + 1
+          );
+
+        },
+        5500
+      );
+  }
+
+
+  if (next) {
+
+    next.addEventListener(
+      "click",
+      function () {
+
+        showSlide(
+          current + 1
+        );
+
+        start();
+      }
+    );
+  }
+
+
+  if (previous) {
+
+    previous.addEventListener(
+      "click",
+      function () {
+
+        showSlide(
+          current - 1
+        );
+
+        start();
+      }
+    );
+  }
+
+
+  dots.forEach(
+    (dot, index) => {
+
+      dot.addEventListener(
+        "click",
+        function () {
+
+          showSlide(index);
+
+          start();
+        }
+      );
+
+    }
   );
 
-  /*
-   * Keyboard controls.
-   */
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "ArrowRight") {
-      nextSlide();
-      restartAutoPlay();
-    }
-
-    if (event.key === "ArrowLeft") {
-      previousSlide();
-      restartAutoPlay();
-    }
-  });
-
-  /*
-   * Always make sure first slide is active.
-   */
 
   showSlide(0);
 
-  /*
-   * Start automatic movement.
-   */
-
-  startAutoPlay();
+  start();
 }
 
 
 /* =========================================================
-   PRODUCT DATABASE
+   ACTIVE NAV
    ========================================================= */
 
-const PRODUCTS = [
+function initActiveNavigation() {
 
-  {
-    id: "p1",
-    name: "Emerald Brocade Vest Ensemble",
-    category: "Formal",
-    price: 890,
-    img: "images/formal-green-vest.jpg"
-  },
+  const currentPage =
+    window.location.pathname
+      .split("/")
+      .pop()
+      .toLowerCase() ||
+    "index.html";
 
-  {
-    id: "p2",
-    name: "Black Mandarin Collar Suit",
-    category: "Formal",
-    price: 1250,
-    img: "images/black-mandarin-suit.jpg"
-  },
+  document
+    .querySelectorAll(
+      ".nav-links a"
+    )
+    .forEach(link => {
 
-  {
-    id: "p3",
-    name: "Nike Air Force 1 Blue Patent",
-    category: "Footwear",
-    price: 220,
-    img: "images/nike-blue-af1-1.jpg"
-  },
+      const href =
+        (
+          link.getAttribute(
+            "href"
+          ) || ""
+        )
+          .split("#")[0]
+          .split("?")[0]
+          .toLowerCase();
 
-  {
-    id: "p4",
-    name: "Chanel Beige Anorak",
-    category: "Outerwear",
-    price: 3200,
-    img: "images/chanel-beige-jacket.jpg"
-  },
+      link.classList.remove(
+        "active"
+      );
 
-  {
-    id: "p5",
-    name: "Polka Dot & Pink Pleated Set",
-    category: "Contemporary",
-    price: 480,
-    img: "images/polka-pink-outfit.jpg"
-  },
+      if (
+        href === currentPage
+      ) {
 
-  {
-    id: "p6",
-    name: "Dior Gray Leather Vest",
-    category: "Luxury",
-    price: 2750,
-    img: "images/dior-gray-vest.jpg"
-  },
-
-  {
-    id: "p7",
-    name: "Lace-Trim Wide-Leg Jeans",
-    category: "Denim",
-    price: 340,
-    img: "images/lace-jeans-full.jpg"
-  },
-
-  {
-    id: "p8",
-    name: "Marvel Varsity Collection",
-    category: "Streetwear",
-    price: 420,
-    img: "images/marvel-varsity-jackets.jpg"
-  },
-
-  {
-    id: "p9",
-    name: "Spider-Man Comic Tee",
-    category: "Streetwear",
-    price: 85,
-    img: "images/spiderman-tshirt.jpg"
-  },
-
-  {
-    id: "p10",
-    name: "Red Spider Hoodie",
-    category: "Streetwear",
-    price: 195,
-    img: "images/spiderman-hoodie.jpg"
-  },
-
-  {
-    id: "p11",
-    name: "Zipper Utility Cap",
-    category: "Accessories",
-    price: 65,
-    img: "images/zipper-cap.jpg"
-  },
-
-  {
-    id: "p12",
-    name: "Black Gold Branch Suit",
-    category: "Couture",
-    price: 1850,
-    img: "images/black-gold-suit.jpg"
-  },
-
-  {
-    id: "p13",
-    name: "Ivory Bamboo Suit",
-    category: "Couture",
-    price: 1680,
-    img: "images/white-bamboo-suit.jpg"
-  },
-
-  {
-    id: "p14",
-    name: "Gold Mirror Vest Look",
-    category: "Avant-Garde",
-    price: 980,
-    img: "images/gold-vest-outfit.jpg"
-  },
-
-  {
-    id: "p15",
-    name: "Cyber Geometric Coat",
-    category: "Avant-Garde",
-    price: 1450,
-    img: "images/blue-patterned-coat.jpg"
-  },
-
-  {
-    id: "p16",
-    name: "Charcoal Pleated Trousers",
-    category: "Bottoms",
-    price: 290,
-    img: "images/gray-pleated-pants.jpg"
-  }
-
-];
+        link.classList.add(
+          "active"
+        );
+      }
+    });
+}
 
 
 /* =========================================================
-   PRODUCT CARD
+   CURRENCY
    ========================================================= */
 
-function createProductCard(product) {
-  const article = document.createElement("article");
-  article.className = "product-card";
-
-  const imageWrapper = document.createElement("div");
-  imageWrapper.className = "product-img";
-
-  const image = document.createElement("img");
-  image.src = product.img;
-  image.alt = product.name;
-  image.loading = "lazy";
-
-  image.onerror = function () {
-    this.style.opacity = "0.35";
-  };
-
-  imageWrapper.appendChild(image);
-
-  if (Number(product.price) > 1000) {
-    const badge = document.createElement("span");
-    badge.className = "product-badge";
-    badge.textContent = "Luxury";
-    imageWrapper.appendChild(badge);
-  }
-
-  const info = document.createElement("div");
-  info.className = "product-info";
-
-  const category = document.createElement("div");
-  category.className = "product-category";
-  category.textContent = product.category;
-
-  const name = document.createElement("h3");
-  name.className = "product-name";
-  name.textContent = product.name;
-
-  const priceRow = document.createElement("div");
-  priceRow.className = "product-price";
-
-  const price = document.createElement("span");
-  price.className = "price";
-
-  /*
-   * Currency engine will replace this when available.
-   */
-
-  price.dataset.priceUsd = product.price;
+function formatPriceSafe(amount) {
 
   if (
-    typeof window.formatCurrency === "function"
+    typeof window.formatCurrency ===
+    "function"
   ) {
-    price.textContent =
-      window.formatCurrency(product.price);
-  } else {
-    price.textContent =
-      "$" + Number(product.price).toLocaleString();
-  }
 
-  const button = document.createElement("button");
-
-  button.type = "button";
-  button.className = "add-to-cart";
-  button.dataset.id = product.id;
-  button.setAttribute(
-    "aria-label",
-    "Add " + product.name + " to cart"
-  );
-  button.textContent = "＋";
-
-  button.addEventListener("click", function () {
-    addToCart(product);
-  });
-
-  priceRow.appendChild(price);
-  priceRow.appendChild(button);
-
-  info.appendChild(category);
-  info.appendChild(name);
-  info.appendChild(priceRow);
-
-  article.appendChild(imageWrapper);
-  article.appendChild(info);
-
-  return article;
-}
-
-
-/* =========================================================
-   PRODUCT RENDERER
-   ========================================================= */
-
-function renderProducts(containerId, limit) {
-  const container = document.getElementById(containerId);
-
-  if (!container) {
-    return;
-  }
-
-  container.innerHTML = "";
-
-  let products = PRODUCTS.slice();
-
-  if (typeof limit === "number") {
-    products = products.slice(0, limit);
-  }
-
-  products.forEach(function (product) {
-    container.appendChild(
-      createProductCard(product)
+    return window.formatCurrency(
+      amount
     );
-  });
+  }
+
+  return (
+    "$" +
+    Number(amount).toLocaleString(
+      undefined,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }
+    )
+  );
 }
+
+
+function refreshProductCurrency() {
+
+  document
+    .querySelectorAll(
+      "[data-price-usd]"
+    )
+    .forEach(element => {
+
+      const amount =
+        Number(
+          element.dataset.priceUsd
+        );
+
+      if (
+        !Number.isNaN(amount)
+      ) {
+
+        element.textContent =
+          formatPriceSafe(
+            amount
+          );
+      }
+    });
+
+
+  /*
+   * Re-rendering isn't necessary because
+   * every price has data-price-usd.
+   */
+
+  updateCartUI();
+}
+
+
+window.addEventListener(
+  "currencyChanged",
+  refreshProductCurrency
+);
 
 
 /* =========================================================
@@ -673,41 +1158,66 @@ function renderProducts(containerId, limit) {
    ========================================================= */
 
 function renderCartPage() {
-  const container = document.getElementById("cart-items");
-  const empty = document.getElementById("cart-empty");
-  const summary = document.getElementById("cart-summary");
 
-  if (!container) {
-    return;
-  }
+  const container =
+    document.getElementById(
+      "cart-items"
+    );
 
-  const cart = getCart();
+  const empty =
+    document.getElementById(
+      "cart-empty"
+    );
+
+  const summary =
+    document.getElementById(
+      "cart-summary"
+    );
+
+  if (!container) return;
+
+  const cart =
+    getCart();
 
   container.innerHTML = "";
 
+
   if (!cart.length) {
+
     if (empty) {
-      empty.style.display = "block";
+      empty.style.display =
+        "block";
     }
 
     if (summary) {
-      summary.style.display = "none";
+      summary.style.display =
+        "none";
     }
 
     return;
   }
 
+
   if (empty) {
-    empty.style.display = "none";
+    empty.style.display =
+      "none";
   }
 
   if (summary) {
-    summary.style.display = "";
+    summary.style.display =
+      "";
   }
 
-  cart.forEach(function (item) {
-    const row = document.createElement("article");
-    row.className = "cart-item";
+
+  cart.forEach(item => {
+
+    const row =
+      document.createElement(
+        "article"
+      );
+
+    row.className =
+      "cart-item";
 
     row.innerHTML = `
       <div class="cart-item-image">
@@ -719,35 +1229,42 @@ function renderCartPage() {
       </div>
 
       <div class="cart-item-info">
+
         <div class="product-category">
-          ${item.category || ""}
+          ${item.subcategory || item.category || ""}
         </div>
 
         <h3>${item.name}</h3>
 
-        <div class="cart-item-price"
-             data-price-usd="${Number(item.price)}">
-          ${formatPriceSafe(Number(item.price))}
+        <div
+          class="cart-item-price"
+          data-price-usd="${Number(item.price)}"
+        >
+          ${formatPriceSafe(
+            Number(item.price)
+          )}
         </div>
 
         <div class="cart-quantity">
+
           <button
             type="button"
             data-cart-minus="${item.id}"
-            aria-label="Decrease quantity"
           >
             −
           </button>
 
-          <span>${Number(item.qty || 1)}</span>
+          <span>
+            ${Number(item.qty || 1)}
+          </span>
 
           <button
             type="button"
             data-cart-plus="${item.id}"
-            aria-label="Increase quantity"
           >
             +
           </button>
+
         </div>
 
         <button
@@ -757,223 +1274,118 @@ function renderCartPage() {
         >
           Remove
         </button>
+
       </div>
     `;
 
     container.appendChild(row);
   });
 
-  container.querySelectorAll("[data-cart-minus]").forEach(function (button) {
-    button.addEventListener("click", function () {
-      updateQty(button.dataset.cartMinus, -1);
-      renderCartPage();
-    });
-  });
 
-  container.querySelectorAll("[data-cart-plus]").forEach(function (button) {
-    button.addEventListener("click", function () {
-      updateQty(button.dataset.cartPlus, 1);
-      renderCartPage();
-    });
-  });
+  container
+    .querySelectorAll(
+      "[data-cart-minus]"
+    )
+    .forEach(button => {
 
-  container.querySelectorAll("[data-cart-remove]").forEach(function (button) {
-    button.addEventListener("click", function () {
-      removeFromCart(button.dataset.cartRemove);
-      renderCartPage();
-      showToast("Item removed from cart.");
+      button.addEventListener(
+        "click",
+        function () {
+
+          updateQty(
+            button.dataset.cartMinus,
+            -1
+          );
+
+          renderCartPage();
+        }
+      );
     });
-  });
+
+
+  container
+    .querySelectorAll(
+      "[data-cart-plus]"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          updateQty(
+            button.dataset.cartPlus,
+            1
+          );
+
+          renderCartPage();
+        }
+      );
+    });
+
+
+  container
+    .querySelectorAll(
+      "[data-cart-remove]"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          removeFromCart(
+            button.dataset.cartRemove
+          );
+
+          renderCartPage();
+
+          showToast(
+            "Item removed from cart."
+          );
+        }
+      );
+    });
+
 
   updateCartTotals();
 }
+
 
 function updateCartTotals() {
-  const total = getCartTotal();
 
-  document.querySelectorAll("[data-cart-total]").forEach(function (element) {
-    element.textContent = formatPriceSafe(total);
-  });
-}
+  const total =
+    getCartTotal();
 
-function formatPriceSafe(amount) {
-  if (typeof window.formatCurrency === "function") {
-    return window.formatCurrency(amount);
-  }
+  document
+    .querySelectorAll(
+      "[data-cart-total]"
+    )
+    .forEach(element => {
 
-  return "$" + Number(amount).toLocaleString(
-    undefined,
-    {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }
-  );
-}
-
-
-/* =========================================================
-   SHARE CALCULATOR
-   ========================================================= */
-
-function initSharesCalc() {
-  const amountInput = document.getElementById("investment-amount");
-  const result = document.getElementById("investment-result");
-
-  if (!amountInput || !result) {
-    return;
-  }
-
-  function calculate() {
-    const amount = Number(amountInput.value);
-
-    if (!amount || amount < 100) {
-      result.textContent =
-        "Minimum investment: $100";
-      return;
-    }
-
-    let rate = 0.09;
-
-    if (amount >= 50000) {
-      rate = 0.18;
-    } else if (amount >= 20000) {
-      rate = 0.15;
-    } else if (amount >= 5000) {
-      rate = 0.12;
-    }
-
-    const annualReturn = amount * rate;
-
-    result.textContent =
-      "Estimated annual return: " +
-      formatPriceSafe(annualReturn);
-  }
-
-  amountInput.addEventListener("input", calculate);
-
-  calculate();
-}
-
-
-/* =========================================================
-   CHECKOUT
-   ========================================================= */
-
-function initCheckout() {
-  const form = document.getElementById("checkout-form");
-
-  if (!form) {
-    return;
-  }
-
-  form.addEventListener("submit", function (event) {
-    /*
-     * Prevent accidental fake payment submission.
-     *
-     * Real payment processing should happen through
-     * your secure backend/payment provider.
-     */
-
-    event.preventDefault();
-
-    showToast(
-      "Checkout is ready for secure payment processing."
-    );
-  });
-}
-
-
-/* =========================================================
-   ACTIVE NAVIGATION
-   ========================================================= */
-
-function initActiveNavigation() {
-  const currentPage =
-    window.location.pathname
-      .split("/")
-      .pop()
-      .toLowerCase() || "index.html";
-
-  document.querySelectorAll(".nav-links a").forEach(function (link) {
-    const href =
-      link.getAttribute("href") || "";
-
-    const cleanHref =
-      href.split("#")[0]
-        .split("?")[0]
-        .toLowerCase();
-
-    link.classList.remove("active");
-
-    if (
-      cleanHref === currentPage ||
-      (
-        currentPage === "" &&
-        cleanHref === "index.html"
-      )
-    ) {
-      link.classList.add("active");
-    }
-  });
-}
-
-
-/* =========================================================
-   CURRENCY UPDATE HOOK
-   ========================================================= */
-
-function refreshProductCurrency() {
-  document.querySelectorAll(
-    "[data-price-usd]"
-  ).forEach(function (element) {
-    const amount =
-      Number(element.dataset.priceUsd);
-
-    if (
-      !Number.isNaN(amount) &&
-      typeof window.formatCurrency === "function"
-    ) {
       element.textContent =
-        window.formatCurrency(amount);
-    }
-  });
-
-  updateCartTotals();
+        formatPriceSafe(total);
+    });
 }
 
 
 /* =========================================================
-   GLOBAL CURRENCY EVENT
-   ========================================================= */
-
-window.addEventListener(
-  "currencyChanged",
-  function () {
-    refreshProductCurrency();
-  }
-);
-
-
-/* =========================================================
-   APPLICATION STARTUP
+   APPLICATION START
    ========================================================= */
 
 function initAreaBoyz() {
-  console.log(
-    "Area Boyz Enterprise — website engine initialized."
-  );
-
-  /*
-   * Core UI
-   */
 
   updateCartUI();
+
   initMobileNav();
+
   initSlider();
+
   initActiveNavigation();
 
+
   /*
-   * Homepage collection
+   * Homepage
    */
 
   renderProducts(
@@ -981,38 +1393,42 @@ function initAreaBoyz() {
     8
   );
 
+
   /*
-   * Shop collection
+   * Shop page
    */
 
   renderProducts(
     "shop-products"
   );
 
+
   /*
-   * Other pages
+   * Cart
    */
 
   renderCartPage();
-  initSharesCalc();
-  initCheckout();
+
 
   /*
-   * Currency display refresh.
+   * Currency
    */
 
   if (
-    typeof window.updateCurrencyDisplay === "function"
+    typeof window.updateCurrencyDisplay ===
+    "function"
   ) {
+
     window.updateCurrencyDisplay();
   }
 
-  /*
-   * Make sure the cart UI is correct
-   * after everything loads.
-   */
 
   updateCartUI();
+
+
+  console.log(
+    "Area Boyz Enterprise 2.1.0 initialized."
+  );
 }
 
 
@@ -1020,7 +1436,10 @@ function initAreaBoyz() {
    DOM READY
    ========================================================= */
 
-if (document.readyState === "loading") {
+if (
+  document.readyState ===
+  "loading"
+) {
 
   document.addEventListener(
     "DOMContentLoaded",
@@ -1031,4 +1450,4 @@ if (document.readyState === "loading") {
 
   initAreaBoyz();
 
-}
+     }
