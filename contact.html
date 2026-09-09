@@ -1,1 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Area Boyz Enterprise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrapper">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">AB</div>
+        <span>Area Boyz</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="shares.html">Invest</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-btn" aria-label="Shopping cart">
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+        <button class="mobile-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
 
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Contact Us</h1>
+        <p style="color:var(--text-secondary)">Questions about orders, products, or share investment? Reach out.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:960px;margin:0 auto">
+          
+          <!-- Contact Info -->
+          <div>
+            <h2 class="section-title" style="font-size:1.5rem">Get in Touch</h2>
+            <p style="color:var(--text-secondary);margin-bottom:2rem">
+              Our team typically responds within 24 hours on business days.
+            </p>
+
+            <div style="margin-bottom:1.5rem">
+              <strong style="display:block;margin-bottom:0.3rem">Email</strong>
+              <span style="color:var(--accent)">hello@areaboyz.enterprise</span>
+            </div>
+
+            <div style="margin-bottom:1.5rem">
+              <strong style="display:block;margin-bottom:0.3rem">Investment Inquiries</strong>
+              <span style="color:var(--accent)">shares@areaboyz.enterprise</span>
+            </div>
+
+            <div>
+              <strong style="display:block;margin-bottom:0.3rem">Support Hours</strong>
+              <span style="color:var(--text-secondary)">Mon – Fri · 9:00 – 18:00 (WAT)</span>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <form class="invest-form" onsubmit="event.preventDefault(); showToast('Message sent. We will reply soon.'); this.reset();">
+            <div class="form-group">
+              <label for="c-name">Name</label>
+              <input type="text" id="c-name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="c-email">Email</label>
+              <input type="email" id="c-email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="c-subject">Subject</label>
+              <select id="c-subject" class="form-control">
+                <option>General Inquiry</option>
+                <option>Order Support</option>
+                <option>Share Investment</option>
+                <option>Partnership</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="c-message">Message</label>
+              <textarea id="c-message" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%">Send Message</button>
+          </form>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none;padding-top:0">
+        <span>© 2026 Area Boyz Enterprise. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
