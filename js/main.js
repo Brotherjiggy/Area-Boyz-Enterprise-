@@ -6,7 +6,7 @@ const CART_KEY = 'areaboyz_cart';
 function getCart() {
   try {
     return JSON.parse(localStorage.getItem(CART_KEY)) || [];
-  } catch {
+  } catch (e) {
     return [];
   }
 }
@@ -18,24 +18,37 @@ function saveCart(cart) {
 
 function addToCart(product) {
   const cart = getCart();
-  const existing = cart.find(item => item.id === product.id);
+  const existing = cart.find(function(item) {
+    return item.id === product.id;
+  });
   if (existing) {
     existing.qty += 1;
   } else {
-    cart.push({ ...product, qty: 1 });
+    cart.push({
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      price: product.price,
+      img: product.img,
+      qty: 1
+    });
   }
   saveCart(cart);
   showToast(product.name + ' added to cart');
 }
 
 function removeFromCart(id) {
-  let cart = getCart().filter(item => item.id !== id);
+  const cart = getCart().filter(function(item) {
+    return item.id !== id;
+  });
   saveCart(cart);
 }
 
 function updateQty(id, delta) {
   const cart = getCart();
-  const item = cart.find(i => i.id === id);
+  const item = cart.find(function(i) {
+    return i.id === id;
+  });
   if (item) {
     item.qty += delta;
     if (item.qty <= 0) {
@@ -47,13 +60,17 @@ function updateQty(id, delta) {
 }
 
 function getCartTotal() {
-  return getCart().reduce((sum, item) => sum + item.price * item.qty, 0);
+  return getCart().reduce(function(sum, item) {
+    return sum + (item.price * item.qty);
+  }, 0);
 }
 
 function updateCartUI() {
   const countEls = document.querySelectorAll('.cart-count');
-  const total = getCart().reduce((s, i) => s + i.qty, 0);
-  countEls.forEach(el => {
+  const total = getCart().reduce(function(s, i) {
+    return s + i.qty;
+  }, 0);
+  countEls.forEach(function(el) {
     el.textContent = total;
     el.style.display = total > 0 ? 'grid' : 'none';
   });
@@ -69,7 +86,9 @@ function showToast(msg) {
   }
   toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2800);
+  setTimeout(function() {
+    toast.classList.remove('show');
+  }, 2800);
 }
 
 // ========== HERO SLIDER ==========
@@ -89,17 +108,35 @@ function initSlider() {
     if (dots[current]) dots[current].classList.add('active');
   }
 
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
+  function next() {
+    goTo(current + 1);
+  }
+
+  function prev() {
+    goTo(current - 1);
+  }
 
   const nextBtn = document.querySelector('.hero-nav.next');
   const prevBtn = document.querySelector('.hero-nav.prev');
 
-  if (nextBtn) nextBtn.addEventListener('click', function() { next(); resetTimer(); });
-  if (prevBtn) prevBtn.addEventListener('click', function() { prev(); resetTimer(); });
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function() {
+      next();
+      resetTimer();
+    });
+  }
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function() {
+      prev();
+      resetTimer();
+    });
+  }
 
   dots.forEach(function(dot, i) {
-    dot.addEventListener('click', function() { goTo(i); resetTimer(); });
+    dot.addEventListener('click', function() {
+      goTo(i);
+      resetTimer();
+    });
   });
 
   function resetTimer() {
@@ -117,12 +154,10 @@ function initMobileNav() {
 
   if (!toggle || !links) return;
 
-  // Open / close when clicking the menu button
   toggle.addEventListener('click', function() {
     links.classList.toggle('open');
   });
 
-  // Close menu when clicking any navigation link
   const navLinks = links.querySelectorAll('a');
   navLinks.forEach(function(link) {
     link.addEventListener('click', function() {
@@ -130,7 +165,6 @@ function initMobileNav() {
     });
   });
 
-  // Close menu when user scrolls the page
   window.addEventListener('scroll', function() {
     if (links.classList.contains('open')) {
       links.classList.remove('open');
@@ -140,118 +174,22 @@ function initMobileNav() {
 
 // ========== PRODUCT DATA ==========
 const PRODUCTS = [
-  {
-    id: 'p1',
-    name: 'Emerald Brocade Vest Ensemble',
-    category: 'Formal',
-    price: 890,
-    img: 'images/formal-green-vest.jpg'
-  },
-  {
-    id: 'p2',
-    name: 'Black Mandarin Collar Suit',
-    category: 'Formal',
-    price: 1250,
-    img: 'images/black-mandarin-suit.jpg'
-  },
-  {
-    id: 'p3',
-    name: 'Nike Air Force 1 Blue Patent',
-    category: 'Footwear',
-    price: 220,
-    img: 'images/nike-blue-af1-1.jpg'
-  },
-  {
-    id: 'p4',
-    name: 'Chanel Beige Anorak',
-    category: 'Outerwear',
-    price: 3200,
-    img: 'images/chanel-beige-jacket.jpg'
-  },
-  {
-    id: 'p5',
-    name: 'Polka Dot & Pink Pleated Set',
-    category: 'Contemporary',
-    price: 480,
-    img: 'images/polka-pink-outfit.jpg'
-  },
-  {
-    id: 'p6',
-    name: 'Dior Gray Leather Vest',
-    category: 'Luxury',
-    price: 2750,
-    img: 'images/dior-gray-vest.jpg'
-  },
-  {
-    id: 'p7',
-    name: 'Lace-Trim Wide-Leg Jeans',
-    category: 'Denim',
-    price: 340,
-    img: 'images/lace-jeans-full.jpg'
-  },
-  {
-    id: 'p8',
-    name: 'Marvel Varsity Collection',
-    category: 'Streetwear',
-    price: 420,
-    img: 'images/marvel-varsity-jackets.jpg'
-  },
-  {
-    id: 'p9',
-    name: 'Spider-Man Comic Tee',
-    category: 'Streetwear',
-    price: 85,
-    img: 'images/spiderman-tshirt.jpg'
-  },
-  {
-    id: 'p10',
-    name: 'Red Spider Hoodie',
-    category: 'Streetwear',
-    price: 195,
-    img: 'images/spiderman-hoodie.jpg'
-  },
-  {
-    id: 'p11',
-    name: 'Zipper Utility Cap',
-    category: 'Accessories',
-    price: 65,
-    img: 'images/zipper-cap.jpg'
-  },
-  {
-    id: 'p12',
-    name: 'Black Gold Branch Suit',
-    category: 'Couture',
-    price: 1850,
-    img: 'images/black-gold-suit.jpg'
-  },
-  {
-    id: 'p13',
-    name: 'Ivory Bamboo Suit',
-    category: 'Couture',
-    price: 1680,
-    img: 'images/white-bamboo-suit.jpg'
-  },
-  {
-    id: 'p14',
-    name: 'Gold Mirror Vest Look',
-    category: 'Avant-Garde',
-    price: 980,
-    img: 'images/gold-vest-outfit.jpg'
-  },
-  {
-    id: 'p15',
-    name: 'Cyber Geometric Coat',
-    category: 'Avant-Garde',
-    price: 1450,
-    img: 'images/blue-patterned-coat.jpg'
-  },
-  {
-    id: 'p16',
-    name: 'Charcoal Pleated Trousers',
-    category: 'Bottoms',
-    price: 290,
-    img: 'images/gray-pleated-pants.jpg'
-  }
+  { id: 'p1', name: 'Emerald Brocade Vest Ensemble', category: 'Formal', price: 890, img: 'images/formal-green-vest.jpg' },
+  { id: 'p2', name: 'Black Mandarin Collar Suit', category: 'Formal', price: 1250, img: 'images/black-mandarin-suit.jpg' },
+  { id: 'p3', name: 'Nike Air Force 1 Blue Patent', category: 'Footwear', price: 220, img: 'images/nike-blue-af1-1.jpg' },
+  { id: 'p4', name: 'Chanel Beige Anorak', category: 'Outerwear', price: 3200, img: 'images/chanel-beige-jacket.jpg' },
+  { id: 'p5', name: 'Polka Dot & Pink Pleated Set', category: 'Contemporary', price: 480, img: 'images/polka-pink-outfit.jpg' },
+  { id: 'p6', name: 'Dior Gray Leather Vest', category: 'Luxury', price: 2750, img: 'images/dior-gray-vest.jpg' },
+  { id: 'p7', name: 'Lace-Trim Wide-Leg Jeans', category: 'Denim', price: 340, img: 'images/lace-jeans-full.jpg' },
+  { id: 'p8', name: 'Marvel Varsity Collection', category: 'Streetwear', price: 420, img: 'images/marvel-varsity-jackets.jpg' },
+  { id: 'p9', name: 'Spider-Man Comic Tee', category: 'Streetwear', price: 85, img: 'images/spiderman-tshirt.jpg' },
+  { id: 'p10', name: 'Red Spider Hoodie', category: 'Streetwear', price: 195, img: 'images/spiderman-hoodie.jpg' },
+  { id: 'p11', name: 'Zipper Utility Cap', category: 'Accessories', price: 65, img: 'images/zipper-cap.jpg' },
+  { id: 'p12', name: 'Black Gold Branch Suit', category: 'Couture', price: 1850, img: 'images/black-gold-suit.jpg' },
+  { id: 'p13', name: 'Ivory Bamboo Suit', category: 'Couture', price: 1680, img: 'images/white-bamboo-suit.jpg' },
+  { id: 'p14', name: 'Gold Mirror Vest Look', category: 'Avant-Garde', price: 980, img: 'images/gold-vest-outfit.jpg' },
+  { id: 'p15', name: 'Cyber Geometric Coat', category: 'Avant-Garde', price: 1450, img: 'images/blue-patterned-coat.jpg' },
+  { id: 'p16', name: 'Charcoal Pleated Trousers', category: 'Bottoms', price: 290, img: 'images/gray-pleated-pants.jpg' }
 ];
 
 // ========== RENDER PRODUCTS ==========
@@ -260,32 +198,31 @@ function renderProducts(containerId, limit) {
   if (!container) return;
 
   let list = PRODUCTS;
-  if (limit) list = list.slice(0, limit);
+  if (limit) {
+    list = list.slice(0, limit);
+  }
 
   let html = '';
 
   list.forEach(function(p) {
-    const luxuryBadge = p.price > 1000 ? '<span class="product-badge">Luxury</span>' : '';
+    const badge = p.price > 1000 ? '<span class="product-badge">Luxury</span>' : '';
 
-    html += '<article class="product-card">' +
-      '<div class="product-img">' +
-        '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy">' +
-        luxuryBadge +
-      '</div>' +
-      '<div class="product-info">' +
-        '<div class="product-category">' + p.category + '</div>' +
-        '<h3 class="product-name">' + p.name + '</h3>' +
-        '<div class="product-price">' +
-          '<span class="price">$' + p.price.toLocaleString() + '</span>' +
-          '<button class="add-to-cart" data-id="' + p.id + '" aria-label="Add to cart">＋</button>' +
-        '</div>' +
-      '</div>' +
-    '</article>';
+    html += '<article class="product-card">';
+    html += '<div class="product-img">';
+    html += '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy">';
+    html += badge;
+    html += '</div>';
+    html += '<div class="product-info">';
+    html += '<div class="product-category">' + p.category + '</div>';
+    html += '<h3 class="product-name">' + p.name + '</h3>';
+    html += '<div class="product-price">';
+    html += '<span class="price">$' + p.price.toLocaleString() + '</span>';
+    html += '<button class="add-to-cart" data-id="' + p.id + '">＋</button>';
+    html += '</div></div></article>';
   });
 
   container.innerHTML = html;
 
-  // Add click events
   const buttons = container.querySelectorAll('.add-to-cart');
   buttons.forEach(function(btn) {
     btn.addEventListener('click', function(e) {
@@ -294,7 +231,9 @@ function renderProducts(containerId, limit) {
       const product = PRODUCTS.find(function(p) {
         return p.id === id;
       });
-      if (product) addToCart(product);
+      if (product) {
+        addToCart(product);
+      }
     });
   });
 }
@@ -308,35 +247,34 @@ function renderCartPage() {
   const cart = getCart();
 
   if (cart.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:3rem;color:var(--text-secondary)">Your cart is empty. <a href="shop.html" style="color:var(--accent)">Browse the collection</a></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:3rem;color:#a0a0b0;">Your cart is empty. <a href="shop.html" style="color:#00f0ff;">Browse the collection</a></td></tr>';
     if (summary) summary.innerHTML = '';
     return;
   }
 
   let html = '';
   cart.forEach(function(item) {
-    html += '<tr>' +
-      '<td><img src="' + item.img + '" alt="' + item.name + '" class="cart-item-img"></td>' +
-      '<td><strong>' + item.name + '</strong><br><small style="color:var(--text-secondary)">' + item.category + '</small></td>' +
-      '<td>$' + item.price.toLocaleString() + '</td>' +
-      '<td>' +
-        '<div class="qty-control">' +
-          '<button data-id="' + item.id + '" data-delta="-1">−</button>' +
-          '<span>' + item.qty + '</span>' +
-          '<button data-id="' + item.id + '" data-delta="1">+</button>' +
-        '</div>' +
-      '</td>' +
-      '<td>$' + (item.price * item.qty).toLocaleString() + '</td>' +
-    '</tr>';
+    html += '<tr>';
+    html += '<td><img src="' + item.img + '" alt="' + item.name + '" class="cart-item-img"></td>';
+    html += '<td><strong>' + item.name + '</strong><br><small style="color:#a0a0b0;">' + item.category + '</small></td>';
+    html += '<td>$' + item.price.toLocaleString() + '</td>';
+    html += '<td><div class="qty-control">';
+    html += '<button data-id="' + item.id + '" data-delta="-1">−</button>';
+    html += '<span>' + item.qty + '</span>';
+    html += '<button data-id="' + item.id + '" data-delta="1">+</button>';
+    html += '</div></td>';
+    html += '<td>$' + (item.price * item.qty).toLocaleString() + '</td>';
+    html += '</tr>';
   });
 
   tbody.innerHTML = html;
 
-  // Quantity buttons
   const qtyButtons = tbody.querySelectorAll('.qty-control button');
   qtyButtons.forEach(function(btn) {
     btn.addEventListener('click', function() {
-      updateQty(btn.getAttribute('data-id'), parseInt(btn.getAttribute('data-delta')));
+      const id = btn.getAttribute('data-id');
+      const delta = parseInt(btn.getAttribute('data-delta'));
+      updateQty(id, delta);
       renderCartPage();
     });
   });
@@ -345,18 +283,9 @@ function renderCartPage() {
   if (summary) {
     summary.innerHTML = 
       '<h3 style="margin-bottom:1.25rem">Order Summary</h3>' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:0.75rem">' +
-        '<span style="color:var(--text-secondary)">Subtotal</span>' +
-        '<span>$' + total.toLocaleString() + '</span>' +
-      '</div>' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:0.75rem">' +
-        '<span style="color:var(--text-secondary)">Shipping</span>' +
-        '<span>Calculated at checkout</span>' +
-      '</div>' +
-      '<div style="display:flex;justify-content:space-between;font-size:1.25rem;font-weight:700;margin:1.25rem 0;padding-top:1rem;border-top:1px solid var(--border)">' +
-        '<span>Total</span>' +
-        '<span style="color:var(--accent)">$' + total.toLocaleString() + '</span>' +
-      '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:0.75rem"><span style="color:#a0a0b0">Subtotal</span><span>$' + total.toLocaleString() + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:0.75rem"><span style="color:#a0a0b0">Shipping</span><span>Calculated at checkout</span></div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:1.25rem;font-weight:700;margin:1.25rem 0;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.08)"><span>Total</span><span style="color:#00f0ff">$' + total.toLocaleString() + '</span></div>' +
       '<a href="checkout.html" class="btn btn-primary" style="width:100%;margin-top:0.5rem">Proceed to Checkout</a>';
   }
 }
@@ -367,28 +296,27 @@ function initSharesCalc() {
   const result = document.getElementById('calc-result');
   if (!input || !result) return;
 
-  const TOTAL_SHARES_VALUE = 756000;
+  const TOTAL = 756000;
 
   function calculate() {
     const amount = parseFloat(input.value) || 0;
     if (amount < 100) {
-      result.innerHTML = '<p style="color:var(--text-secondary)">Minimum investment: $100</p>';
+      result.innerHTML = '<p style="color:#a0a0b0">Minimum investment: $100</p>';
       return;
     }
 
-    let rate;
+    let rate = 0.09;
     if (amount >= 50000) rate = 0.18;
     else if (amount >= 20000) rate = 0.15;
     else if (amount >= 5000) rate = 0.12;
-    else rate = 0.09;
 
     const annual = amount * rate;
-    const ownership = ((amount / TOTAL_SHARES_VALUE) * 100).toFixed(4);
+    const ownership = ((amount / TOTAL) * 100).toFixed(4);
 
     result.innerHTML = 
-      '<div class="value">$' + annual.toLocaleString(undefined, {maximumFractionDigits:0}) + '</div>' +
-      '<p style="margin:0.5rem 0;color:var(--text-secondary)">Projected annual return (' + (rate*100).toFixed(0) + '%)</p>' +
-      '<p style="font-size:0.9rem;color:var(--text-secondary)">Ownership: ' + ownership + '% of company equity pool</p>';
+      '<div class="value">$' + annual.toLocaleString(undefined, {maximumFractionDigits: 0}) + '</div>' +
+      '<p style="margin:0.5rem 0;color:#a0a0b0">Projected annual return (' + (rate * 100) + '%)</p>' +
+      '<p style="font-size:0.9rem;color:#a0a0b0">Ownership: ' + ownership + '% of company equity pool</p>';
   }
 
   input.addEventListener('input', calculate);
@@ -407,8 +335,7 @@ function initCheckout() {
 
   form.addEventListener('submit', function(e) {
     e.preventDefault();
-    const cart = getCart();
-    if (cart.length === 0) {
+    if (getCart().length === 0) {
       showToast('Your cart is empty');
       return;
     }
@@ -421,7 +348,7 @@ function initCheckout() {
   });
 }
 
-// ========== INIT ==========
+// ========== START EVERYTHING ==========
 document.addEventListener('DOMContentLoaded', function() {
   updateCartUI();
   initSlider();
@@ -429,16 +356,10 @@ document.addEventListener('DOMContentLoaded', function() {
   initSharesCalc();
   initCheckout();
 
-  // Featured products on homepage
   renderProducts('featured-products', 8);
-
-  // Full shop page
   renderProducts('shop-products');
-
-  // Cart page
   renderCartPage();
 
-  // Active navigation
   const path = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.nav-links a').forEach(function(a) {
     if (a.getAttribute('href') === path) {
