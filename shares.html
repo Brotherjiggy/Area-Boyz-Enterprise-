@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invest & Shares | Area Boyz Enterprise</title>
+  <title>Invest | Area Boyz Enterprise</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -33,20 +33,32 @@
   </header>
 
   <main>
+    <!-- Page Hero -->
     <section class="page-hero">
       <div class="container">
-        <h1>Company Shares</h1>
-        <p style="color:var(--text-secondary);max-width:600px;margin:0 auto">Participate in Area Boyz Enterprise growth. A transparent $756,000 equity pool is available. Returns scale with your investment size.</p>
+        <h1>Invest in Area Boyz</h1>
+        <p style="color:var(--text-secondary);max-width:580px;margin:0 auto;font-size:1.05rem;">
+          A transparent $756,000 equity opportunity. Join early and grow with the brand.
+        </p>
       </div>
     </section>
 
+    <!-- Main Content -->
     <section class="section">
       <div class="container">
-        <div class="shares-grid" style="margin-bottom:4rem">
+
+        <!-- Top Grid -->
+        <div class="shares-grid" style="margin-bottom:4.5rem;">
+          
+          <!-- Left Content -->
           <div>
-            <h2 class="section-title" style="font-size:1.8rem">How It Works</h2>
-            <p style="color:var(--text-secondary);margin-bottom:1.5rem">Area Boyz Enterprise is offering a fixed equity allocation of $756,000. Shareholders receive projected annual returns based on the amount committed. Ownership percentage is calculated proportionally against the total pool.</p>
-            <div class="share-tiers" style="max-width:420px">
+            <h2 class="section-title" style="font-size:1.7rem;margin-bottom:1rem;">How the Equity Works</h2>
+            <p style="color:var(--text-secondary);margin-bottom:1.8rem;line-height:1.7;">
+              Area Boyz Enterprise is opening a fixed equity allocation of <strong style="color:var(--text-primary);">$756,000</strong>. 
+              Investors receive projected annual returns based on the size of their commitment. Ownership is calculated proportionally against the total pool.
+            </p>
+
+            <div class="share-tiers" style="max-width:440px;margin-bottom:1.8rem;">
               <div class="tier">
                 <span>$100 – $4,999</span>
                 <strong>9% projected p.a.</strong>
@@ -64,41 +76,57 @@
                 <strong>18% projected p.a.</strong>
               </div>
             </div>
-            <p style="margin-top:1.5rem;font-size:0.9rem;color:var(--text-secondary)">* Returns are projected based on current business performance models and are not guaranteed. Past performance does not indicate future results. Please review all terms before investing.</p>
+
+            <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;">
+              * Projected returns are based on current business models and are not guaranteed. 
+              Past performance does not indicate future results. Please review all terms carefully before investing.
+            </p>
           </div>
 
+          <!-- Calculator -->
           <div>
             <div class="calc-box">
-              <h3 style="margin-bottom:1rem">Investment Calculator</h3>
+              <h3 style="margin-bottom:0.4rem;font-size:1.2rem;">Investment Calculator</h3>
+              <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.4rem;">
+                Enter an amount to see your projected annual return and ownership percentage.
+              </p>
+
               <div class="form-group">
                 <label for="share-amount">Investment Amount (USD)</label>
                 <input type="number" id="share-amount" class="form-control" min="100" step="100" value="5000" placeholder="Enter amount">
               </div>
+
               <div id="calc-result" class="calc-result">
-                <!-- JS filled -->
+                <!-- Filled by JavaScript -->
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Investment Interest Form -->
-        <div class="invest-form" style="max-width:720px;margin:0 auto">
-          <h2 class="section-title" style="font-size:1.6rem;text-align:center;margin-bottom:0.5rem">Express Interest</h2>
-          <p style="text-align:center;color:var(--text-secondary);margin-bottom:2rem">Complete the form below. Our team will contact you with share documentation and next steps.</p>
+        <!-- Interest Form -->
+        <div class="invest-form" style="max-width:720px;margin:0 auto;">
+          <div style="text-align:center;margin-bottom:2rem;">
+            <h2 class="section-title" style="font-size:1.55rem;margin-bottom:0.5rem;">Express Your Interest</h2>
+            <p style="color:var(--text-secondary);font-size:0.95rem;">
+              Complete the form below. Our team will contact you with documentation and next steps.
+            </p>
+          </div>
+
           <form id="invest-form" onsubmit="event.preventDefault(); showToast('Interest registered. We will contact you shortly.'); this.reset();">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
               <div class="form-group">
                 <label for="inv-name">Full Name</label>
                 <input type="text" id="inv-name" class="form-control" required>
               </div>
               <div class="form-group">
-                <label for="inv-email">Email</label>
+                <label for="inv-email">Email Address</label>
                 <input type="email" id="inv-email" class="form-control" required>
               </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
               <div class="form-group">
-                <label for="inv-phone">Phone</label>
+                <label for="inv-phone">Phone Number</label>
                 <input type="tel" id="inv-phone" class="form-control">
               </div>
               <div class="form-group">
@@ -106,13 +134,18 @@
                 <input type="number" id="inv-amount" class="form-control" min="100" required>
               </div>
             </div>
+
             <div class="form-group">
-              <label for="inv-message">Additional Notes</label>
-              <textarea id="inv-message" class="form-control" rows="3"></textarea>
+              <label for="inv-message">Additional Notes (Optional)</label>
+              <textarea id="inv-message" class="form-control" rows="3" placeholder="Any questions or comments..."></textarea>
             </div>
-            <button type="submit" class="btn btn-gold" style="width:100%">Submit Interest</button>
+
+            <button type="submit" class="btn btn-gold" style="width:100%;margin-top:0.5rem;">
+              Submit Interest
+            </button>
           </form>
         </div>
+
       </div>
     </section>
   </main>
