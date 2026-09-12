@@ -25,16 +25,21 @@ const PRODUCTS = [
 let cart = JSON.parse(localStorage.getItem('ab_cart') || '[]');
 let currentFilter = 'all';
 
-/* ---------- PRELOADER ---------- */
-window.addEventListener('load', () => {
-  const preloader = document.getElementById('preloader');
-  const app = document.getElementById('app');
-  setTimeout(() => {
-    preloader.classList.add('hide');
-    app.classList.remove('hidden');
-    handleRoute();
-  }, 1800);
+/* ---------- PRELOADER (reliable version) ---------- */
+function hidePreloader() {
+  const preloader = document.getElementById("preloader");
+  const app = document.getElementById("app");
+  if (preloader) preloader.classList.add("hide");
+  if (app) app.classList.remove("hidden");
+  try { handleRoute(); } catch(e) { console.error(e); }
+}
+
+window.addEventListener("load", function() {
+  setTimeout(hidePreloader, 1600);
 });
+
+// Fallback - force hide after maximum 3.5 seconds
+setTimeout(hidePreloader, 3500);
 
 /* ---------- ROUTING ---------- */
 function handleRoute() {
@@ -416,20 +421,24 @@ const sideMenu = document.getElementById('sideMenu');
 const overlay = document.getElementById('overlay');
 const closeMenu = document.getElementById('closeMenu');
 
-menuToggle.addEventListener('click', () => {
-  sideMenu.classList.add('open');
-  overlay.classList.add('show');
-  sideMenu.setAttribute('aria-hidden', 'false');
-});
-
-function closeSideMenu() {
-  sideMenu.classList.remove('open');
-  overlay.classList.remove('show');
-  sideMenu.setAttribute('aria-hidden', 'true');
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    sideMenu.classList.add('open');
+    overlay.classList.add('show');
+    sideMenu.setAttribute('aria-hidden', 'false');
+  });
 }
 
-closeMenu.addEventListener('click', closeSideMenu);
-overlay.addEventListener('click', closeSideMenu);
+function closeSideMenu() {
+  if (sideMenu) {
+    sideMenu.classList.remove('open');
+    overlay.classList.remove('show');
+    sideMenu.setAttribute('aria-hidden', 'true');
+  }
+}
+
+if (closeMenu) closeMenu.addEventListener('click', closeSideMenu);
+if (overlay) overlay.addEventListener('click', closeSideMenu);
 
 /* Category filter */
 document.querySelectorAll('.pill').forEach(pill => {
@@ -444,9 +453,13 @@ document.querySelectorAll('.pill').forEach(pill => {
 });
 
 /* Search toggle */
-document.getElementById('searchToggle')?.addEventListener('click', () => {
-  document.getElementById('searchInput')?.focus();
-});
+const searchToggle = document.getElementById('searchToggle');
+if (searchToggle) {
+  searchToggle.addEventListener('click', () => {
+    const input = document.getElementById('searchInput');
+    if (input) input.focus();
+  });
+}
 
 /* Initial cart count */
 updateCartCount();
