@@ -1,29 +1,29 @@
-
 "use strict";
 
 /* =========================================================
    AREA BOYZ ENTERPRISE
    PREMIUM COMMERCE APPLICATION ENGINE
+   VERSION 2.1
 
    VANILLA JAVASCRIPT
-   NO REACT
    NO FRAMEWORK
 
-   FEATURES
+   CORE FEATURES
    ---------------------------------------------------------
-   - Preloader
-   - SPA page switching
-   - Browser back / forward
+   - Reliable preloader
+   - SPA page navigation
+   - Browser history
+   - Hash navigation
    - Mobile navigation
    - Auto-hide header
    - Search
    - 100-product catalogue
-   - Product filtering
-   - Product sorting
    - Category filtering
-   - Cart
+   - Product sorting
+   - Product preview
+   - Shopping cart
    - Quantity controls
-   - LocalStorage cart persistence
+   - LocalStorage persistence
    - Equity calculator
    - Dynamic year
    - Announcement bar
@@ -46,9 +46,7 @@ const AB_CONFIG = {
 
     defaultPage: "home",
 
-    preloaderDuration: 1100,
-
-    pageTransitionDelay: 120
+    preloaderDuration: 1100
 
 };
 
@@ -165,28 +163,14 @@ const DOM = {
 
 
 /* =========================================================
-   04. PRODUCT DATA ENGINE
-   =========================================================
-
-   We deliberately generate 100 catalogue records.
-
-   Later, when your real fashion images are ready,
-   we only need to replace the image paths and product
-   information.
-
-   Expected image format:
-
-   images/products/product-001.jpg
-   images/products/product-002.jpg
-   ...
-   images/products/product-100.jpg
-
+   04. PRODUCT TEMPLATE DATA
    ========================================================= */
 
 const productTemplates = [
 
     {
         category: "streetwear",
+
         names: [
             "AB Essential Oversized Tee",
             "Area Motion Tee",
@@ -199,11 +183,13 @@ const productTemplates = [
             "Area Boyz Signature Tee",
             "The Evolution Tee"
         ],
+
         priceRange: [45, 85]
     },
 
     {
         category: "handmade",
+
         names: [
             "Crafted Tranquility Shirt",
             "Handmade Intention Jacket",
@@ -216,11 +202,13 @@ const productTemplates = [
             "Handmade Everyday Jacket",
             "Crafted Soul Shirt"
         ],
+
         priceRange: [95, 220]
     },
 
     {
         category: "footwear",
+
         names: [
             "AB Motion Runner",
             "Area Street Trainer",
@@ -233,11 +221,13 @@ const productTemplates = [
             "Evolution Street Runner",
             "Area Classic Trainer"
         ],
+
         priceRange: [110, 320]
     },
 
     {
         category: "accessories",
+
         names: [
             "AB Signature Cap",
             "Area Boyz Crossbody",
@@ -250,6 +240,7 @@ const productTemplates = [
             "Evolution Chain",
             "AB Everyday Beanie"
         ],
+
         priceRange: [30, 180]
     }
 
@@ -257,7 +248,27 @@ const productTemplates = [
 
 
 /* =========================================================
-   05. PRODUCT GENERATOR
+   05. VARIANT DATA
+   ========================================================= */
+
+const variantNames = [
+
+    "AB Limited Edition",
+    "Area Boyz Studio Piece",
+    "AB Evolution Edition",
+    "Area Boyz Archive Piece",
+    "AB Everyday Series",
+    "Area Boyz Select",
+    "AB Movement Series",
+    "Area Boyz Premium",
+    "AB Crafted Edition",
+    "Area Boyz Essential"
+
+];
+
+
+/* =========================================================
+   06. PRODUCT GENERATOR
    ========================================================= */
 
 function generateProducts() {
@@ -266,37 +277,38 @@ function generateProducts() {
 
     let id = 1;
 
+
+    /*
+     * First 40 core products.
+     */
+
     productTemplates.forEach(template => {
 
         template.names.forEach((name, index) => {
 
-            /*
-             * 10 products per category.
-             * Four categories = 40 base products.
-             *
-             * We then repeat controlled variants below
-             * to reach 100 catalogue items.
-             */
+            const range =
+                template.priceRange;
+
 
             const basePrice =
-                template.priceRange[0] +
+                range[0] +
                 (
-                    (
-                        template.priceRange[1] -
-                        template.priceRange[0]
-                    ) *
+                    (range[1] - range[0]) *
                     (index / 9)
                 );
 
+
             products.push({
 
-                id: id,
+                id,
 
-                name: name,
+                name,
 
-                category: template.category,
+                category:
+                    template.category,
 
-                price: Math.round(basePrice),
+                price:
+                    Math.round(basePrice),
 
                 image:
                     `images/products/product-${String(id).padStart(3, "0")}.jpg`,
@@ -324,6 +336,7 @@ function generateProducts() {
 
             });
 
+
             id++;
 
         });
@@ -332,52 +345,60 @@ function generateProducts() {
 
 
     /*
-     * Generate additional catalogue variants
-     * until we reach exactly 100 products.
+     * Additional products.
+     *
+     * IMPORTANT:
+     * Prices are deterministic.
+     * They no longer change randomly
+     * every time the website reloads.
      */
 
-    const variantNames = [
-        "AB Limited Edition",
-        "Area Boyz Studio Piece",
-        "AB Evolution Edition",
-        "Area Boyz Archive Piece",
-        "AB Everyday Series",
-        "Area Boyz Select",
-        "AB Movement Series",
-        "Area Boyz Premium",
-        "AB Crafted Edition",
-        "Area Boyz Essential"
-    ];
-
-
     while (products.length < 100) {
-
-        const template =
-            productTemplates[
-                products.length %
-                productTemplates.length
-            ];
-
-        const variantIndex =
-            products.length % variantNames.length;
 
         const productNumber =
             products.length + 1;
 
-        const range = template.priceRange;
+
+        const template =
+            productTemplates[
+                (productNumber - 1) %
+                productTemplates.length
+            ];
+
+
+        const variantIndex =
+            (productNumber - 1) %
+            variantNames.length;
+
+
+        const range =
+            template.priceRange;
+
+
+        const spread =
+            range[1] - range[0];
+
 
         const price =
             Math.round(
                 range[0] +
                 (
-                    Math.random() *
-                    (range[1] - range[0])
+                    spread *
+                    (
+                        (
+                            productNumber * 7
+                        ) %
+                        100
+                    ) /
+                    100
                 )
             );
 
+
         products.push({
 
-            id: productNumber,
+            id:
+                productNumber,
 
             name:
                 `${variantNames[variantIndex]} ${productNumber}`,
@@ -385,8 +406,7 @@ function generateProducts() {
             category:
                 template.category,
 
-            price:
-                price,
+            price,
 
             image:
                 `images/products/product-${String(productNumber).padStart(3, "0")}.jpg`,
@@ -400,7 +420,13 @@ function generateProducts() {
                 Number(
                     (
                         4.3 +
-                        Math.random() * 0.7
+                        (
+                            (
+                                productNumber * 13
+                            ) %
+                            7
+                        ) /
+                        10
                     ).toFixed(1)
                 ),
 
@@ -421,14 +447,15 @@ function generateProducts() {
 
 
 /* =========================================================
-   06. INITIALIZE PRODUCTS
+   07. INITIALIZE PRODUCT CATALOGUE
    ========================================================= */
 
-state.products = generateProducts();
+state.products =
+    generateProducts();
 
 
 /* =========================================================
-   07. CURRENCY FORMATTER
+   08. CURRENCY FORMATTER
    ========================================================= */
 
 function formatCurrency(amount) {
@@ -440,13 +467,31 @@ function formatCurrency(amount) {
             currency: AB_CONFIG.currency,
             maximumFractionDigits: 0
         }
-    ).format(amount);
+    ).format(
+        Number(amount) || 0
+    );
 
 }
 
 
 /* =========================================================
-   08. LOCAL STORAGE
+   09. HTML ESCAPER
+   ========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   10. LOCAL STORAGE
    ========================================================= */
 
 function loadCart() {
@@ -458,6 +503,7 @@ function loadCart() {
                 AB_CONFIG.storageKey
             );
 
+
         if (!saved) {
 
             state.cart = [];
@@ -466,18 +512,54 @@ function loadCart() {
 
         }
 
+
         const parsed =
             JSON.parse(saved);
 
-        if (Array.isArray(parsed)) {
 
-            state.cart = parsed;
-
-        } else {
+        if (!Array.isArray(parsed)) {
 
             state.cart = [];
 
+            return;
+
         }
+
+
+        /*
+         * Only accept valid cart records.
+         */
+
+        state.cart =
+            parsed
+                .filter(
+                    item =>
+                        item &&
+                        Number.isFinite(
+                            Number(item.id)
+                        ) &&
+                        Number.isFinite(
+                            Number(item.quantity)
+                        ) &&
+                        Number(item.quantity) > 0
+                )
+                .map(item => ({
+
+                    id:
+                        Number(item.id),
+
+                    quantity:
+                        Math.max(
+                            1,
+                            Math.floor(
+                                Number(
+                                    item.quantity
+                                )
+                            )
+                        )
+
+                }));
+
 
     } catch (error) {
 
@@ -499,7 +581,9 @@ function saveCart() {
 
         localStorage.setItem(
             AB_CONFIG.storageKey,
-            JSON.stringify(state.cart)
+            JSON.stringify(
+                state.cart
+            )
         );
 
     } catch (error) {
@@ -515,7 +599,7 @@ function saveCart() {
 
 
 /* =========================================================
-   09. PRELOADER
+   11. PRELOADER
    ========================================================= */
 
 function initializePreloader() {
@@ -524,48 +608,58 @@ function initializePreloader() {
         return;
     }
 
-    window.addEventListener(
-        "load",
+
+    /*
+     * Do not depend exclusively on
+     * window "load".
+     *
+     * The CSS also contains a failsafe.
+     */
+
+    window.setTimeout(
         () => {
 
-            setTimeout(
-                () => {
-
-                    DOM.preloader.classList.add(
-                        "loaded"
-                    );
-
-                },
-                AB_CONFIG.preloaderDuration
+            DOM.preloader.classList.add(
+                "loaded"
             );
 
-        }
+        },
+        AB_CONFIG.preloaderDuration
     );
 
 }
 
 
 /* =========================================================
-   10. PAGE NAVIGATION
+   12. PAGE NORMALIZATION
    ========================================================= */
 
 function normalizePage(page) {
 
     const validPages = [
+
         "home",
         "shop",
         "collections",
         "investment",
         "about",
         "contact"
+
     ];
 
-    return validPages.includes(page)
-        ? page
+
+    return validPages.includes(
+        String(page).toLowerCase()
+    )
+        ? String(page).toLowerCase()
         : AB_CONFIG.defaultPage;
 
 }
 
+
+/* =========================================================
+   13. GET PAGE FROM URL
+   ========================================================= */
 
 function getPageFromHash() {
 
@@ -575,12 +669,18 @@ function getPageFromHash() {
             .trim()
             .toLowerCase();
 
+
     return normalizePage(
-        hash || AB_CONFIG.defaultPage
+        hash ||
+        AB_CONFIG.defaultPage
     );
 
 }
 
+
+/* =========================================================
+   14. NAVIGATE
+   ========================================================= */
 
 function navigateTo(
     page,
@@ -589,35 +689,6 @@ function navigateTo(
 
     page =
         normalizePage(page);
-
-
-    if (
-        page === state.currentPage &&
-        document.querySelector(
-            `.page[data-page-section="${page}"]`
-        )
-    ) {
-
-        closeMobileMenu();
-
-        return;
-
-    }
-
-
-    const pages =
-        document.querySelectorAll(
-            ".page[data-page-section]"
-        );
-
-
-    pages.forEach(section => {
-
-        section.classList.remove(
-            "active-page"
-        );
-
-    });
 
 
     const target =
@@ -636,6 +707,27 @@ function navigateTo(
 
     }
 
+
+    /*
+     * Hide every page.
+     */
+
+    document
+        .querySelectorAll(
+            ".page[data-page-section]"
+        )
+        .forEach(section => {
+
+            section.classList.remove(
+                "active-page"
+            );
+
+        });
+
+
+    /*
+     * Show requested page.
+     */
 
     target.classList.add(
         "active-page"
@@ -659,28 +751,37 @@ function navigateTo(
 
 
     /*
-     * Change the browser URL without
-     * forcing a full document reload.
+     * Update browser history.
      */
 
     if (pushHistory) {
 
-        history.pushState(
-            {
-                page: page
-            },
-            "",
-            `#${page}`
-        );
+        const desiredHash =
+            `#${page}`;
+
+
+        if (
+            window.location.hash !==
+            desiredHash
+        ) {
+
+            history.pushState(
+                {
+                    page
+                },
+                "",
+                desiredHash
+            );
+
+        }
 
     }
 
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
+    /*
+     * Render shop whenever
+     * the shop becomes active.
+     */
 
     if (page === "shop") {
 
@@ -688,17 +789,28 @@ function navigateTo(
 
     }
 
+
+    /*
+     * Move user to the top.
+     */
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
 }
 
 
 /* =========================================================
-   11. INITIAL HISTORY STATE
+   15. HISTORY
    ========================================================= */
 
 function initializeHistory() {
 
     const initialPage =
         getPageFromHash();
+
 
     history.replaceState(
         {
@@ -708,15 +820,12 @@ function initializeHistory() {
         `#${initialPage}`
     );
 
+
     state.currentPage =
         initialPage;
 
 }
 
-
-/* =========================================================
-   12. BROWSER BACK / FORWARD
-   ========================================================= */
 
 function initializeHistoryListener() {
 
@@ -728,6 +837,7 @@ function initializeHistoryListener() {
                 event.state?.page ||
                 getPageFromHash();
 
+
             navigateTo(
                 page,
                 false
@@ -736,11 +846,39 @@ function initializeHistoryListener() {
         }
     );
 
+
+    /*
+     * Also support direct hash changes.
+     */
+
+    window.addEventListener(
+        "hashchange",
+        () => {
+
+            const page =
+                getPageFromHash();
+
+
+            if (
+                page !==
+                state.currentPage
+            ) {
+
+                navigateTo(
+                    page,
+                    false
+                );
+
+            }
+
+        }
+    );
+
 }
 
 
 /* =========================================================
-   13. NAVIGATION STATE
+   16. NAVIGATION STATE
    ========================================================= */
 
 function updateNavigationState(page) {
@@ -776,7 +914,7 @@ function updateNavigationState(page) {
 
 
 /* =========================================================
-   14. GLOBAL NAVIGATION CLICK HANDLER
+   17. NAVIGATION CLICKS
    ========================================================= */
 
 function initializeNavigationClicks() {
@@ -820,7 +958,7 @@ function initializeNavigationClicks() {
 
 
 /* =========================================================
-   15. MOBILE MENU
+   18. MOBILE MENU
    ========================================================= */
 
 function openMobileMenu() {
@@ -829,27 +967,38 @@ function openMobileMenu() {
         return;
     }
 
+
+    closeSearchPanel();
+
+    closeCart();
+
+
     DOM.mobileMenu.classList.add(
         "open"
     );
+
 
     DOM.menuOverlay?.classList.add(
         "open"
     );
 
+
     DOM.menuToggle?.classList.add(
         "open"
     );
+
 
     DOM.menuToggle?.setAttribute(
         "aria-expanded",
         "true"
     );
 
+
     DOM.mobileMenu.setAttribute(
         "aria-hidden",
         "false"
     );
+
 
     document.body.classList.add(
         "menu-open"
@@ -860,31 +1009,32 @@ function openMobileMenu() {
 
 function closeMobileMenu() {
 
-    if (!DOM.mobileMenu) {
-        return;
-    }
-
-    DOM.mobileMenu.classList.remove(
+    DOM.mobileMenu?.classList.remove(
         "open"
     );
+
 
     DOM.menuOverlay?.classList.remove(
         "open"
     );
 
+
     DOM.menuToggle?.classList.remove(
         "open"
     );
+
 
     DOM.menuToggle?.setAttribute(
         "aria-expanded",
         "false"
     );
 
-    DOM.mobileMenu.setAttribute(
+
+    DOM.mobileMenu?.setAttribute(
         "aria-hidden",
         "true"
     );
+
 
     document.body.classList.remove(
         "menu-open"
@@ -899,12 +1049,13 @@ function initializeMobileMenu() {
         "click",
         () => {
 
-            const open =
-                DOM.mobileMenu.classList.contains(
+            const isOpen =
+                DOM.mobileMenu?.classList.contains(
                     "open"
                 );
 
-            if (open) {
+
+            if (isOpen) {
 
                 closeMobileMenu();
 
@@ -933,22 +1084,28 @@ function initializeMobileMenu() {
 
 
 /* =========================================================
-   16. SEARCH PANEL
+   19. SEARCH
    ========================================================= */
 
 function openSearchPanel() {
+
+    closeMobileMenu();
+
+    closeCart();
+
 
     DOM.searchPanel?.classList.add(
         "open"
     );
 
-    setTimeout(
+
+    window.setTimeout(
         () => {
 
             DOM.productSearch?.focus();
 
         },
-        100
+        120
     );
 
 }
@@ -969,12 +1126,13 @@ function initializeSearchPanel() {
         "click",
         () => {
 
-            const open =
-                DOM.searchPanel.classList.contains(
+            const isOpen =
+                DOM.searchPanel?.classList.contains(
                     "open"
                 );
 
-            if (open) {
+
+            if (isOpen) {
 
                 closeSearchPanel();
 
@@ -1005,7 +1163,8 @@ function initializeSearchPanel() {
 
 
             if (
-                state.currentSearch.length > 0
+                state.currentSearch &&
+                state.currentPage !== "shop"
             ) {
 
                 navigateTo(
@@ -1026,13 +1185,18 @@ function initializeSearchPanel() {
         "keydown",
         event => {
 
-            if (event.key === "Escape") {
+            if (
+                event.key ===
+                "Escape"
+            ) {
 
                 closeSearchPanel();
 
                 closeMobileMenu();
 
                 closeCart();
+
+                closeProductPreview();
 
             }
 
@@ -1043,7 +1207,7 @@ function initializeSearchPanel() {
 
 
 /* =========================================================
-   17. PRODUCT CARD HTML
+   20. PRODUCT CARD
    ========================================================= */
 
 function productCard(product) {
@@ -1061,12 +1225,11 @@ function productCard(product) {
                     product.badge
                         ? `
                             <span class="product-badge">
-                                ${product.badge}
+                                ${escapeHTML(product.badge)}
                             </span>
                           `
                         : ""
                 }
-
 
                 <img
                     src="${product.image}"
@@ -1074,7 +1237,6 @@ function productCard(product) {
                     loading="lazy"
                     onerror="this.onerror=null;this.src='images/hero/hero-main.jpg';"
                 >
-
 
                 <button
                     class="product-quick-add"
@@ -1090,7 +1252,7 @@ function productCard(product) {
             <div class="product-info">
 
                 <span class="product-category">
-                    ${product.category}
+                    ${escapeHTML(product.category)}
                 </span>
 
 
@@ -1126,23 +1288,7 @@ function productCard(product) {
 
 
 /* =========================================================
-   18. ESCAPE HTML
-   ========================================================= */
-
-function escapeHTML(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
-}
-
-
-/* =========================================================
-   19. FEATURED PRODUCTS
+   21. FEATURED PRODUCTS
    ========================================================= */
 
 function renderFeaturedProducts() {
@@ -1170,7 +1316,7 @@ function renderFeaturedProducts() {
 
 
 /* =========================================================
-   20. FILTER PRODUCTS
+   22. FILTER PRODUCTS
    ========================================================= */
 
 function getFilteredProducts() {
@@ -1180,11 +1326,12 @@ function getFilteredProducts() {
 
 
     /*
-     * Category
+     * Category filter
      */
 
     if (
-        state.currentCategory !== "all"
+        state.currentCategory !==
+        "all"
     ) {
 
         products =
@@ -1198,7 +1345,7 @@ function getFilteredProducts() {
 
 
     /*
-     * Search
+     * Search filter
      */
 
     if (
@@ -1230,7 +1377,7 @@ function getFilteredProducts() {
 
 
     /*
-     * Sorting
+     * Sort
      */
 
     switch (
@@ -1241,7 +1388,8 @@ function getFilteredProducts() {
 
             products.sort(
                 (a, b) =>
-                    a.price - b.price
+                    a.price -
+                    b.price
             );
 
             break;
@@ -1251,7 +1399,8 @@ function getFilteredProducts() {
 
             products.sort(
                 (a, b) =>
-                    b.price - a.price
+                    b.price -
+                    a.price
             );
 
             break;
@@ -1290,7 +1439,7 @@ function getFilteredProducts() {
 
 
 /* =========================================================
-   21. SHOP PRODUCTS
+   23. SHOP RENDER
    ========================================================= */
 
 function renderShopProducts() {
@@ -1341,8 +1490,29 @@ function renderShopProducts() {
 
 
 /* =========================================================
-   22. CATEGORY FILTERS
+   24. CATEGORY FILTERS
    ========================================================= */
+
+function setActiveFilterButton(
+    category
+) {
+
+    document
+        .querySelectorAll(
+            ".filter-btn"
+        )
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.filter ===
+                category
+            );
+
+        });
+
+}
+
 
 function initializeFilters() {
 
@@ -1350,34 +1520,22 @@ function initializeFilters() {
         "click",
         event => {
 
-            const button =
+            const filterButton =
                 event.target.closest(
                     ".filter-btn"
                 );
 
 
-            if (button) {
-
-                document
-                    .querySelectorAll(
-                        ".filter-btn"
-                    )
-                    .forEach(
-                        btn =>
-                            btn.classList.remove(
-                                "active"
-                            )
-                    );
-
-
-                button.classList.add(
-                    "active"
-                );
-
+            if (filterButton) {
 
                 state.currentCategory =
-                    button.dataset.filter ||
+                    filterButton.dataset.filter ||
                     "all";
+
+
+                setActiveFilterButton(
+                    state.currentCategory
+                );
 
 
                 renderShopProducts();
@@ -1402,18 +1560,15 @@ function initializeFilters() {
                     categoryCard.dataset.category;
 
 
-                navigateTo(
-                    "shop",
-                    true
-                );
-
-
                 setActiveFilterButton(
                     state.currentCategory
                 );
 
 
-                renderShopProducts();
+                navigateTo(
+                    "shop",
+                    true
+                );
 
             }
 
@@ -1423,29 +1578,8 @@ function initializeFilters() {
 }
 
 
-function setActiveFilterButton(
-    category
-) {
-
-    document
-        .querySelectorAll(
-            ".filter-btn"
-        )
-        .forEach(button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.filter ===
-                category
-            );
-
-        });
-
-}
-
-
 /* =========================================================
-   23. SORTING
+   25. SORTING
    ========================================================= */
 
 function initializeSorting() {
@@ -1457,6 +1591,7 @@ function initializeSorting() {
             state.currentSort =
                 event.target.value;
 
+
             renderShopProducts();
 
         }
@@ -1466,10 +1601,12 @@ function initializeSorting() {
 
 
 /* =========================================================
-   24. CART HELPERS
+   26. CART HELPERS
    ========================================================= */
 
-function findCartItem(productId) {
+function findCartItem(
+    productId
+) {
 
     return state.cart.find(
         item =>
@@ -1480,7 +1617,9 @@ function findCartItem(productId) {
 }
 
 
-function addToCart(productId) {
+function addToCart(
+    productId
+) {
 
     const product =
         state.products.find(
@@ -1493,7 +1632,7 @@ function addToCart(productId) {
     if (!product) {
 
         console.warn(
-            "Product not found:",
+            "Area Boyz: Product not found.",
             productId
         );
 
@@ -1516,9 +1655,11 @@ function addToCart(productId) {
 
         state.cart.push({
 
-            id: product.id,
+            id:
+                product.id,
 
-            quantity: 1
+            quantity:
+                1
 
         });
 
@@ -1535,7 +1676,7 @@ function addToCart(productId) {
 
 
 /* =========================================================
-   25. CART QUANTITY
+   27. CHANGE CART QUANTITY
    ========================================================= */
 
 function changeCartQuantity(
@@ -1554,17 +1695,19 @@ function changeCartQuantity(
     }
 
 
-    item.quantity += change;
+    item.quantity +=
+        Number(change);
 
 
-    if (item.quantity <= 0) {
+    if (
+        item.quantity <= 0
+    ) {
 
-        state.cart =
-            state.cart.filter(
-                cartItem =>
-                    Number(cartItem.id) !==
-                    Number(productId)
-            );
+        removeFromCart(
+            productId
+        );
+
+        return;
 
     }
 
@@ -1577,7 +1720,7 @@ function changeCartQuantity(
 
 
 /* =========================================================
-   26. REMOVE CART ITEM
+   28. REMOVE CART ITEM
    ========================================================= */
 
 function removeFromCart(
@@ -1600,13 +1743,16 @@ function removeFromCart(
 
 
 /* =========================================================
-   27. CART TOTAL
+   29. CART TOTAL
    ========================================================= */
 
 function calculateCartTotal() {
 
     return state.cart.reduce(
-        (total, item) => {
+        (
+            total,
+            item
+        ) => {
 
             const product =
                 state.products.find(
@@ -1635,7 +1781,7 @@ function calculateCartTotal() {
 
 
 /* =========================================================
-   28. CART COUNT
+   30. CART COUNT
    ========================================================= */
 
 function calculateCartCount() {
@@ -1646,7 +1792,7 @@ function calculateCartCount() {
             item
         ) =>
             total +
-            item.quantity,
+            Number(item.quantity || 0),
         0
     );
 
@@ -1654,78 +1800,12 @@ function calculateCartCount() {
 
 
 /* =========================================================
-   29. RENDER CART
+   31. CART ITEM HTML
    ========================================================= */
 
-function renderCart() {
-
-    if (!DOM.cartItems) {
-        return;
-    }
-
-
-    const count =
-        calculateCartCount();
-
-
-    const total =
-        calculateCartTotal();
-
-
-    if (DOM.cartCount) {
-
-        DOM.cartCount.textContent =
-            count;
-
-    }
-
-
-    if (DOM.cartTotal) {
-
-        DOM.cartTotal.textContent =
-            formatCurrency(total);
-
-    }
-
-
-    if (!state.cart.length) {
-
-        DOM.cartItems.innerHTML = `
-
-            <div class="empty-cart">
-
-                <i class="fa-solid fa-bag-shopping"></i>
-
-                <h3>
-                    Your bag is empty.
-                </h3>
-
-                <p>
-                    Find something that fits your life.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    DOM.cartItems.innerHTML =
-        state.cart
-            .map(cartItemHTML)
-            .join("");
-
-}
-
-
-/* =========================================================
-   30. CART ITEM HTML
-   ========================================================= */
-
-function cartItemHTML(item) {
+function cartItemHTML(
+    item
+) {
 
     const product =
         state.products.find(
@@ -1760,6 +1840,7 @@ function cartItemHTML(item) {
                 <h4>
                     ${escapeHTML(product.name)}
                 </h4>
+
 
                 <p>
                     ${formatCurrency(product.price)}
@@ -1824,7 +1905,75 @@ function cartItemHTML(item) {
 
 
 /* =========================================================
-   31. CART EVENT HANDLER
+   32. RENDER CART
+   ========================================================= */
+
+function renderCart() {
+
+    const count =
+        calculateCartCount();
+
+
+    const total =
+        calculateCartTotal();
+
+
+    if (DOM.cartCount) {
+
+        DOM.cartCount.textContent =
+            count;
+
+    }
+
+
+    if (DOM.cartTotal) {
+
+        DOM.cartTotal.textContent =
+            formatCurrency(total);
+
+    }
+
+
+    if (!DOM.cartItems) {
+        return;
+    }
+
+
+    if (!state.cart.length) {
+
+        DOM.cartItems.innerHTML = `
+
+            <div class="empty-cart">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <h3>
+                    Your bag is empty.
+                </h3>
+
+                <p>
+                    Find something that fits your life.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    DOM.cartItems.innerHTML =
+        state.cart
+            .map(cartItemHTML)
+            .join("");
+
+}
+
+
+/* =========================================================
+   33. CART ACTIONS
    ========================================================= */
 
 function initializeCartActions() {
@@ -1841,63 +1990,72 @@ function initializeCartActions() {
 
             if (addButton) {
 
-                const id =
+                addToCart(
                     Number(
                         addButton.dataset.addProduct
-                    );
-
-
-                addToCart(id);
+                    )
+                );
 
                 return;
 
             }
 
 
-            const cartAction =
+            const actionButton =
                 event.target.closest(
                     "[data-cart-action]"
                 );
 
 
-            if (!cartAction) {
+            if (!actionButton) {
                 return;
             }
 
 
-            const id =
+            const productId =
                 Number(
-                    cartAction.dataset.productId
+                    actionButton.dataset.productId
                 );
 
 
             const action =
-                cartAction.dataset.cartAction;
+                actionButton.dataset.cartAction;
 
 
-            if (action === "increase") {
+            if (
+                action ===
+                "increase"
+            ) {
 
                 changeCartQuantity(
-                    id,
+                    productId,
                     1
                 );
 
             }
 
 
-            if (action === "decrease") {
+            if (
+                action ===
+                "decrease"
+            ) {
 
                 changeCartQuantity(
-                    id,
+                    productId,
                     -1
                 );
 
             }
 
 
-            if (action === "remove") {
+            if (
+                action ===
+                "remove"
+            ) {
 
-                removeFromCart(id);
+                removeFromCart(
+                    productId
+                );
 
             }
 
@@ -1908,23 +2066,31 @@ function initializeCartActions() {
 
 
 /* =========================================================
-   32. CART DRAWER
+   34. CART DRAWER
    ========================================================= */
 
 function openCart() {
+
+    closeMobileMenu();
+
+    closeSearchPanel();
+
 
     DOM.cartDrawer?.classList.add(
         "open"
     );
 
+
     DOM.cartOverlay?.classList.add(
         "open"
     );
+
 
     DOM.cartDrawer?.setAttribute(
         "aria-hidden",
         "false"
     );
+
 
     document.body.classList.add(
         "cart-open"
@@ -1939,14 +2105,17 @@ function closeCart() {
         "open"
     );
 
+
     DOM.cartOverlay?.classList.remove(
         "open"
     );
+
 
     DOM.cartDrawer?.setAttribute(
         "aria-hidden",
         "true"
     );
+
 
     document.body.classList.remove(
         "cart-open"
@@ -1976,12 +2145,16 @@ function initializeCartDrawer() {
 
 
     document
-        .getElementById("checkoutButton")
+        .getElementById(
+            "checkoutButton"
+        )
         ?.addEventListener(
             "click",
             () => {
 
-                if (!state.cart.length) {
+                if (
+                    !state.cart.length
+                ) {
 
                     alert(
                         "Your Area Boyz bag is currently empty."
@@ -1992,12 +2165,8 @@ function initializeCartDrawer() {
                 }
 
 
-                /*
-                 * Real payment integration comes later.
-                 */
-
                 alert(
-                    "Checkout engine ready for backend integration. Your cart contains " +
+                    "Checkout engine ready for backend integration. Your bag contains " +
                     calculateCartCount() +
                     " item(s)."
                 );
@@ -2009,7 +2178,7 @@ function initializeCartDrawer() {
 
 
 /* =========================================================
-   33. EQUITY CALCULATOR
+   35. EQUITY CALCULATOR
    ========================================================= */
 
 function initializeEquityCalculator() {
@@ -2037,8 +2206,8 @@ function calculateEquity() {
 
 
     if (
-        !amount &&
-        !requestedPercentage
+        amount <= 0 &&
+        requestedPercentage <= 0
     ) {
 
         showCalculatorMessage(
@@ -2053,14 +2222,9 @@ function calculateEquity() {
     let html = "";
 
 
-    /*
-     * If amount is supplied,
-     * calculate the corresponding
-     * percentage of the stated
-     * $758,000 equity figure.
-     */
-
-    if (amount > 0) {
+    if (
+        amount > 0
+    ) {
 
         const ownership =
             (
@@ -2076,14 +2240,17 @@ function calculateEquity() {
                 HYPOTHETICAL OWNERSHIP
             </span>
 
+
             <strong>
                 ${ownership.toFixed(4)}%
             </strong>
 
+
             <p>
                 A hypothetical ${formatCurrency(amount)}
                 allocation against a stated enterprise
-                equity figure of ${formatCurrency(
+                equity figure of
+                ${formatCurrency(
                     AB_CONFIG.totalEquity
                 )}.
             </p>
@@ -2092,12 +2259,6 @@ function calculateEquity() {
 
     }
 
-
-    /*
-     * If percentage is supplied,
-     * calculate the corresponding
-     * implied amount.
-     */
 
     if (
         requestedPercentage > 0
@@ -2119,16 +2280,22 @@ function calculateEquity() {
                     HYPOTHETICAL VALUE
                 </span>
 
+
                 <strong>
-                    ${formatCurrency(impliedValue)}
+                    ${formatCurrency(
+                        impliedValue
+                    )}
                 </strong>
 
+
                 <p>
-                    A hypothetical ${requestedPercentage}%
+                    A hypothetical
+                    ${requestedPercentage}%
                     allocation against the stated
                     ${formatCurrency(
                         AB_CONFIG.totalEquity
-                    )} equity figure.
+                    )}
+                    equity figure.
                 </p>
 
             </div>
@@ -2138,8 +2305,14 @@ function calculateEquity() {
     }
 
 
-    DOM.calculatorResult.innerHTML =
-        html;
+    if (
+        DOM.calculatorResult
+    ) {
+
+        DOM.calculatorResult.innerHTML =
+            html;
+
+    }
 
 }
 
@@ -2148,7 +2321,9 @@ function showCalculatorMessage(
     message
 ) {
 
-    if (!DOM.calculatorResult) {
+    if (
+        !DOM.calculatorResult
+    ) {
         return;
     }
 
@@ -2159,9 +2334,11 @@ function showCalculatorMessage(
             SHARE EXPLORER
         </span>
 
+
         <strong>
             —
         </strong>
+
 
         <p>
             ${escapeHTML(message)}
@@ -2173,7 +2350,7 @@ function showCalculatorMessage(
 
 
 /* =========================================================
-   34. ANNOUNCEMENT BAR
+   36. ANNOUNCEMENT BAR
    ========================================================= */
 
 function initializeAnnouncement() {
@@ -2202,7 +2379,7 @@ function initializeAnnouncement() {
 
 
 /* =========================================================
-   35. AUTO-HIDE HEADER
+   37. HEADER BEHAVIOR
    ========================================================= */
 
 function initializeHeaderBehavior() {
@@ -2235,12 +2412,6 @@ function initializeHeaderBehavior() {
 
             }
 
-
-            /*
-             * Don't hide the header
-             * while the mobile menu,
-             * search or cart is open.
-             */
 
             const menuOpen =
                 DOM.mobileMenu?.classList.contains(
@@ -2300,12 +2471,14 @@ function initializeHeaderBehavior() {
 
 
 /* =========================================================
-   36. CURRENT YEAR
+   38. DYNAMIC YEAR
    ========================================================= */
 
 function initializeYear() {
 
-    if (DOM.currentYear) {
+    if (
+        DOM.currentYear
+    ) {
 
         DOM.currentYear.textContent =
             new Date().getFullYear();
@@ -2316,22 +2489,7 @@ function initializeYear() {
 
 
 /* =========================================================
-   37. PRODUCT CLICK
-   =========================================================
-
-   For now clicking the image/card gives us
-   a simple product information experience.
-
-   The next upgrade can turn this into a
-   full product detail modal/page with:
-
-   - Multiple product images
-   - Size selector
-   - Color selector
-   - Quantity
-   - Description
-   - Related products
-   - Add to bag
+   39. PRODUCT CLICKS
    ========================================================= */
 
 function initializeProductClicks() {
@@ -2350,11 +2508,6 @@ function initializeProductClicks() {
                 return;
             }
 
-
-            /*
-             * Don't trigger when the
-             * Add to Bag button was clicked.
-             */
 
             if (
                 event.target.closest(
@@ -2376,7 +2529,7 @@ function initializeProductClicks() {
             const product =
                 state.products.find(
                     item =>
-                        item.id ===
+                        Number(item.id) ===
                         productId
                 );
 
@@ -2397,10 +2550,12 @@ function initializeProductClicks() {
 
 
 /* =========================================================
-   38. PRODUCT PREVIEW
+   40. PRODUCT PREVIEW
    ========================================================= */
 
-function showProductPreview(product) {
+function showProductPreview(
+    product
+) {
 
     let modal =
         document.getElementById(
@@ -2415,8 +2570,10 @@ function showProductPreview(product) {
                 "div"
             );
 
+
         modal.id =
             "productPreview";
+
 
         modal.innerHTML = `
 
@@ -2436,7 +2593,9 @@ function showProductPreview(product) {
                 </button>
 
 
-                <div class="ab-product-modal-image">
+                <div
+                    class="ab-product-modal-image"
+                >
 
                     <img
                         id="previewImage"
@@ -2447,7 +2606,9 @@ function showProductPreview(product) {
                 </div>
 
 
-                <div class="ab-product-modal-content">
+                <div
+                    class="ab-product-modal-content"
+                >
 
                     <span
                         id="previewCategory"
@@ -2476,7 +2637,11 @@ function showProductPreview(product) {
                         type="button"
                     >
                         Add to bag
-                        <i class="fa-solid fa-bag-shopping"></i>
+
+                        <i
+                            class="fa-solid fa-bag-shopping"
+                        ></i>
+
                     </button>
 
                 </div>
@@ -2491,9 +2656,7 @@ function showProductPreview(product) {
         );
 
 
-        addProductModalStyles(
-            modal
-        );
+        addProductModalStyles();
 
 
         modal.addEventListener(
@@ -2501,7 +2664,8 @@ function showProductPreview(product) {
             event => {
 
                 if (
-                    event.target === modal ||
+                    event.target ===
+                    modal ||
                     event.target.closest(
                         ".ab-product-modal-close"
                     )
@@ -2517,52 +2681,75 @@ function showProductPreview(product) {
     }
 
 
-    document.getElementById(
-        "previewImage"
-    ).src =
+    const previewImage =
+        document.getElementById(
+            "previewImage"
+        );
+
+
+    const previewCategory =
+        document.getElementById(
+            "previewCategory"
+        );
+
+
+    const previewName =
+        document.getElementById(
+            "previewName"
+        );
+
+
+    const previewPrice =
+        document.getElementById(
+            "previewPrice"
+        );
+
+
+    const previewDescription =
+        document.getElementById(
+            "previewDescription"
+        );
+
+
+    const previewAdd =
+        document.getElementById(
+            "previewAdd"
+        );
+
+
+    previewImage.src =
         product.image;
 
 
-    document.getElementById(
-        "previewImage"
-    ).alt =
+    previewImage.alt =
         product.name;
 
 
-    document.getElementById(
-        "previewCategory"
-    ).textContent =
+    previewCategory.textContent =
         product.category;
 
 
-    document.getElementById(
-        "previewName"
-    ).textContent =
+    previewName.textContent =
         product.name;
 
 
-    document.getElementById(
-        "previewPrice"
-    ).textContent =
+    previewPrice.textContent =
         formatCurrency(
             product.price
         );
 
 
-    document.getElementById(
-        "previewDescription"
-    ).textContent =
+    previewDescription.textContent =
         product.description;
 
 
-    document.getElementById(
-        "previewAdd"
-    ).onclick =
+    previewAdd.onclick =
         () => {
 
             addToCart(
                 product.id
             );
+
 
             closeProductPreview();
 
@@ -2573,12 +2760,17 @@ function showProductPreview(product) {
         "open"
     );
 
+
     document.body.classList.add(
         "menu-open"
     );
 
 }
 
+
+/* =========================================================
+   41. CLOSE PRODUCT PREVIEW
+   ========================================================= */
 
 function closeProductPreview() {
 
@@ -2601,11 +2793,7 @@ function closeProductPreview() {
 
 
 /* =========================================================
-   39. PRODUCT MODAL STYLES
-   =========================================================
-
-   We keep these here so you don't have to
-   touch CSS just to test the product preview.
+   42. PRODUCT MODAL STYLES
    ========================================================= */
 
 function addProductModalStyles() {
@@ -2685,8 +2873,7 @@ function addProductModalStyles() {
             display: grid;
 
             grid-template-columns:
-                1fr
-                1fr;
+                1fr 1fr;
 
             border-radius: 24px;
 
@@ -2697,7 +2884,8 @@ function addProductModalStyles() {
             box-shadow:
                 0 30px 100px rgba(0,0,0,.35);
 
-            transform: translateY(15px);
+            transform:
+                translateY(15px);
 
             transition:
                 transform 300ms ease;
@@ -2808,7 +2996,7 @@ function addProductModalStyles() {
 
             border-radius: 50%;
 
-            background: rgba(255,255,255,.9);
+            background: rgba(255,255,255,.92);
 
             color: #080808;
 
@@ -2822,7 +3010,8 @@ function addProductModalStyles() {
 
             .ab-product-modal {
 
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
 
             }
 
@@ -2853,10 +3042,15 @@ function addProductModalStyles() {
 
 
 /* =========================================================
-   40. INITIALIZE EVERYTHING
+   43. INITIALIZE APPLICATION
    ========================================================= */
 
 function initializeAreaBoyz() {
+
+    console.log(
+        "AREA BOYZ ENTERPRISE — INITIALIZING..."
+    );
+
 
     loadCart();
 
@@ -2890,27 +3084,16 @@ function initializeAreaBoyz() {
 
     initializePreloader();
 
+
     renderFeaturedProducts();
 
     renderShopProducts();
 
     renderCart();
 
-    updateNavigationState(
-        state.currentPage
-    );
-
 
     /*
-     * If the user directly loads:
-     *
-     * #shop
-     *
-     * #investment
-     *
-     * etc.
-     *
-     * show that page immediately.
+     * Display initial page.
      */
 
     const initialPage =
@@ -2927,6 +3110,7 @@ function initializeAreaBoyz() {
         "AREA BOYZ ENTERPRISE — SYSTEM ONLINE"
     );
 
+
     console.log(
         `Catalogue: ${state.products.length} products`
     );
@@ -2935,7 +3119,7 @@ function initializeAreaBoyz() {
 
 
 /* =========================================================
-   41. START APPLICATION
+   44. START APPLICATION
    ========================================================= */
 
 if (
@@ -2952,4 +3136,4 @@ if (
 
     initializeAreaBoyz();
 
-                          }
+   }
