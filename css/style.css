@@ -131,50 +131,76 @@ ol {
    03. ACCESSIBILITY
    ========================================================= */
 
-:focus-visible {
-    outline: 3px solid var(--yellow);
-    outline-offset: 4px;
-}
-
-::selection {
-    background: var(--yellow);
-    color: var(--black);
-}
-
-
 /* =========================================================
    04. PRELOADER
+   AREA BOYZ ENTERPRISE — BULLETPROOF LOADER
    ========================================================= */
 
 .preloader {
-
     position: fixed;
     inset: 0;
-
     z-index: 99999;
 
     display: grid;
     place-items: center;
 
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
     background: var(--black);
+    color: var(--white);
+
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 
     transition:
         opacity 700ms ease,
         visibility 700ms ease;
-
 }
 
+/* JavaScript-controlled exit */
 .preloader.loaded {
-
     opacity: 0;
     visibility: hidden;
-
     pointer-events: none;
+}
 
+/*
+   Emergency fallback.
+
+   If JavaScript fails completely, the loader will
+   automatically become non-blocking after 8 seconds.
+*/
+@keyframes preloaderFailsafe {
+    0%,
+    85% {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
+
+.preloader {
+    animation: preloaderFailsafe 8s ease forwards;
+}
+
+/*
+   When JavaScript successfully adds .loaded,
+   the normal smooth exit takes control.
+*/
+.preloader.loaded {
+    animation: none;
 }
 
 .preloader-inner {
-
     width: min(85%, 360px);
 
     text-align: center;
@@ -183,11 +209,9 @@ ol {
 
     animation:
         loaderReveal 900ms ease both;
-
 }
 
 .brand-loader {
-
     width: 76px;
     height: 76px;
 
@@ -197,7 +221,6 @@ ol {
     place-items: center;
 
     background: var(--yellow);
-
     color: var(--black);
 
     font-size: 25px;
@@ -205,50 +228,48 @@ ol {
 
     transform: rotate(-6deg);
 
+    box-shadow:
+        0 15px 45px rgba(255, 212, 0, .12);
 }
 
 .brand-loader span {
+    display: block;
     transform: rotate(6deg);
 }
 
 .preloader h2 {
-
     font-size: 1.45rem;
 
     font-weight: 950;
 
-    letter-spacing: 0.12em;
-
+    letter-spacing: .12em;
 }
 
 .preloader p {
-
     margin-top: 3px;
 
     color: var(--yellow);
 
-    font-size: 0.72rem;
-
+    font-size: .72rem;
     font-weight: 800;
 
-    letter-spacing: 0.32em;
-
+    letter-spacing: .32em;
 }
 
 .loader-line {
+    position: relative;
 
+    width: 100%;
     height: 3px;
 
     margin-top: 30px;
 
     overflow: hidden;
 
-    background: rgba(255,255,255,.15);
-
+    background: rgba(255, 255, 255, .15);
 }
 
 .loader-line span {
-
     display: block;
 
     width: 35%;
@@ -258,7 +279,6 @@ ol {
 
     animation:
         loadingLine 1.3s ease-in-out infinite;
-
 }
 
 @keyframes loadingLine {
@@ -283,6 +303,24 @@ ol {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+
+    .preloader {
+        animation-duration: 4s;
+    }
+
+    .preloader-inner {
+        animation: none;
+    }
+
+    .loader-line span {
+        animation: none;
+        width: 100%;
     }
 
 }
