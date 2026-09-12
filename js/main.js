@@ -1,1453 +1,452 @@
-/* =========================================================
-   AREA BOYZ ENTERPRISE
-   SCALABLE PRODUCT + CART ENGINE
-   Version 2.1.0
-   ========================================================= */
-
-"use strict";
-
-/* =========================================================
-   CART
-   ========================================================= */
-
-const CART_KEY = "areaboyz_cart";
-
-function getCart() {
-  try {
-    const saved = localStorage.getItem(CART_KEY);
-    const cart = saved ? JSON.parse(saved) : [];
-    return Array.isArray(cart) ? cart : [];
-  } catch (error) {
-    console.error("Cart error:", error);
-    return [];
-  }
-}
-
-function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  updateCartUI();
-}
-
-function addToCart(product) {
-  if (!product || !product.id) return;
-
-  const cart = getCart();
-
-  const existing = cart.find(item => item.id === product.id);
-
-  if (existing) {
-    existing.qty = Number(existing.qty || 1) + 1;
-  } else {
-    cart.push({
-      id: product.id,
-      name: product.name,
-      category: product.category,
-      subcategory: product.subcategory,
-      price: Number(product.price),
-      img: product.img,
-      qty: 1
-    });
-  }
-
-  saveCart(cart);
-
-  showToast(product.name + " added to cart.");
-}
-
-function removeFromCart(id) {
-  saveCart(
-    getCart().filter(item => item.id !== id)
-  );
-}
-
-function updateQty(id, amount) {
-  const cart = getCart();
-
-  const item = cart.find(product => product.id === id);
-
-  if (!item) return;
-
-  item.qty = Number(item.qty || 1) + amount;
-
-  if (item.qty <= 0) {
-    removeFromCart(id);
-    return;
-  }
-
-  saveCart(cart);
-}
-
-function getCartQuantity() {
-  return getCart().reduce(
-    (total, item) => total + Number(item.qty || 1),
-    0
-  );
-}
-
-function getCartTotal() {
-  return getCart().reduce(
-    (total, item) =>
-      total +
-      Number(item.price || 0) *
-      Number(item.qty || 1),
-    0
-  );
-}
-
-function updateCartUI() {
-  const quantity = getCartQuantity();
-
-  document.querySelectorAll(".cart-count").forEach(counter => {
-    counter.textContent = quantity;
-  });
-}
-
-
-/* =========================================================
-   NOTIFICATIONS
-   ========================================================= */
-
-function showToast(message) {
-  let toast = document.getElementById("area-boyz-toast");
-
-  if (!toast) {
-    toast = document.createElement("div");
-
-    toast.id = "area-boyz-toast";
-
-    Object.assign(toast.style, {
-      position: "fixed",
-      bottom: "24px",
-      left: "50%",
-      transform: "translateX(-50%) translateY(20px)",
-      zIndex: "99999",
-      padding: "13px 20px",
-      borderRadius: "12px",
-      background: "#16161f",
-      color: "#f4f4f6",
-      border: "1px solid rgba(255,255,255,.12)",
-      boxShadow: "0 15px 40px rgba(0,0,0,.4)",
-      fontSize: "14px",
-      fontWeight: "600",
-      opacity: "0",
-      transition: "all .25s ease"
-    });
-
-    document.body.appendChild(toast);
-  }
-
-  toast.textContent = message;
-
-  requestAnimationFrame(() => {
-    toast.style.opacity = "1";
-    toast.style.transform =
-      "translateX(-50%) translateY(0)";
-  });
-
-  clearTimeout(window.areaBoyzToastTimer);
-
-  window.areaBoyzToastTimer = setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transform =
-      "translateX(-50%) translateY(20px)";
-  }, 2500);
-}
-
-
-/* =========================================================
-   PRODUCT DATABASE
-   =========================================================
-   
-   This structure is designed to scale to hundreds
-   or thousands of products later.
-   ========================================================= */
+/* =====================================================
+   Area Boyz Enterprise – Vanilla JS SPA
+   Preloader + Client-side page switching
+   ===================================================== */
 
 const PRODUCTS = [
-
-  /* ===================== CLOTHING ===================== */
-
-  {
-    id: "p1",
-    name: "Emerald Brocade Vest Ensemble",
-    category: "Clothing",
-    subcategory: "Formal",
-    collection: "Formal",
-    price: 890,
-    img: "images/formal-green-vest.jpg",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Emerald"],
-    stock: 18,
-    badge: "Featured",
-    description:
-      "A refined emerald brocade ensemble combining traditional influence with modern tailoring.",
-    featured: true
-  },
-
-  {
-    id: "p2",
-    name: "Black Mandarin Collar Suit",
-    category: "Clothing",
-    subcategory: "Suits",
-    collection: "Formal",
-    price: 1250,
-    img: "images/black-mandarin-suit.jpg",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Black"],
-    stock: 12,
-    badge: "Luxury",
-    description:
-      "A sharp black tailored suit featuring a distinctive Mandarin collar.",
-    featured: true
-  },
-
-  {
-    id: "p5",
-    name: "Polka Dot & Pink Pleated Set",
-    category: "Clothing",
-    subcategory: "Contemporary",
-    collection: "Contemporary",
-    price: 480,
-    img: "images/polka-pink-outfit.jpg",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Pink", "White"],
-    stock: 22,
-    badge: "New",
-    description:
-      "A contemporary pleated set designed for expressive everyday style.",
-    featured: true
-  },
-
-  {
-    id: "p7",
-    name: "Lace-Trim Wide-Leg Jeans",
-    category: "Clothing",
-    subcategory: "Jeans",
-    collection: "Denim",
-    price: 340,
-    img: "images/lace-jeans-full.jpg",
-    sizes: ["28", "30", "32", "34", "36", "38"],
-    colors: ["Denim"],
-    stock: 30,
-    badge: "Trending",
-    description:
-      "Wide-leg denim with distinctive lace detailing and a contemporary silhouette.",
-    featured: true
-  },
-
-  {
-    id: "p9",
-    name: "Spider-Man Comic Tee",
-    category: "Clothing",
-    subcategory: "T-Shirts",
-    collection: "Streetwear",
-    price: 85,
-    img: "images/spiderman-tshirt.jpg",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Black", "Red"],
-    stock: 60,
-    badge: "Street",
-    description:
-      "Graphic streetwear tee inspired by comic-book culture.",
-    featured: true
-  },
-
-  {
-    id: "p10",
-    name: "Red Spider Hoodie",
-    category: "Clothing",
-    subcategory: "Hoodies",
-    collection: "Streetwear",
-    price: 195,
-    img: "images/spiderman-hoodie.jpg",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Red"],
-    stock: 40,
-    badge: "Limited Drop",
-    description:
-      "A bold graphic hoodie built for modern streetwear wardrobes.",
-    featured: true
-  },
-
-  {
-    id: "p12",
-    name: "Black Gold Branch Suit",
-    category: "Clothing",
-    subcategory: "Couture",
-    collection: "Couture",
-    price: 1850,
-    img: "images/black-gold-suit.jpg",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Black", "Gold"],
-    stock: 8,
-    badge: "Couture",
-    description:
-      "A statement couture suit combining black tailoring with gold botanical detailing.",
-    featured: true
-  },
-
-  {
-    id: "p13",
-    name: "Ivory Bamboo Suit",
-    category: "Clothing",
-    subcategory: "Couture",
-    collection: "Eastern Modern",
-    price: 1680,
-    img: "images/white-bamboo-suit.jpg",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Ivory"],
-    stock: 7,
-    badge: "Couture",
-    description:
-      "Fluid ivory tailoring featuring an elegant bamboo-inspired print.",
-    featured: true
-  },
-
-  {
-    id: "p14",
-    name: "Gold Mirror Vest Look",
-    category: "Clothing",
-    subcategory: "Avant-Garde",
-    collection: "Future Form",
-    price: 980,
-    img: "images/gold-vest-outfit.jpg",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Gold"],
-    stock: 10,
-    badge: "Avant-Garde",
-    description:
-      "A reflective statement vest designed for high-impact evening looks.",
-    featured: true
-  },
-
-  {
-    id: "p16",
-    name: "Charcoal Pleated Trousers",
-    category: "Clothing",
-    subcategory: "Trousers",
-    collection: "Formal",
-    price: 290,
-    img: "images/gray-pleated-pants.jpg",
-    sizes: ["28", "30", "32", "34", "36", "38"],
-    colors: ["Charcoal"],
-    stock: 35,
-    badge: "Essential",
-    description:
-      "Clean charcoal pleated trousers with a modern relaxed silhouette.",
-    featured: false
-  },
-
-
-  /* ===================== JACKETS ===================== */
-
-  {
-    id: "p4",
-    name: "Chanel Beige Anorak",
-    category: "Jackets",
-    subcategory: "Anoraks",
-    collection: "Luxury Outerwear",
-    price: 3200,
-    img: "images/chanel-beige-jacket.jpg",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Beige"],
-    stock: 5,
-    badge: "Luxury",
-    description:
-      "A premium beige anorak-inspired outerwear statement.",
-    featured: true
-  },
-
-  {
-    id: "p8",
-    name: "Marvel Varsity Collection",
-    category: "Jackets",
-    subcategory: "Varsity",
-    collection: "Streetwear",
-    price: 420,
-    img: "images/marvel-varsity-jackets.jpg",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Black", "Red"],
-    stock: 25,
-    badge: "Street",
-    description:
-      "Varsity-inspired outerwear blending comic culture with modern street style.",
-    featured: true
-  },
-
-  {
-    id: "p15",
-    name: "Cyber Geometric Coat",
-    category: "Jackets",
-    subcategory: "Coats",
-    collection: "Future Form",
-    price: 1450,
-    img: "images/blue-patterned-coat.jpg",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Blue"],
-    stock: 9,
-    badge: "Future",
-    description:
-      "A futuristic geometric coat created for bold architectural styling.",
-    featured: true
-  },
-
-
-  /* ===================== FOOTWEAR ===================== */
-
-  {
-    id: "p3",
-    name: "Nike Air Force 1 Blue Patent",
-    category: "Footwear",
-    subcategory: "Sneakers",
-    collection: "Footwear",
-    price: 220,
-    img: "images/nike-blue-af1-1.jpg",
-    sizes: ["39", "40", "41", "42", "43", "44", "45"],
-    colors: ["Patent Blue"],
-    stock: 20,
-    badge: "Featured",
-    description:
-      "Classic sneaker styling with a bold blue patent finish.",
-    featured: true
-  },
-
-
-  /* ===================== ACCESSORIES ===================== */
-
-  {
-    id: "p11",
-    name: "Zipper Utility Cap",
-    category: "Accessories",
-    subcategory: "Caps",
-    collection: "Accessories",
-    price: 65,
-    img: "images/zipper-cap.jpg",
-    sizes: ["One Size"],
-    colors: ["Black"],
-    stock: 50,
-    badge: "Essential",
-    description:
-      "Utility-inspired cap with functional zipper detailing.",
-    featured: false
-  },
-
-
-  /* ===================== FUTURE PRODUCT PLACEHOLDERS ===================== */
-
-  {
-    id: "p17",
-    name: "Area Boyz Signature Hoodie",
-    category: "Clothing",
-    subcategory: "Hoodies",
-    collection: "Area Boyz Originals",
-    price: 150,
-    img: "images/signature-hoodie.jpg",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Black", "Yellow"],
-    stock: 50,
-    badge: "AB Original",
-    description:
-      "The signature Area Boyz hoodie designed for everyday movement.",
-    featured: false
-  },
-
-  {
-    id: "p18",
-    name: "Area Boyz Street Runner",
-    category: "Footwear",
-    subcategory: "Sneakers",
-    collection: "Area Boyz Originals",
-    price: 180,
-    img: "images/street-runner.jpg",
-    sizes: ["39", "40", "41", "42", "43", "44", "45"],
-    colors: ["Black", "White"],
-    stock: 35,
-    badge: "New",
-    description:
-      "A modern street sneaker concept from the Area Boyz Originals collection.",
-    featured: false
-  },
-
-  {
-    id: "p19",
-    name: "Area Boyz Crossbody Bag",
-    category: "Accessories",
-    subcategory: "Bags",
-    collection: "Area Boyz Originals",
-    price: 95,
-    img: "images/crossbody-bag.jpg",
-    sizes: ["One Size"],
-    colors: ["Black"],
-    stock: 45,
-    badge: "New",
-    description:
-      "Compact crossbody bag built for everyday street movement.",
-    featured: false
-  },
-
-  {
-    id: "p20",
-    name: "Area Boyz Statement Jacket",
-    category: "Jackets",
-    subcategory: "Bomber",
-    collection: "Area Boyz Originals",
-    price: 350,
-    img: "images/statement-jacket.jpg",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Black", "Yellow"],
-    stock: 20,
-    badge: "AB Original",
-    description:
-      "A signature bomber jacket combining utility construction with Area Boyz identity.",
-    featured: false
-  }
-
+  { id: 1, title: "Classic Indigo Denim Jacket", price: 89.99, old: 120, cat: "denim", badge: "Bestseller", img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop" },
+  { id: 2, title: "Handmade Crafty Cargo Pants", price: 74.50, old: null, cat: "handmade", badge: "New", img: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=400&fit=crop" },
+  { id: 3, title: "Street Swag Oversized Tee", price: 39.00, old: 55, cat: "street", badge: null, img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop" },
+  { id: 4, title: "Tranquility Linen Shirt", price: 68.00, old: null, cat: "handmade", badge: "Limited", img: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=400&fit=crop" },
+  { id: 5, title: "Luxury Gold Accent Hoodie", price: 129.00, old: 160, cat: "luxury", badge: "40% off", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=400&fit=crop" },
+  { id: 6, title: "Area Boyz Signature Denim", price: 95.00, old: null, cat: "denim", badge: null, img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop" },
+  { id: 7, title: "Evolutionary Platform Cap", price: 32.00, old: null, cat: "street", badge: "New Drop", img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=400&fit=crop" },
+  { id: 8, title: "Handmade Beaded Crossbody", price: 58.00, old: 75, cat: "handmade", badge: null, img: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=400&fit=crop" },
+  { id: 9, title: "Black & Yellow Track Set", price: 110.00, old: null, cat: "street", badge: "Exclusive", img: "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=400&h=400&fit=crop" },
+  { id: 10, title: "Crafty Distressed Jeans", price: 82.00, old: 99, cat: "denim", badge: null, img: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&h=400&fit=crop" },
+  { id: 11, title: "Swag Utility Vest", price: 72.00, old: null, cat: "street", badge: "Hot", img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=400&fit=crop" },
+  { id: 12, title: "Intention Embroidered Bomber", price: 145.00, old: 180, cat: "luxury", badge: "Premium", img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=400&fit=crop" },
+  { id: 13, title: "Relaxed Fit Denim Shirt", price: 64.00, old: null, cat: "denim", badge: null, img: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=400&fit=crop" },
+  { id: 14, title: "Tranquil Earth Tone Pants", price: 79.00, old: null, cat: "handmade", badge: "New", img: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400&h=400&fit=crop" },
+  { id: 15, title: "Yellow Accent Sneakers", price: 98.00, old: 130, cat: "street", badge: "Sale", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop" },
+  { id: 16, title: "Luxury Silk Blend Scarf", price: 45.00, old: null, cat: "luxury", badge: null, img: "https://images.unsplash.com/photo-1601924994987-69e26a50ea40?w=400&h=400&fit=crop" },
 ];
 
+let cart = JSON.parse(localStorage.getItem('ab_cart') || '[]');
+let currentFilter = 'all';
 
-/* =========================================================
-   FIND PRODUCT
-   ========================================================= */
+/* ---------- PRELOADER ---------- */
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('preloader');
+  const app = document.getElementById('app');
+  setTimeout(() => {
+    preloader.classList.add('hide');
+    app.classList.remove('hidden');
+    handleRoute();
+  }, 1800);
+});
 
-function getProductById(id) {
-  return PRODUCTS.find(product => product.id === id);
+/* ---------- ROUTING ---------- */
+function handleRoute() {
+  const hash = window.location.hash.slice(1) || 'home';
+  showPage(hash);
 }
 
-
-/* =========================================================
-   PRODUCT CARD
-   ========================================================= */
-
-function createProductCard(product) {
-
-  const article = document.createElement("article");
-
-  article.className = "product-card";
-
-  /*
-   * Entire card becomes clickable.
-   */
-
-  article.setAttribute(
-    "data-product-id",
-    product.id
-  );
-
-  article.setAttribute(
-    "tabindex",
-    "0"
-  );
-
-  article.setAttribute(
-    "role",
-    "link"
-  );
-
-  const imageWrapper =
-    document.createElement("div");
-
-  imageWrapper.className =
-    "product-img";
-
-  const image =
-    document.createElement("img");
-
-  image.src = product.img;
-
-  image.alt = product.name;
-
-  image.loading = "lazy";
-
-  imageWrapper.appendChild(image);
-
-
-  /*
-   * Badge
-   */
-
-  if (product.badge) {
-
-    const badge =
-      document.createElement("span");
-
-    badge.className =
-      "product-badge";
-
-    badge.textContent =
-      product.badge;
-
-    imageWrapper.appendChild(badge);
-  }
-
-
-  /*
-   * Product information
-   */
-
-  const info =
-    document.createElement("div");
-
-  info.className =
-    "product-info";
-
-
-  const category =
-    document.createElement("div");
-
-  category.className =
-    "product-category";
-
-  category.textContent =
-    product.subcategory ||
-    product.category;
-
-
-  const name =
-    document.createElement("h3");
-
-  name.className =
-    "product-name";
-
-  name.textContent =
-    product.name;
-
-
-  const priceRow =
-    document.createElement("div");
-
-  priceRow.className =
-    "product-price";
-
-
-  const price =
-    document.createElement("span");
-
-  price.className =
-    "price";
-
-  price.dataset.priceUsd =
-    product.price;
-
-  price.textContent =
-    formatPriceSafe(product.price);
-
-
-  /*
-   * Add button
-   */
-
-  const button =
-    document.createElement("button");
-
-  button.type = "button";
-
-  button.className =
-    "add-to-cart";
-
-  button.textContent =
-    "＋";
-
-  button.setAttribute(
-    "aria-label",
-    "Add " +
-    product.name +
-    " to cart"
-  );
-
-
-  /*
-   * Prevent button click from opening
-   * product page.
-   */
-
-  button.addEventListener(
-    "click",
-    function (event) {
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      addToCart(product);
-    }
-  );
-
-
-  priceRow.appendChild(price);
-
-  priceRow.appendChild(button);
-
-  info.appendChild(category);
-
-  info.appendChild(name);
-
-  info.appendChild(priceRow);
-
-  article.appendChild(imageWrapper);
-
-  article.appendChild(info);
-
-
-  /*
-   * Open product detail page.
-   */
-
-  function openProduct() {
-
-    window.location.href =
-      "product.html?id=" +
-      encodeURIComponent(product.id);
-  }
-
-
-  article.addEventListener(
-    "click",
-    function (event) {
-
-      if (
-        event.target.closest(
-          ".add-to-cart"
-        )
-      ) {
-        return;
-      }
-
-      openProduct();
-    }
-  );
-
-
-  article.addEventListener(
-    "keydown",
-    function (event) {
-
-      if (
-        event.key === "Enter" ||
-        event.key === " "
-      ) {
-
-        event.preventDefault();
-
-        openProduct();
-      }
-    }
-  );
-
-
-  return article;
-}
-
-
-/* =========================================================
-   RENDER PRODUCTS
-   ========================================================= */
-
-function renderProducts(
-  containerId,
-  limit
-) {
-
-  const container =
-    document.getElementById(
-      containerId
-    );
-
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  let products =
-    PRODUCTS.slice();
-
-  if (
-    typeof limit === "number"
-  ) {
-
-    products =
-      products.slice(0, limit);
-  }
-
-  products.forEach(product => {
-
-    container.appendChild(
-      createProductCard(product)
-    );
-
+window.addEventListener('hashchange', handleRoute);
+
+function showPage(pageId) {
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.page === pageId);
   });
+
+  closeSideMenu();
+
+  const main = document.getElementById('mainContent');
+  let html = '';
+
+  switch (pageId) {
+    case 'home':
+      html = renderHome();
+      break;
+    case 'shop':
+      html = renderShop();
+      break;
+    case 'invest':
+      html = renderInvest();
+      break;
+    case 'about':
+      html = renderAbout();
+      break;
+    case 'account':
+      html = renderAccount();
+      break;
+    case 'cart':
+      html = renderCart();
+      break;
+    case 'collections':
+      html = renderCollections();
+      break;
+    case 'contact':
+      html = renderContact();
+      break;
+    default:
+      html = renderHome();
+  }
+
+  main.innerHTML = `<div class="page active">${html}</div>`;
+  updateCartCount();
+  bindProductEvents();
 }
 
+/* ---------- RENDER FUNCTIONS ---------- */
+function renderHome() {
+  const featured = PRODUCTS.slice(0, 6);
+  return `
+    <section class="hero">
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=500&fit=crop" alt="Area Boyz Styles that fit your life">
+      <div class="hero-overlay">
+        <span class="hero-tag">Styles that fit your life</span>
+        <h1>The Denim Shop</h1>
+        <p>An Area Boy evolutionary platform — swag, tranquility & handmade crafty outfits with intention.</p>
+        <a href="#shop" class="btn-primary" data-page="shop">Shop now</a>
+      </div>
+    </section>
 
-/* =========================================================
-   MOBILE NAVIGATION
-   ========================================================= */
+    <div class="promo-row px-12">
+      <div class="promo-card">
+        <div>
+          <h3>Mums & more from $7.97</h3>
+          <p>Fresh seasonal drops</p>
+        </div>
+        <a href="#shop" class="shop-link" data-page="shop">Shop now</a>
+      </div>
+      <div class="promo-card">
+        <div>
+          <h3>Nike sneakers & more</h3>
+          <p>Street essentials</p>
+        </div>
+        <a href="#shop" class="shop-link" data-page="shop">Shop now</a>
+      </div>
+    </div>
 
-function initMobileNav() {
+    <div class="big-promo">
+      <h3>Up to 40% off</h3>
+      <p>Selected designer wears & handmade pieces</p>
+      <a href="#shop" class="btn-primary" style="background:#0A0A0A;color:#FFD100;" data-page="shop">Shop now</a>
+    </div>
 
-  const toggle =
-    document.querySelector(
-      ".mobile-toggle"
-    );
+    <section class="section">
+      <div class="section-header">
+        <h2>Featured Designer Wears</h2>
+        <a href="#shop" class="see-all" data-page="shop">See all</a>
+      </div>
+      <div class="product-grid">
+        ${featured.map(p => productCard(p)).join('')}
+      </div>
+    </section>
 
-  const links =
-    document.querySelector(
-      ".nav-links"
-    );
-
-  if (!toggle || !links) return;
-
-  if (
-    toggle.dataset.navReady === "true"
-  ) {
-    return;
-  }
-
-  toggle.dataset.navReady =
-    "true";
-
-  toggle.setAttribute(
-    "aria-expanded",
-    "false"
-  );
-
-  toggle.addEventListener(
-    "click",
-    function (event) {
-
-      event.preventDefault();
-
-      event.stopPropagation();
-
-      const open =
-        links.classList.toggle(
-          "open"
-        );
-
-      toggle.setAttribute(
-        "aria-expanded",
-        open ? "true" : "false"
-      );
-
-      toggle.setAttribute(
-        "aria-label",
-        open
-          ? "Close menu"
-          : "Open menu"
-      );
-    }
-  );
-
-
-  links.querySelectorAll("a")
-    .forEach(link => {
-
-      link.addEventListener(
-        "click",
-        function () {
-
-          links.classList.remove(
-            "open"
-          );
-
-          toggle.setAttribute(
-            "aria-expanded",
-            "false"
-          );
-        }
-      );
-
-    });
-
-
-  document.addEventListener(
-    "click",
-    function (event) {
-
-      if (
-        !links.contains(
-          event.target
-        ) &&
-        !toggle.contains(
-          event.target
-        )
-      ) {
-
-        links.classList.remove(
-          "open"
-        );
-
-        toggle.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-      }
-    }
-  );
+    <div class="app-promo">
+      <div class="icon">AB</div>
+      <div>
+        <h4>Area Boyz – Shopping & Style</h4>
+        <p>The easiest way to shop, checkout & track your orders – anywhere you are.</p>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+    <a href="#shop" class="btn-get-app" data-page="shop">Get the experience</a>
+  `;
 }
 
+function renderShop() {
+  const filtered = currentFilter === 'all'
+    ? PRODUCTS
+    : PRODUCTS.filter(p => p.cat === currentFilter);
 
-/* =========================================================
-   HERO SLIDER
-   ========================================================= */
-
-function initSlider() {
-
-  const slider =
-    document.querySelector(
-      ".hero-slider"
-    );
-
-  const slides =
-    document.querySelectorAll(
-      ".hero-slider .slide"
-    );
-
-  const dots =
-    document.querySelectorAll(
-      ".hero-controls .dot"
-    );
-
-  const next =
-    document.querySelector(
-      ".hero-nav.next"
-    );
-
-  const previous =
-    document.querySelector(
-      ".hero-nav.prev"
-    );
-
-  if (
-    !slider ||
-    !slides.length
-  ) {
-    return;
-  }
-
-  let current = 0;
-
-  let timer = null;
-
-
-  function showSlide(index) {
-
-    if (
-      index >= slides.length
-    ) {
-      index = 0;
-    }
-
-    if (index < 0) {
-      index =
-        slides.length - 1;
-    }
-
-    current = index;
-
-    slides.forEach(
-      (slide, i) => {
-
-        slide.classList.toggle(
-          "active",
-          i === current
-        );
-
-      }
-    );
-
-
-    dots.forEach(
-      (dot, i) => {
-
-        dot.classList.toggle(
-          "active",
-          i === current
-        );
-
-      }
-    );
-  }
-
-
-  function start() {
-
-    clearInterval(timer);
-
-    timer =
-      setInterval(
-        () => {
-
-          showSlide(
-            current + 1
-          );
-
-        },
-        5500
-      );
-  }
-
-
-  if (next) {
-
-    next.addEventListener(
-      "click",
-      function () {
-
-        showSlide(
-          current + 1
-        );
-
-        start();
-      }
-    );
-  }
-
-
-  if (previous) {
-
-    previous.addEventListener(
-      "click",
-      function () {
-
-        showSlide(
-          current - 1
-        );
-
-        start();
-      }
-    );
-  }
-
-
-  dots.forEach(
-    (dot, index) => {
-
-      dot.addEventListener(
-        "click",
-        function () {
-
-          showSlide(index);
-
-          start();
-        }
-      );
-
-    }
-  );
-
-
-  showSlide(0);
-
-  start();
+  return `
+    <section class="section" style="padding-top:16px;">
+      <div class="section-header">
+        <h2>All Designer Wears</h2>
+        <span style="font-size:13px;color:var(--gray-500);">${filtered.length} items</span>
+      </div>
+      <div class="product-grid" id="shopGrid">
+        ${filtered.map(p => productCard(p)).join('')}
+      </div>
+      <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--gray-500);">
+        Showing sample of 100+ designer pieces. Full catalog coming soon.
+      </p>
+    </section>
+  `;
 }
 
-
-/* =========================================================
-   ACTIVE NAV
-   ========================================================= */
-
-function initActiveNavigation() {
-
-  const currentPage =
-    window.location.pathname
-      .split("/")
-      .pop()
-      .toLowerCase() ||
-    "index.html";
-
-  document
-    .querySelectorAll(
-      ".nav-links a"
-    )
-    .forEach(link => {
-
-      const href =
-        (
-          link.getAttribute(
-            "href"
-          ) || ""
-        )
-          .split("#")[0]
-          .split("?")[0]
-          .toLowerCase();
-
-      link.classList.remove(
-        "active"
-      );
-
-      if (
-        href === currentPage
-      ) {
-
-        link.classList.add(
-          "active"
-        );
-      }
-    });
-}
-
-
-/* =========================================================
-   CURRENCY
-   ========================================================= */
-
-function formatPriceSafe(amount) {
-
-  if (
-    typeof window.formatCurrency ===
-    "function"
-  ) {
-
-    return window.formatCurrency(
-      amount
-    );
-  }
-
-  return (
-    "$" +
-    Number(amount).toLocaleString(
-      undefined,
-      {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }
-    )
-  );
-}
-
-
-function refreshProductCurrency() {
-
-  document
-    .querySelectorAll(
-      "[data-price-usd]"
-    )
-    .forEach(element => {
-
-      const amount =
-        Number(
-          element.dataset.priceUsd
-        );
-
-      if (
-        !Number.isNaN(amount)
-      ) {
-
-        element.textContent =
-          formatPriceSafe(
-            amount
-          );
-      }
-    });
-
-
-  /*
-   * Re-rendering isn't necessary because
-   * every price has data-price-usd.
-   */
-
-  updateCartUI();
-}
-
-
-window.addEventListener(
-  "currencyChanged",
-  refreshProductCurrency
-);
-
-
-/* =========================================================
-   CART PAGE
-   ========================================================= */
-
-function renderCartPage() {
-
-  const container =
-    document.getElementById(
-      "cart-items"
-    );
-
-  const empty =
-    document.getElementById(
-      "cart-empty"
-    );
-
-  const summary =
-    document.getElementById(
-      "cart-summary"
-    );
-
-  if (!container) return;
-
-  const cart =
-    getCart();
-
-  container.innerHTML = "";
-
-
-  if (!cart.length) {
-
-    if (empty) {
-      empty.style.display =
-        "block";
-    }
-
-    if (summary) {
-      summary.style.display =
-        "none";
-    }
-
-    return;
-  }
-
-
-  if (empty) {
-    empty.style.display =
-      "none";
-  }
-
-  if (summary) {
-    summary.style.display =
-      "";
-  }
-
-
-  cart.forEach(item => {
-
-    const row =
-      document.createElement(
-        "article"
-      );
-
-    row.className =
-      "cart-item";
-
-    row.innerHTML = `
-      <div class="cart-item-image">
-        <img
-          src="${item.img}"
-          alt="${item.name}"
-          loading="lazy"
-        >
+function renderInvest() {
+  return `
+    <div class="invest-hero">
+      <p class="equity-label">Total Equity</p>
+      <div class="equity-value">\~$758,000</div>
+      <p class="equity-sub">Investment Return Share • Area Boyz Enterprise</p>
+      
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">42%</div>
+          <div class="label">YOY Growth</div>
+        </div>
+        <div class="stat">
+          <div class="num">18%</div>
+          <div class="label">Target ROI</div>
+        </div>
+        <div class="stat">
+          <div class="num">2024</div>
+          <div class="label">Founded</div>
+        </div>
       </div>
 
-      <div class="cart-item-info">
+      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center;" data-page="contact">Request Investment Deck</a>
+    </div>
 
-        <div class="product-category">
-          ${item.subcategory || item.category || ""}
-        </div>
+    <section class="section">
+      <h2 style="margin-bottom:12px;">Why Invest in Area Boyz?</h2>
+      <div class="promo-card" style="margin-bottom:12px;">
+        <h3>Evolutionary Fashion Platform</h3>
+        <p>Combining street swag with intentional handmade craft. A unique cultural brand with growing demand across Africa & diaspora.</p>
+      </div>
+      <div class="promo-card" style="margin-bottom:12px;">
+        <h3>Multiple Revenue Streams</h3>
+        <p>Direct-to-consumer designer wears, limited drops, wholesale partnerships, and brand collaborations.</p>
+      </div>
+      <div class="promo-card">
+        <h3>Transparent Equity Structure</h3>
+        <p>Clear share of returns tied to performance. Current total equity valued at approximately $758,000.</p>
+      </div>
+    </section>
+  `;
+}
 
-        <h3>${item.name}</h3>
+function renderAbout() {
+  return `
+    <div class="story-block">
+      <h2>Our Story</h2>
+      <div class="tagline-box">
+        “Styles that fit your life — it’s an Area Boy evolutionary platform where you see swag, tranquility, handmade crafty outfits with intention.”
+      </div>
+      <p>
+        Area Boyz Enterprise was born from the streets and refined by intention. We create designer wears that speak to the modern African youth — bold, authentic, and crafted with purpose.
+      </p>
+      <p>
+        From premium denim to handmade pieces, every drop is designed to fit real life: the hustle, the chill, the celebration. We believe fashion should elevate without pretension.
+      </p>
+      <p>
+        Today the brand stands on a foundation of approximately <strong class="text-yellow">$758,000</strong> in total equity, with a clear path for community and investor participation through our return-share model.
+      </p>
+      <a href="#shop" class="btn-primary mt-12" data-page="shop">Explore the collection</a>
+    </div>
+  `;
+}
 
-        <div
-          class="cart-item-price"
-          data-price-usd="${Number(item.price)}"
-        >
-          ${formatPriceSafe(
-            Number(item.price)
-          )}
-        </div>
+function renderAccount() {
+  return `
+    <section class="section" style="padding-top:24px;">
+      <h2 style="margin-bottom:20px;">Your Account</h2>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:8px;">Sign In</button>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--gray-500);">
+        New here? <a href="#contact" class="text-yellow" data-page="contact">Create account</a>
+      </p>
+    </section>
+  `;
+}
 
-        <div class="cart-quantity">
-
-          <button
-            type="button"
-            data-cart-minus="${item.id}"
-          >
-            −
-          </button>
-
-          <span>
-            ${Number(item.qty || 1)}
-          </span>
-
-          <button
-            type="button"
-            data-cart-plus="${item.id}"
-          >
-            +
-          </button>
-
-        </div>
-
-        <button
-          type="button"
-          class="remove-cart-item"
-          data-cart-remove="${item.id}"
-        >
-          Remove
-        </button>
-
+function renderCart() {
+  if (cart.length === 0) {
+    return `
+      <div class="empty-state">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M6 6L5 3H2"/></svg>
+        <h3>Your cart is empty</h3>
+        <p>Add some designer wears to get started.</p>
+        <a href="#shop" class="btn-primary mt-12" data-page="shop">Browse Shop</a>
       </div>
     `;
-
-    container.appendChild(row);
-  });
-
-
-  container
-    .querySelectorAll(
-      "[data-cart-minus]"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        function () {
-
-          updateQty(
-            button.dataset.cartMinus,
-            -1
-          );
-
-          renderCartPage();
-        }
-      );
-    });
-
-
-  container
-    .querySelectorAll(
-      "[data-cart-plus]"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        function () {
-
-          updateQty(
-            button.dataset.cartPlus,
-            1
-          );
-
-          renderCartPage();
-        }
-      );
-    });
-
-
-  container
-    .querySelectorAll(
-      "[data-cart-remove]"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        function () {
-
-          removeFromCart(
-            button.dataset.cartRemove
-          );
-
-          renderCartPage();
-
-          showToast(
-            "Item removed from cart."
-          );
-        }
-      );
-    });
-
-
-  updateCartTotals();
-}
-
-
-function updateCartTotals() {
-
-  const total =
-    getCartTotal();
-
-  document
-    .querySelectorAll(
-      "[data-cart-total]"
-    )
-    .forEach(element => {
-
-      element.textContent =
-        formatPriceSafe(total);
-    });
-}
-
-
-/* =========================================================
-   APPLICATION START
-   ========================================================= */
-
-function initAreaBoyz() {
-
-  updateCartUI();
-
-  initMobileNav();
-
-  initSlider();
-
-  initActiveNavigation();
-
-
-  /*
-   * Homepage
-   */
-
-  renderProducts(
-    "featured-products",
-    8
-  );
-
-
-  /*
-   * Shop page
-   */
-
-  renderProducts(
-    "shop-products"
-  );
-
-
-  /*
-   * Cart
-   */
-
-  renderCartPage();
-
-
-  /*
-   * Currency
-   */
-
-  if (
-    typeof window.updateCurrencyDisplay ===
-    "function"
-  ) {
-
-    window.updateCurrencyDisplay();
   }
 
-
-  updateCartUI();
-
-
-  console.log(
-    "Area Boyz Enterprise 2.1.0 initialized."
-  );
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  return `
+    <section class="section" style="padding-top:16px;">
+      <h2 style="margin-bottom:16px;">Your Cart (${cart.length})</h2>
+      ${cart.map(item => `
+        <div class="promo-card" style="flex-direction:row;gap:12px;align-items:center;margin-bottom:10px;">
+          <img src="${item.img}" alt="" style="width:70px;height:70px;object-fit:cover;border-radius:8px;">
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:14px;">${item.title}</div>
+            <div class="text-yellow" style="font-weight:700;">\[ {item.price.toFixed(2)}</div>
+            <div style="font-size:12px;color:var(--gray-500);">Qty: ${item.qty}</div>
+          </div>
+        </div>
+      `).join('')}
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--gray-800);">
+        <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;margin-bottom:16px;">
+          <span>Total</span>
+          <span class="text-yellow"> \]{total.toFixed(2)}</span>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;">Checkout</button>
+      </div>
+    </section>
+  `;
 }
 
+function renderCollections() {
+  return `
+    <section class="section" style="padding-top:16px;">
+      <h2 style="margin-bottom:16px;">Collections</h2>
+      <div class="promo-card" style="margin-bottom:12px;">
+        <h3>The Denim Shop</h3>
+        <p>Core indigo, black, and washed pieces built for everyday swag.</p>
+        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
+      </div>
+      <div class="promo-card" style="margin-bottom:12px;">
+        <h3>Handmade & Crafty</h3>
+        <p>Intentionally made pieces with artisan details and limited runs.</p>
+        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
+      </div>
+      <div class="promo-card" style="margin-bottom:12px;">
+        <h3>Street Evolution</h3>
+        <p>Oversized silhouettes, utility, and Area Boyz signature graphics.</p>
+        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
+      </div>
+      <div class="promo-card">
+        <h3>Luxury Capsule</h3>
+        <p>Premium fabrics and refined details for elevated moments.</p>
+        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
+      </div>
+    </section>
+  `;
+}
 
-/* =========================================================
-   DOM READY
-   ========================================================= */
+function renderContact() {
+  return `
+    <section class="section" style="padding-top:16px;">
+      <h2 style="margin-bottom:16px;">Contact & Invest</h2>
+      <p style="font-size:14px;color:var(--gray-300);margin-bottom:20px;">
+        Interested in partnership, wholesale, or investment return share? Reach out.
+      </p>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Interest</label>
+        <select>
+          <option>Investment / Equity</option>
+          <option>Wholesale</option>
+          <option>Collaboration</option>
+          <option>General Inquiry</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea rows="4" placeholder="Tell us more..."></textarea>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;">Send Message</button>
+    </section>
+  `;
+}
 
-if (
-  document.readyState ===
-  "loading"
-) {
+/* ---------- PRODUCT CARD ---------- */
+function productCard(p) {
+  return `
+    <article class="product-card" data-id="${p.id}">
+      <div class="product-img">
+        \( {p.badge ? `<span class="badge"> \){p.badge}</span>` : ''}
+        <img src="\( {p.img}" alt=" \){p.title}" loading="lazy">
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">${p.title}</h3>
+        <div>
+          <span class="product-price">\[ {p.price.toFixed(2)}</span>
+          ${p.old ? `<span class="product-old"> \]{p.old.toFixed(2)}</span>` : ''}
+        </div>
+        <button class="add-btn" data-add="${p.id}">Add to cart</button>
+      </div>
+    </article>
+  `;
+}
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    initAreaBoyz
-  );
+/* ---------- EVENTS ---------- */
+function bindProductEvents() {
+  document.querySelectorAll('[data-add]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = parseInt(btn.dataset.add);
+      addToCart(id);
+    });
+  });
+}
 
-} else {
+function addToCart(id) {
+  const product = PRODUCTS.find(p => p.id === id);
+  if (!product) return;
+  const existing = cart.find(i => i.id === id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+  localStorage.setItem('ab_cart', JSON.stringify(cart));
+  updateCartCount();
+  const btn = document.querySelector(`[data-add="${id}"]`);
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = 'Added ✓';
+    btn.style.background = '#22C55E';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = '';
+    }, 900);
+  }
+}
 
-  initAreaBoyz();
+function updateCartCount() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const el = document.getElementById('cartCount');
+  if (el) el.textContent = count;
+}
 
-     }
+/* ---------- SIDE MENU ---------- */
+const menuToggle = document.getElementById('menuToggle');
+const sideMenu = document.getElementById('sideMenu');
+const overlay = document.getElementById('overlay');
+const closeMenu = document.getElementById('closeMenu');
+
+menuToggle.addEventListener('click', () => {
+  sideMenu.classList.add('open');
+  overlay.classList.add('show');
+  sideMenu.setAttribute('aria-hidden', 'false');
+});
+
+function closeSideMenu() {
+  sideMenu.classList.remove('open');
+  overlay.classList.remove('show');
+  sideMenu.setAttribute('aria-hidden', 'true');
+}
+
+closeMenu.addEventListener('click', closeSideMenu);
+overlay.addEventListener('click', closeSideMenu);
+
+/* Category filter */
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    currentFilter = pill.dataset.filter;
+    if (window.location.hash.slice(1) === 'shop') {
+      showPage('shop');
+    }
+  });
+});
+
+/* Search toggle */
+document.getElementById('searchToggle')?.addEventListener('click', () => {
+  document.getElementById('searchInput')?.focus();
+});
+
+/* Initial cart count */
+updateCartCount();
