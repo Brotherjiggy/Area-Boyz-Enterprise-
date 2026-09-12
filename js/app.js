@@ -1,6 +1,5 @@
 /* =====================================================
    Area Boyz Enterprise – Vanilla JS SPA
-   Preloader + Client-side page switching
    ===================================================== */
 
 const PRODUCTS = [
@@ -25,21 +24,13 @@ const PRODUCTS = [
 let cart = JSON.parse(localStorage.getItem('ab_cart') || '[]');
 let currentFilter = 'all';
 
-/* ---------- PRELOADER (reliable version) ---------- */
-function hidePreloader() {
-  const preloader = document.getElementById("preloader");
-  const app = document.getElementById("app");
-  if (preloader) preloader.classList.add("hide");
-  if (app) app.classList.remove("hidden");
-  try { handleRoute(); } catch(e) { console.error(e); }
-}
-
-window.addEventListener("load", function() {
-  setTimeout(hidePreloader, 1600);
+/* ---------- START APP ---------- */
+document.addEventListener("DOMContentLoaded", function() {
+  handleRoute();
 });
-
-// Fallback - force hide after maximum 3.5 seconds
-setTimeout(hidePreloader, 3500);
+window.addEventListener("load", function() {
+  handleRoute();
+});
 
 /* ---------- ROUTING ---------- */
 function handleRoute() {
@@ -57,35 +48,20 @@ function showPage(pageId) {
   closeSideMenu();
 
   const main = document.getElementById('mainContent');
+  if (!main) return;
+
   let html = '';
 
   switch (pageId) {
-    case 'home':
-      html = renderHome();
-      break;
-    case 'shop':
-      html = renderShop();
-      break;
-    case 'invest':
-      html = renderInvest();
-      break;
-    case 'about':
-      html = renderAbout();
-      break;
-    case 'account':
-      html = renderAccount();
-      break;
-    case 'cart':
-      html = renderCart();
-      break;
-    case 'collections':
-      html = renderCollections();
-      break;
-    case 'contact':
-      html = renderContact();
-      break;
-    default:
-      html = renderHome();
+    case 'home': html = renderHome(); break;
+    case 'shop': html = renderShop(); break;
+    case 'invest': html = renderInvest(); break;
+    case 'about': html = renderAbout(); break;
+    case 'account': html = renderAccount(); break;
+    case 'cart': html = renderCart(); break;
+    case 'collections': html = renderCollections(); break;
+    case 'contact': html = renderContact(); break;
+    default: html = renderHome();
   }
 
   main.innerHTML = `<div class="page active">${html}</div>`;
@@ -103,7 +79,7 @@ function renderHome() {
         <span class="hero-tag">Styles that fit your life</span>
         <h1>The Denim Shop</h1>
         <p>An Area Boy evolutionary platform — swag, tranquility & handmade crafty outfits with intention.</p>
-        <a href="#shop" class="btn-primary" data-page="shop">Shop now</a>
+        <a href="#shop" class="btn-primary">Shop now</a>
       </div>
     </section>
 
@@ -113,27 +89,27 @@ function renderHome() {
           <h3>Mums & more from $7.97</h3>
           <p>Fresh seasonal drops</p>
         </div>
-        <a href="#shop" class="shop-link" data-page="shop">Shop now</a>
+        <a href="#shop" class="shop-link">Shop now</a>
       </div>
       <div class="promo-card">
         <div>
           <h3>Nike sneakers & more</h3>
           <p>Street essentials</p>
         </div>
-        <a href="#shop" class="shop-link" data-page="shop">Shop now</a>
+        <a href="#shop" class="shop-link">Shop now</a>
       </div>
     </div>
 
     <div class="big-promo">
       <h3>Up to 40% off</h3>
       <p>Selected designer wears & handmade pieces</p>
-      <a href="#shop" class="btn-primary" style="background:#0A0A0A;color:#FFD100;" data-page="shop">Shop now</a>
+      <a href="#shop" class="btn-primary" style="background:#0A0A0A;color:#FFD100;">Shop now</a>
     </div>
 
     <section class="section">
       <div class="section-header">
         <h2>Featured Designer Wears</h2>
-        <a href="#shop" class="see-all" data-page="shop">See all</a>
+        <a href="#shop" class="see-all">See all</a>
       </div>
       <div class="product-grid">
         ${featured.map(p => productCard(p)).join('')}
@@ -148,22 +124,19 @@ function renderHome() {
         <div class="stars">★★★★★</div>
       </div>
     </div>
-    <a href="#shop" class="btn-get-app" data-page="shop">Get the experience</a>
+    <a href="#shop" class="btn-get-app">Get the experience</a>
   `;
 }
 
 function renderShop() {
-  const filtered = currentFilter === 'all'
-    ? PRODUCTS
-    : PRODUCTS.filter(p => p.cat === currentFilter);
-
+  const filtered = currentFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentFilter);
   return `
     <section class="section" style="padding-top:16px;">
       <div class="section-header">
         <h2>All Designer Wears</h2>
         <span style="font-size:13px;color:var(--gray-500);">${filtered.length} items</span>
       </div>
-      <div class="product-grid" id="shopGrid">
+      <div class="product-grid">
         ${filtered.map(p => productCard(p)).join('')}
       </div>
       <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--gray-500);">
@@ -179,25 +152,13 @@ function renderInvest() {
       <p class="equity-label">Total Equity</p>
       <div class="equity-value">\~$758,000</div>
       <p class="equity-sub">Investment Return Share • Area Boyz Enterprise</p>
-      
       <div class="stats-row">
-        <div class="stat">
-          <div class="num">42%</div>
-          <div class="label">YOY Growth</div>
-        </div>
-        <div class="stat">
-          <div class="num">18%</div>
-          <div class="label">Target ROI</div>
-        </div>
-        <div class="stat">
-          <div class="num">2024</div>
-          <div class="label">Founded</div>
-        </div>
+        <div class="stat"><div class="num">42%</div><div class="label">YOY Growth</div></div>
+        <div class="stat"><div class="num">18%</div><div class="label">Target ROI</div></div>
+        <div class="stat"><div class="num">2024</div><div class="label">Founded</div></div>
       </div>
-
-      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center;" data-page="contact">Request Investment Deck</a>
+      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center;">Request Investment Deck</a>
     </div>
-
     <section class="section">
       <h2 style="margin-bottom:12px;">Why Invest in Area Boyz?</h2>
       <div class="promo-card" style="margin-bottom:12px;">
@@ -223,16 +184,10 @@ function renderAbout() {
       <div class="tagline-box">
         “Styles that fit your life — it’s an Area Boy evolutionary platform where you see swag, tranquility, handmade crafty outfits with intention.”
       </div>
-      <p>
-        Area Boyz Enterprise was born from the streets and refined by intention. We create designer wears that speak to the modern African youth — bold, authentic, and crafted with purpose.
-      </p>
-      <p>
-        From premium denim to handmade pieces, every drop is designed to fit real life: the hustle, the chill, the celebration. We believe fashion should elevate without pretension.
-      </p>
-      <p>
-        Today the brand stands on a foundation of approximately <strong class="text-yellow">$758,000</strong> in total equity, with a clear path for community and investor participation through our return-share model.
-      </p>
-      <a href="#shop" class="btn-primary mt-12" data-page="shop">Explore the collection</a>
+      <p>Area Boyz Enterprise was born from the streets and refined by intention. We create designer wears that speak to the modern African youth — bold, authentic, and crafted with purpose.</p>
+      <p>From premium denim to handmade pieces, every drop is designed to fit real life: the hustle, the chill, the celebration. We believe fashion should elevate without pretension.</p>
+      <p>Today the brand stands on a foundation of approximately <strong class="text-yellow">$758,000</strong> in total equity, with a clear path for community and investor participation through our return-share model.</p>
+      <a href="#shop" class="btn-primary mt-12">Explore the collection</a>
     </div>
   `;
 }
@@ -241,17 +196,11 @@ function renderAccount() {
   return `
     <section class="section" style="padding-top:24px;">
       <h2 style="margin-bottom:20px;">Your Account</h2>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" placeholder="you@example.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" placeholder="••••••••">
-      </div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"></div>
       <button class="btn-primary" style="width:100%;justify-content:center;margin-top:8px;">Sign In</button>
       <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--gray-500);">
-        New here? <a href="#contact" class="text-yellow" data-page="contact">Create account</a>
+        New here? <a href="#contact" class="text-yellow">Create account</a>
       </p>
     </section>
   `;
@@ -261,14 +210,12 @@ function renderCart() {
   if (cart.length === 0) {
     return `
       <div class="empty-state">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M6 6L5 3H2"/></svg>
         <h3>Your cart is empty</h3>
         <p>Add some designer wears to get started.</p>
-        <a href="#shop" class="btn-primary mt-12" data-page="shop">Browse Shop</a>
+        <a href="#shop" class="btn-primary mt-12">Browse Shop</a>
       </div>
     `;
   }
-
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   return `
     <section class="section" style="padding-top:16px;">
@@ -298,26 +245,10 @@ function renderCollections() {
   return `
     <section class="section" style="padding-top:16px;">
       <h2 style="margin-bottom:16px;">Collections</h2>
-      <div class="promo-card" style="margin-bottom:12px;">
-        <h3>The Denim Shop</h3>
-        <p>Core indigo, black, and washed pieces built for everyday swag.</p>
-        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
-      </div>
-      <div class="promo-card" style="margin-bottom:12px;">
-        <h3>Handmade & Crafty</h3>
-        <p>Intentionally made pieces with artisan details and limited runs.</p>
-        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
-      </div>
-      <div class="promo-card" style="margin-bottom:12px;">
-        <h3>Street Evolution</h3>
-        <p>Oversized silhouettes, utility, and Area Boyz signature graphics.</p>
-        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
-      </div>
-      <div class="promo-card">
-        <h3>Luxury Capsule</h3>
-        <p>Premium fabrics and refined details for elevated moments.</p>
-        <a href="#shop" class="shop-link" data-page="shop">Explore</a>
-      </div>
+      <div class="promo-card" style="margin-bottom:12px;"><h3>The Denim Shop</h3><p>Core indigo, black, and washed pieces built for everyday swag.</p><a href="#shop" class="shop-link">Explore</a></div>
+      <div class="promo-card" style="margin-bottom:12px;"><h3>Handmade & Crafty</h3><p>Intentionally made pieces with artisan details and limited runs.</p><a href="#shop" class="shop-link">Explore</a></div>
+      <div class="promo-card" style="margin-bottom:12px;"><h3>Street Evolution</h3><p>Oversized silhouettes, utility, and Area Boyz signature graphics.</p><a href="#shop" class="shop-link">Explore</a></div>
+      <div class="promo-card"><h3>Luxury Capsule</h3><p>Premium fabrics and refined details for elevated moments.</p><a href="#shop" class="shop-link">Explore</a></div>
     </section>
   `;
 }
@@ -326,19 +257,10 @@ function renderContact() {
   return `
     <section class="section" style="padding-top:16px;">
       <h2 style="margin-bottom:16px;">Contact & Invest</h2>
-      <p style="font-size:14px;color:var(--gray-300);margin-bottom:20px;">
-        Interested in partnership, wholesale, or investment return share? Reach out.
-      </p>
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" placeholder="Your name">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" placeholder="you@example.com">
-      </div>
-      <div class="form-group">
-        <label>Interest</label>
+      <p style="font-size:14px;color:var(--gray-300);margin-bottom:20px;">Interested in partnership, wholesale, or investment return share? Reach out.</p>
+      <div class="form-group"><label>Full Name</label><input type="text" placeholder="Your name"></div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Interest</label>
         <select>
           <option>Investment / Equity</option>
           <option>Wholesale</option>
@@ -346,19 +268,15 @@ function renderContact() {
           <option>General Inquiry</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Message</label>
-        <textarea rows="4" placeholder="Tell us more..."></textarea>
-      </div>
+      <div class="form-group"><label>Message</label><textarea rows="4" placeholder="Tell us more..."></textarea></div>
       <button class="btn-primary" style="width:100%;justify-content:center;">Send Message</button>
     </section>
   `;
 }
 
-/* ---------- PRODUCT CARD ---------- */
 function productCard(p) {
   return `
-    <article class="product-card" data-id="${p.id}">
+    <article class="product-card">
       <div class="product-img">
         \( {p.badge ? `<span class="badge"> \){p.badge}</span>` : ''}
         <img src="\( {p.img}" alt=" \){p.title}" loading="lazy">
@@ -375,13 +293,11 @@ function productCard(p) {
   `;
 }
 
-/* ---------- EVENTS ---------- */
 function bindProductEvents() {
   document.querySelectorAll('[data-add]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const id = parseInt(btn.dataset.add);
-      addToCart(id);
+      addToCart(parseInt(btn.dataset.add));
     });
   });
 }
@@ -390,20 +306,16 @@ function addToCart(id) {
   const product = PRODUCTS.find(p => p.id === id);
   if (!product) return;
   const existing = cart.find(i => i.id === id);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ ...product, qty: 1 });
-  }
+  if (existing) existing.qty += 1;
+  else cart.push({ ...product, qty: 1 });
   localStorage.setItem('ab_cart', JSON.stringify(cart));
   updateCartCount();
   const btn = document.querySelector(`[data-add="${id}"]`);
   if (btn) {
-    const original = btn.textContent;
     btn.textContent = 'Added ✓';
     btn.style.background = '#22C55E';
     setTimeout(() => {
-      btn.textContent = original;
+      btn.textContent = 'Add to cart';
       btn.style.background = '';
     }, 900);
   }
@@ -425,34 +337,28 @@ if (menuToggle) {
   menuToggle.addEventListener('click', () => {
     sideMenu.classList.add('open');
     overlay.classList.add('show');
-    sideMenu.setAttribute('aria-hidden', 'false');
   });
 }
 
 function closeSideMenu() {
   if (sideMenu) {
     sideMenu.classList.remove('open');
-    overlay.classList.remove('show');
-    sideMenu.setAttribute('aria-hidden', 'true');
+    if (overlay) overlay.classList.remove('show');
   }
 }
 
 if (closeMenu) closeMenu.addEventListener('click', closeSideMenu);
 if (overlay) overlay.addEventListener('click', closeSideMenu);
 
-/* Category filter */
 document.querySelectorAll('.pill').forEach(pill => {
   pill.addEventListener('click', () => {
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
     currentFilter = pill.dataset.filter;
-    if (window.location.hash.slice(1) === 'shop') {
-      showPage('shop');
-    }
+    if (window.location.hash.slice(1) === 'shop') showPage('shop');
   });
 });
 
-/* Search toggle */
 const searchToggle = document.getElementById('searchToggle');
 if (searchToggle) {
   searchToggle.addEventListener('click', () => {
@@ -461,5 +367,4 @@ if (searchToggle) {
   });
 }
 
-/* Initial cart count */
 updateCartCount();
