@@ -1,1 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Area Boyz Enterprise — Styles that fit your life. An evolutionary fashion platform built around swag, tranquility and handmade crafty outfits with intention."
+    >
+
+    <meta
+        name="theme-color"
+        content="#ffd400"
+    >
+
+    <title>Area Boyz Enterprise | Styles That Fit Your Life</title>
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         PRELOADER
+    ====================================================== -->
+
+    <div
+        class="preloader"
+        id="preloader"
+        aria-label="Loading Area Boyz Enterprise"
+    >
+        <div class="preloader-inner">
+
+            <div class="brand-loader">
+                <span>AB</span>
+            </div>
+
+            <h2>AREA BOYZ</h2>
+
+            <p>ENTERPRISE</p>
+
+            <div class="loader-line">
+                <span></span>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         SITE WRAPPER
+    ====================================================== -->
+
+    <div class="site-wrapper">
+
+
+        <!-- =================================================
+             TOP ANNOUNCEMENT BAR
+        ================================================== -->
+
+        <div class="announcement-bar">
+
+            <p>
+                <strong>AREA BOYZ ENTERPRISE</strong>
+                — Styles that fit your life.
+            </p>
+
+            <button
+                class="announcement-close"
+                id="announcementClose"
+                aria-label="Close announcement"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header
+            class="site-header"
+            id="siteHeader"
+        >
+
+            <div class="header-container">
+
+
+                <!-- BRAND -->
+
+                <a
+                    href="#home"
+                    class="brand"
+                    data-page="home"
+                    aria-label="Area Boyz Enterprise Home"
+                >
+
+                    <span class="brand-mark">
+                        AB
+                    </span>
+
+                    <span class="brand-text">
+
+                        <strong>
+                            AREA BOYZ
+                        </strong>
+
+                        <small>
+                            ENTERPRISE
+                        </small>
+
+                    </span>
+
+                </a>
+
+
+                <!-- DESKTOP NAVIGATION -->
+
+                <nav
+                    class="desktop-nav"
+                    aria-label="Main navigation"
+                >
+
+                    <a
+                        href="#home"
+                        class="nav-link active"
+                        data-page="home"
+                    >
+                        Home
+                    </a>
+
+                    <a
+                        href="#shop"
+                        class="nav-link"
+                        data-page="shop"
+                    >
+                        Shop
+                    </a>
+
+                    <a
+                        href="#collections"
+                        class="nav-link"
+                        data-page="collections"
+                    >
+                        Collections
+                    </a>
+
+                    <a
+                        href="#investment"
+                        class="nav-link"
+                        data-page="investment"
+                    >
+                        Equity
+                    </a>
+
+                    <a
+                        href="#about"
+                        class="nav-link"
+                        data-page="about"
+                    >
+                        Our Story
+                    </a>
+
+                </nav>
+
+
+                <!-- HEADER ACTIONS -->
+
+                <div class="header-actions">
+
+                    <button
+                        class="icon-button"
+                        id="searchToggle"
+                        aria-label="Open search"
+                    >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                    <button
+                        class="icon-button cart-button"
+                        id="cartButton"
+                        aria-label="Shopping cart"
+                    >
+
+                        <i class="fa-solid fa-bag-shopping"></i>
+
+                        <span
+                            class="cart-count"
+                            id="cartCount"
+                        >
+                            0
+                        </span>
+
+                    </button>
+
+                    <button
+                        class="menu-toggle"
+                        id="menuToggle"
+                        aria-label="Open navigation menu"
+                        aria-expanded="false"
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH PANEL -->
+
+            <div
+                class="search-panel"
+                id="searchPanel"
+            >
+
+                <div class="search-container">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="productSearch"
+                        placeholder="Search Area Boyz products..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        id="closeSearch"
+                        aria-label="Close search"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             MOBILE NAVIGATION
+        ================================================== -->
+
+        <aside
+            class="mobile-menu"
+            id="mobileMenu"
+            aria-hidden="true"
+        >
+
+            <div class="mobile-menu-header">
+
+                <strong>
+                    MENU
+                </strong>
+
+                <button
+                    id="mobileMenuClose"
+                    aria-label="Close menu"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <nav class="mobile-nav">
+
+                <a
+                    href="#home"
+                    data-page="home"
+                >
+                    <span>01</span>
+                    Home
+                </a>
+
+                <a
+                    href="#shop"
+                    data-page="shop"
+                >
+                    <span>02</span>
+                    Shop
+                </a>
+
+                <a
+                    href="#collections"
+                    data-page="collections"
+                >
+                    <span>03</span>
+                    Collections
+                </a>
+
+                <a
+                    href="#investment"
+                    data-page="investment"
+                >
+                    <span>04</span>
+                    Equity
+                </a>
+
+                <a
+                    href="#about"
+                    data-page="about"
+                >
+                    <span>05</span>
+                    Our Story
+                </a>
+
+                <a
+                    href="#contact"
+                    data-page="contact"
+                >
+                    <span>06</span>
+                    Contact
+                </a>
+
+            </nav>
+
+
+            <div class="mobile-menu-footer">
+
+                <p>
+                    Styles that fit your life.
+                </p>
+
+                <small>
+                    Area Boyz Enterprise
+                </small>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             MOBILE OVERLAY
+        ================================================== -->
+
+        <div
+            class="menu-overlay"
+            id="menuOverlay"
+        ></div>
+
+
+        <!-- =================================================
+             MAIN APPLICATION
+        ================================================== -->
+
+        <main id="app">
+
+
+            <!-- =============================================
+                 HOME PAGE
+            ============================================== -->
+
+            <section
+                class="page active-page"
+                id="home"
+                data-page-section="home"
+            >
+
+
+                <!-- HERO -->
+
+                <section class="hero-section">
+
+                    <div class="hero-content">
+
+                        <span class="eyebrow">
+                            AREA BOYZ / EVOLUTION 01
+                        </span>
+
+                        <h1>
+                            Styles that
+                            <span>fit your life.</span>
+                        </h1>
+
+                        <p>
+                            An area boy evolutionary platform
+                            where swag, tranquility and handmade
+                            crafty outfits come together with intention.
+                        </p>
+
+                        <div class="hero-actions">
+
+                            <a
+                                href="#shop"
+                                class="btn btn-primary"
+                                data-page="shop"
+                            >
+                                Shop the collection
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+
+                            <a
+                                href="#collections"
+                                class="btn btn-secondary"
+                                data-page="collections"
+                            >
+                                Explore collections
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-visual">
+
+                        <div class="hero-image-card">
+
+                            <img
+                                src="images/hero/hero-main.jpg"
+                                alt="Area Boyz fashion collection"
+                                loading="eager"
+                            >
+
+                            <div class="hero-image-overlay">
+
+                                <span>
+                                    AB / 001
+                                </span>
+
+                                <strong>
+                                    MADE WITH INTENTION.
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- QUICK CATEGORIES -->
+
+                <section class="category-strip">
+
+                    <a
+                        href="#shop"
+                        class="category-card"
+                        data-category="streetwear"
+                    >
+
+                        <span class="category-icon">
+                            <i class="fa-solid fa-shirt"></i>
+                        </span>
+
+                        <span>
+                            Streetwear
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                    <a
+                        href="#shop"
+                        class="category-card"
+                        data-category="handmade"
+                    >
+
+                        <span class="category-icon">
+                            <i class="fa-solid fa-scissors"></i>
+                        </span>
+
+                        <span>
+                            Handmade
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                    <a
+                        href="#shop"
+                        class="category-card"
+                        data-category="footwear"
+                    >
+
+                        <span class="category-icon">
+                            <i class="fa-solid fa-shoe-prints"></i>
+                        </span>
+
+                        <span>
+                            Footwear
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                    <a
+                        href="#shop"
+                        class="category-card"
+                        data-category="accessories"
+                    >
+
+                        <span class="category-icon">
+                            <i class="fa-solid fa-gem"></i>
+                        </span>
+
+                        <span>
+                            Accessories
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </section>
+
+
+                <!-- PROMOTIONAL GRID -->
+
+                <section class="promo-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                DISCOVER
+                            </span>
+
+                            <h2>
+                                Find your expression.
+                            </h2>
+
+                        </div>
+
+                        <p>
+                            From everyday essentials to pieces
+                            made to turn heads.
+                        </p>
+
+                    </div>
+
+
+                    <div class="promo-grid">
+
+
+                        <article class="promo-card promo-large">
+
+                            <img
+                                src="images/collections/collection-01.jpg"
+                                alt="Area Boyz streetwear"
+                                loading="lazy"
+                            >
+
+                            <div class="promo-content">
+
+                                <span>
+                                    01 / STREET
+                                </span>
+
+                                <h3>
+                                    Everyday Swagger
+                                </h3>
+
+                                <a
+                                    href="#shop"
+                                    data-page="shop"
+                                >
+                                    Shop now
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+
+                        <article class="promo-card">
+
+                            <img
+                                src="images/collections/collection-02.jpg"
+                                alt="Handmade Area Boyz fashion"
+                                loading="lazy"
+                            >
+
+                            <div class="promo-content">
+
+                                <span>
+                                    02 / CRAFT
+                                </span>
+
+                                <h3>
+                                    Handmade With Intention
+                                </h3>
+
+                                <a
+                                    href="#shop"
+                                    data-page="shop"
+                                >
+                                    Explore
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+
+                        <article class="promo-card promo-dark">
+
+                            <div class="promo-content">
+
+                                <span>
+                                    AREA BOYZ
+                                </span>
+
+                                <h3>
+                                    Move different.
+                                </h3>
+
+                                <p>
+                                    Wear your evolution.
+                                </p>
+
+                                <a
+                                    href="#collections"
+                                    data-page="collections"
+                                >
+                                    View collections
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- FEATURED PRODUCTS -->
+
+                <section class="products-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                FEATURED
+                            </span>
+
+                            <h2>
+                                What's moving now.
+                            </h2>
+
+                        </div>
+
+                        <a
+                            href="#shop"
+                            class="text-link"
+                            data-page="shop"
+                        >
+                            View all
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        class="product-grid"
+                        id="featuredProducts"
+                    >
+                        <!-- JavaScript inserts products -->
+                    </div>
+
+                </section>
+
+
+                <!-- BRAND STATEMENT -->
+
+                <section class="statement-section">
+
+                    <div class="statement-number">
+                        AB
+                    </div>
+
+                    <div>
+
+                        <span class="eyebrow">
+                            THE AREA BOYZ PHILOSOPHY
+                        </span>
+
+                        <h2>
+                            Swag isn't noise.
+                            <br>
+                            <span>It's intention.</span>
+                        </h2>
+
+                        <p>
+                            Area Boyz Enterprise is built around
+                            the idea that clothing can carry attitude,
+                            comfort, creativity and identity at the
+                            same time.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- EQUITY PREVIEW -->
+
+                <section class="equity-preview">
+
+                    <div class="equity-copy">
+
+                        <span class="eyebrow">
+                            ENTERPRISE
+                        </span>
+
+                        <h2>
+                            Beyond fashion.
+                            <span>Build the future.</span>
+                        </h2>
+
+                        <p>
+                            Area Boyz Enterprise also operates as
+                            an evolving business platform with an
+                            equity participation structure.
+                        </p>
+
+                        <a
+                            href="#investment"
+                            class="btn btn-primary"
+                            data-page="investment"
+                        >
+                            Explore enterprise equity
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="equity-figure">
+
+                        <span>
+                            CURRENT TOTAL EQUITY
+                        </span>
+
+                        <strong>
+                            $758,000
+                        </strong>
+
+                        <small>
+                            Business valuation/equity figure
+                            subject to applicable terms and verification.
+                        </small>
+
+                    </div>
+
+                </section>
+
+
+            </section>
+
+
+            <!-- =============================================
+                 SHOP PAGE
+            ============================================== -->
+
+            <section
+                class="page"
+                id="shop"
+                data-page-section="shop"
+            >
+
+                <div class="page-header">
+
+                    <span class="eyebrow">
+                        AREA BOYZ / SHOP
+                    </span>
+
+                    <h1>
+                        The collection.
+                    </h1>
+
+                    <p>
+                        100+ pieces. Different moods.
+                        One Area Boyz attitude.
+                    </p>
+
+                </div>
+
+
+                <div class="shop-toolbar">
+
+                    <div class="filter-buttons">
+
+                        <button
+                            class="filter-btn active"
+                            data-filter="all"
+                        >
+                            All
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="streetwear"
+                        >
+                            Streetwear
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="handmade"
+                        >
+                            Handmade
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="footwear"
+                        >
+                            Footwear
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="accessories"
+                        >
+                            Accessories
+                        </button>
+
+                    </div>
+
+
+                    <label class="sort-control">
+
+                        <span>
+                            Sort
+                        </span>
+
+                        <select id="sortProducts">
+
+                            <option value="featured">
+                                Featured
+                            </option>
+
+                            <option value="price-low">
+                                Price: Low to High
+                            </option>
+
+                            <option value="price-high">
+                                Price: High to Low
+                            </option>
+
+                            <option value="name">
+                                Name
+                            </option>
+
+                        </select>
+
+                    </label>
+
+                </div>
+
+
+                <div
+                    class="product-grid shop-grid"
+                    id="shopProducts"
+                >
+                    <!-- 100+ products generated here -->
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 COLLECTIONS PAGE
+            ============================================== -->
+
+            <section
+                class="page"
+                id="collections"
+                data-page-section="collections"
+            >
+
+                <div class="page-header">
+
+                    <span class="eyebrow">
+                        AREA BOYZ / COLLECTIONS
+                    </span>
+
+                    <h1>
+                        Built in chapters.
+                    </h1>
+
+                    <p>
+                        Every collection represents another
+                        stage of the Area Boyz evolution.
+                    </p>
+
+                </div>
+
+
+                <div class="collections-grid">
+
+                    <article class="collection-feature">
+
+                        <img
+                            src="images/collections/collection-01.jpg"
+                            alt="Street collection"
+                            loading="lazy"
+                        >
+
+                        <div>
+
+                            <span>
+                                COLLECTION 01
+                            </span>
+
+                            <h2>
+                                STREET EVOLUTION
+                            </h2>
+
+                            <p>
+                                Clean silhouettes, everyday swagger
+                                and pieces built for movement.
+                            </p>
+
+                            <a
+                                href="#shop"
+                                data-page="shop"
+                                class="btn btn-primary"
+                            >
+                                Shop collection
+                            </a>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="collection-feature">
+
+                        <img
+                            src="images/collections/collection-02.jpg"
+                            alt="Handmade collection"
+                            loading="lazy"
+                        >
+
+                        <div>
+
+                            <span>
+                                COLLECTION 02
+                            </span>
+
+                            <h2>
+                                CRAFTED TRANQUILITY
+                            </h2>
+
+                            <p>
+                                Handmade pieces where craftsmanship
+                                meets calm expression.
+                            </p>
+
+                            <a
+                                href="#shop"
+                                data-page="shop"
+                                class="btn btn-primary"
+                            >
+                                Explore
+                            </a>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="collection-feature">
+
+                        <img
+                            src="images/collections/collection-03.jpg"
+                            alt="Luxury collection"
+                            loading="lazy"
+                        >
+
+                        <div>
+
+                            <span>
+                                COLLECTION 03
+                            </span>
+
+                            <h2>
+                                INTENTION SERIES
+                            </h2>
+
+                            <p>
+                                Statement pieces created for
+                                people who dress with purpose.
+                            </p>
+
+                            <a
+                                href="#shop"
+                                data-page="shop"
+                                class="btn btn-primary"
+                            >
+                                Discover
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 INVESTMENT PAGE
+            ============================================== -->
+
+            <section
+                class="page"
+                id="investment"
+                data-page-section="investment"
+            >
+
+                <div class="page-header investment-header">
+
+                    <span class="eyebrow">
+                        AREA BOYZ / ENTERPRISE
+                    </span>
+
+                    <h1>
+                        Own a piece of the evolution.
+                    </h1>
+
+                    <p>
+                        Explore the enterprise equity structure
+                        behind Area Boyz Enterprise.
+                    </p>
+
+                </div>
+
+
+                <div class="equity-dashboard">
+
+                    <div class="equity-main-card">
+
+                        <span>
+                            TOTAL EQUITY
+                        </span>
+
+                        <strong>
+                            $758,000
+                        </strong>
+
+                        <p>
+                            Current stated enterprise equity figure.
+                        </p>
+
+                    </div>
+
+
+                    <div class="equity-info-card">
+
+                        <span>
+                            PARTICIPATION
+                        </span>
+
+                        <h3>
+                            Equity Share Structure
+                        </h3>
+
+                        <p>
+                            Participation, pricing, allocation,
+                            distributions and any potential return
+                            are governed by the applicable legal
+                            documents and business terms.
+                        </p>
+
+                    </div>
+
+
+                    <div class="equity-info-card">
+
+                        <span>
+                            TRANSPARENCY
+                        </span>
+
+                        <h3>
+                            Built for clarity.
+                        </h3>
+
+                        <p>
+                            Before participating, prospective
+                            investors should review the company's
+                            financial information, terms, risks and
+                            applicable regulatory requirements.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="investment-calculator">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            SHARE EXPLORER
+                        </span>
+
+                        <h2>
+                            Explore a hypothetical allocation.
+                        </h2>
+
+                        <p>
+                            This calculator is an informational
+                            illustration only and does not constitute
+                            an offer, guarantee or promise of return.
+                        </p>
+
+                    </div>
+
+
+                    <div class="calculator-form">
+
+                        <label>
+                            Hypothetical amount
+
+                            <input
+                                type="number"
+                                id="investmentAmount"
+                                placeholder="1000"
+                                min="0"
+                            >
+
+                        </label>
+
+
+                        <label>
+                            Hypothetical equity percentage
+
+                            <input
+                                type="number"
+                                id="equityPercentage"
+                                placeholder="1"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                            >
+
+                        </label>
+
+
+                        <button
+                            class="btn btn-primary"
+                            id="calculateEquity"
+                        >
+                            Calculate illustration
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="calculator-result"
+                        id="calculatorResult"
+                    >
+
+                        <span>
+                            Illustration
+                        </span>
+
+                        <strong>
+                            —
+                        </strong>
+
+                        <p>
+                            Enter figures above to calculate.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="investment-disclaimer">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <p>
+                        <strong>Important:</strong>
+                        Equity participation involves risk.
+                        Figures shown on this website are informational
+                        unless incorporated into formal legal documents.
+                        No investment return is guaranteed. Prospective
+                        participants should obtain and review the
+                        applicable offering, ownership and financial
+                        documents and seek independent professional advice
+                        where appropriate.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 ABOUT PAGE
+            ============================================== -->
+
+            <section
+                class="page"
+                id="about"
+                data-page-section="about"
+            >
+
+                <div class="page-header">
+
+                    <span class="eyebrow">
+                        AREA BOYZ / OUR STORY
+                    </span>
+
+                    <h1>
+                        We don't just make clothes.
+                    </h1>
+
+                    <p>
+                        We build an evolving culture around how
+                        people express themselves.
+                    </p>
+
+                </div>
+
+
+                <div class="about-layout">
+
+                    <div class="about-image">
+
+                        <img
+                            src="images/hero/about.jpg"
+                            alt="Area Boyz Enterprise"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+
+                    <div class="about-copy">
+
+                        <span class="eyebrow">
+                            THE PHILOSOPHY
+                        </span>
+
+                        <h2>
+                            Swag.
+                            Tranquility.
+                            Craft.
+                            Intention.
+                        </h2>
+
+                        <p>
+                            Area Boyz Enterprise is an evolutionary
+                            fashion and lifestyle platform designed
+                            around individuality.
+                        </p>
+
+                        <p>
+                            We believe what you wear should fit your
+                            life, your movement and your personality.
+                            Sometimes that means bold. Sometimes it
+                            means calm. Sometimes it means handmade.
+                        </p>
+
+                        <p>
+                            Whatever the expression, it should have
+                            intention behind it.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 CONTACT PAGE
+            ============================================== -->
+
+            <section
+                class="page"
+                id="contact"
+                data-page-section="contact"
+            >
+
+                <div class="page-header">
+
+                    <span class="eyebrow">
+                        AREA BOYZ / CONTACT
+                    </span>
+
+                    <h1>
+                        Let's build something.
+                    </h1>
+
+                    <p>
+                        Questions about products, partnerships,
+                        collaborations or the enterprise?
+                    </p>
+
+                </div>
+
+
+                <div class="contact-grid">
+
+                    <div class="contact-card">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        <span>
+                            EMAIL
+                        </span>
+
+                        <h3>
+                            hello@areaboyzenterprise.com
+                        </h3>
+
+                    </div>
+
+
+                    <div class="contact-card">
+
+                        <i class="fa-solid fa-handshake"></i>
+
+                        <span>
+                            PARTNERSHIPS
+                        </span>
+
+                        <h3>
+                            Collaborate with Area Boyz
+                        </h3>
+
+                    </div>
+
+
+                    <div class="contact-card">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        <span>
+                            ENTERPRISE
+                        </span>
+
+                        <h3>
+                            Fashion • Lifestyle • Enterprise
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- =================================================
+             CART DRAWER
+        ================================================== -->
+
+        <aside
+            class="cart-drawer"
+            id="cartDrawer"
+            aria-hidden="true"
+        >
+
+            <div class="cart-header">
+
+                <div>
+
+                    <span>
+                        YOUR BAG
+                    </span>
+
+                    <h2>
+                        Cart
+                    </h2>
+
+                </div>
+
+                <button
+                    id="cartClose"
+                    aria-label="Close cart"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <div
+                class="cart-items"
+                id="cartItems"
+            >
+
+                <div class="empty-cart">
+
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                    <h3>
+                        Your bag is empty.
+                    </h3>
+
+                    <p>
+                        Find something that fits your life.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="cart-footer">
+
+                <div class="cart-total">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong id="cartTotal">
+                        $0.00
+                    </strong>
+
+                </div>
+
+                <button
+                    class="btn btn-primary checkout-button"
+                    id="checkoutButton"
+                >
+                    Continue to checkout
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- CART OVERLAY -->
+
+        <div
+            class="cart-overlay"
+            id="cartOverlay"
+        ></div>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="site-footer">
+
+            <div class="footer-main">
+
+                <div class="footer-brand">
+
+                    <div class="brand">
+
+                        <span class="brand-mark">
+                            AB
+                        </span>
+
+                        <span class="brand-text">
+
+                            <strong>
+                                AREA BOYZ
+                            </strong>
+
+                            <small>
+                                ENTERPRISE
+                            </small>
+
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Styles that fit your life.
+                    </p>
+
+                    <span>
+                        Swag • Tranquility • Craft • Intention
+                    </span>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h3>
+                        Shop
+                    </h3>
+
+                    <a href="#shop" data-page="shop">
+                        All products
+                    </a>
+
+                    <a href="#shop" data-page="shop">
+                        Streetwear
+                    </a>
+
+                    <a href="#shop" data-page="shop">
+                        Handmade
+                    </a>
+
+                    <a href="#shop" data-page="shop">
+                        Footwear
+                    </a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h3>
+                        Enterprise
+                    </h3>
+
+                    <a
+                        href="#investment"
+                        data-page="investment"
+                    >
+                        Equity
+                    </a>
+
+                    <a
+                        href="#about"
+                        data-page="about"
+                    >
+                        Our Story
+                    </a>
+
+                    <a
+                        href="#contact"
+                        data-page="contact"
+                    >
+                        Contact
+                    </a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h3>
+                        Follow
+                    </h3>
+
+                    <a href="#">
+                        Instagram
+                    </a>
+
+                    <a href="#">
+                        TikTok
+                    </a>
+
+                    <a href="#">
+                        Facebook
+                    </a>
+
+                    <a href="#">
+                        X
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="footer-bottom">
+
+                <p>
+                    © <span id="currentYear"></span>
+                    Area Boyz Enterprise.
+                    All rights reserved.
+                </p>
+
+                <p>
+                    Built with intention.
+                </p>
+
+            </div>
+
+        </footer>
+
+
+    </div>
+
+
+    <!-- MAIN JAVASCRIPT -->
+
+    <script src="js/app.js"></script>
+
+</body>
+  </html>
