@@ -2,252 +2,144 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Area Boyz Enterprise – Premium fashion, streetwear & investment opportunities. Shop exclusive clothing and invest in our $756,000 equity pool.">
-  <title>Area Boyz Enterprise | Fashion • Innovation • Equity</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2300f0ff'/><text y='.9em' x='50%' text-anchor='middle' font-size='60' font-family='sans-serif' font-weight='bold' fill='black'>AB</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Area Boyz Enterprise – Styles that fit your life. An evolutionary platform for swag, tranquility and handmade crafty designer outfits with intention. Total equity \~$758,000.">
+  <meta name="theme-color" content="#FFD100">
+  <title>Area Boyz Enterprise | Styles That Fit Your Life</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container nav-wrapper">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">AB</div>
-        <span>Area Boyz</span>
-      </a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="shop.html">Shop</a></li>
-          <li><a href="shares.html">Invest</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <select
-  class="currency-selector"
-  data-currency-selector
-  onchange="setSelectedCurrency(this.value)"
-  aria-label="Select currency"
->
-  <option value="USD">USD $</option>
-  <option value="EUR">EUR €</option>
-  <option value="GBP">GBP £</option>
-  <option value="NGN">NGN ₦</option>
-  <option value="CAD">CAD $</option>
-  <option value="AUD">AUD $</option>
-  <option value="GHS">GHS ₵</option>
-  <option value="ZAR">ZAR R</option>
-        </select>
-        <a href="cart.html" class="cart-btn" aria-label="Shopping cart">
-          🛒
-          <span class="cart-count">0</span>
+  <!-- Preloader -->
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <div class="preloader-inner">
+      <div class="logo-mark">AB</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+      <p class="preloader-text">Area Boyz Enterprise</p>
+    </div>
+  </div>
+
+  <!-- App Shell -->
+  <div id="app" class="app hidden">
+    <!-- Top Status / Browser Bar Simulation (optional visual) -->
+    <header class="top-bar">
+      <div class="status-row">
+        <span class="time">9:24</span>
+        <div class="status-icons">
+          <span class="signal"></span>
+          <span class="wifi"></span>
+          <span class="battery">95</span>
+        </div>
+      </div>
+      <div class="url-bar">
+        <span class="lock">🔒</span>
+        <span class="url">areaboyz.com</span>
+        <button class="add-tab" aria-label="New tab">+</button>
+      </div>
+    </header>
+
+    <!-- Main Navigation Header -->
+    <header class="site-header">
+      <div class="header-row">
+        <button class="menu-btn" id="menuToggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <a href="#home" class="brand" data-page="home">
+          <span class="brand-icon">AB</span>
+          <span class="brand-name">Area Boyz</span>
         </a>
-        <button class="mobile-toggle" aria-label="Menu">☰</button>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <!-- HERO SLIDER -->
-    <section class="hero" aria-label="Featured collection">
-      <div class="hero-slider">
-        <div class="slide active">
-          <img src="images/black-gold-suit.jpg" alt="Black and gold couture suit">
-          <div class="slide-overlay"></div>
-          <div class="slide-content">
-            <span class="tag">Couture Drop</span>
-            <h1>Where Technology Meets Tailoring</h1>
-            <p>Discover limited avant-garde pieces engineered for the bold. Elevate your presence with Area Boyz exclusive designs.</p>
-            <div style="display:flex;gap:1rem;flex-wrap:wrap">
-              <a href="shop.html" class="btn btn-primary">Shop Collection</a>
-              <a href="shares.html" class="btn btn-secondary">Invest Now</a>
-            </div>
-          </div>
-        </div>
-        <div class="slide">
-          <img src="images/spiderman-hoodie.jpg" alt="Red Spider-Man hoodie">
-          <div class="slide-overlay"></div>
-          <div class="slide-content">
-            <span class="tag">Street Legends</span>
-            <h1>Marvel × Civil Regime</h1>
-            <p>Iconic collaboration hoodies, varsity jackets and graphic tees that fuse comic heritage with modern streetwear energy.</p>
-            <a href="shop.html" class="btn btn-primary">Explore Streetwear</a>
-          </div>
-        </div>
-        <div class="slide">
-          <img src="images/gold-vest-outfit.jpg" alt="Gold metallic vest outfit">
-          <div class="slide-overlay"></div>
-          <div class="slide-content">
-            <span class="tag">Future Form</span>
-            <h1>Liquid Gold Statement</h1>
-            <p>Mirror-finish metallic pieces that redefine eveningwear. Designed for those who refuse to blend in.</p>
-            <a href="shop.html" class="btn btn-primary">View Look</a>
-          </div>
-        </div>
-        <div class="slide">
-          <img src="images/nike-blue-af1-1.jpg" alt="Blue patent Nike Air Force 1">
-          <div class="slide-overlay"></div>
-          <div class="slide-content">
-            <span class="tag">Footwear</span>
-            <h1>Patent Blue AF1s</h1>
-            <p>Limited metallic blue patent leather Air Force 1s. Classic silhouette, futuristic finish. Only at Area Boyz.</p>
-            <a href="shop.html" class="btn btn-primary">Get Yours</a>
-          </div>
-        </div>
-        <div class="slide">
-          <img src="images/white-bamboo-suit.jpg" alt="Ivory bamboo print suit">
-          <div class="slide-overlay"></div>
-          <div class="slide-content">
-            <span class="tag">Eastern Modern</span>
-            <h1>Bamboo Ink Couture</h1>
-            <p>Fluid ivory tailoring with delicate bamboo illustrations. A fusion of tradition and contemporary silhouette.</p>
-            <a href="shop.html" class="btn btn-primary">Discover</a>
-          </div>
-        </div>
-      </div>
-      <button class="hero-nav prev" aria-label="Previous slide">‹</button>
-      <button class="hero-nav next" aria-label="Next slide">›</button>
-      <div class="hero-controls">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="section">
-      <div class="container">
-        <div class="features">
-          <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Curated Drops</h3>
-            <p>Limited runs of couture, streetwear and luxury pieces selected for cultural impact.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🔒</div>
-            <h3>Secure Checkout</h3>
-            <p>Encrypted payments, transparent pricing and global shipping on every order.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📈</div>
-            <h3>Equity Access</h3>
-            <p>Own a stake in Area Boyz. $756,000 equity pool open to shareholders with tiered returns.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🌐</div>
-            <h3>Tech-Driven</h3>
-            <p>Smart inventory, real-time stock and a seamless multi-device shopping experience.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURED PRODUCTS -->
-    <section class="section" style="padding-top:0">
-      <div class="container">
-        <h2 class="section-title">Featured Pieces</h2>
-        <p class="section-subtitle">Hand-picked from the latest collection — formal, street and avant-garde.</p>
-        <div class="products-grid" id="featured-products">
-          <!-- JS populated -->
-        </div>
-        <div style="text-align:center;margin-top:2.5rem">
-          <a href="shop.html" class="btn btn-outline">View Full Collection</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- SHARES TEASER -->
-    <section class="section shares-section">
-      <div class="container">
-        <div class="shares-grid">
-          <div>
-            <h2 class="section-title">Invest in Area Boyz</h2>
-            <p class="section-subtitle" style="margin-bottom:1.5rem">A $756,000 company equity pool is now open. Returns scale with your commitment.</p>
-            <ul style="list-style:none;margin-bottom:2rem;color:var(--text-secondary)">
-              <li style="margin-bottom:0.6rem">✓ Tiered annual returns up to 18%</li>
-              <li style="margin-bottom:0.6rem">✓ Transparent ownership percentage</li>
-              <li style="margin-bottom:0.6rem">✓ Minimum entry from $100</li>
-              <li>✓ Secure digital share registration</li>
-            </ul>
-            <a href="shares.html" class="btn btn-gold">Explore Share Options</a>
-          </div>
-          <div class="shares-visual">
-            <div class="shares-card">
-              <div class="shares-amount">$756,000</div>
-              <div class="shares-label">Total Equity Available</div>
-              <div class="share-tiers">
-                <div class="tier">
-                  <span>$100 – $4,999</span>
-                  <strong>9% p.a.</strong>
-                </div>
-                <div class="tier">
-                  <span>$5,000 – $19,999</span>
-                  <strong>12% p.a.</strong>
-                </div>
-                <div class="tier">
-                  <span>$20,000 – $49,999</span>
-                  <strong>15% p.a.</strong>
-                </div>
-                <div class="tier">
-                  <span>$50,000+</span>
-                  <strong>18% p.a.</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a href="index.html" class="logo">
-            <div class="logo-icon">AB</div>
-            <span>Area Boyz</span>
+        <div class="header-actions">
+          <button class="search-toggle" id="searchToggle" aria-label="Search">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </button>
+          <a href="#cart" class="cart-btn" data-page="cart" aria-label="Cart">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M6 6L5 3H2"/></svg>
+            <span class="cart-count" id="cartCount">0</span>
           </a>
-          <p>Multipurpose enterprise uniting premium fashion retail with transparent equity investment opportunities.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Shop</h4>
-          <ul>
-            <li><a href="shop.html">All Products</a></li>
-            <li><a href="shop.html">Formal</a></li>
-            <li><a href="shop.html">Streetwear</a></li>
-            <li><a href="shop.html">Accessories</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="shares.html">Invest / Shares</a></li>
-            <li><a href="contact.html">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="cart.html">Cart</a></li>
-            <li><a href="checkout.html">Checkout</a></li>
-            <li><a href="contact.html">Help Center</a></li>
-          </ul>
         </div>
       </div>
-      <div class="footer-bottom">
-        <span>© 2026 Area Boyz Enterprise. All rights reserved.</span>
-        <span>Built with semantic HTML • Vanilla JS</span>
-      </div>
-    </div>
-  </footer>
 
-  <script src="js/currency.js"></script>
-<script src="js/main.js"></script>
+      <!-- Search Bar -->
+      <div class="search-bar" id="searchBar">
+        <input type="search" id="searchInput" placeholder="Search designer wears, outfits..." autocomplete="off">
+        <button class="search-go" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        </button>
+      </div>
+
+      <!-- Location + Language -->
+      <div class="location-row">
+        <div class="location">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
+          <span>Lagos, NG • Worldwide</span>
+        </div>
+        <div class="lang-pill">EN / PIDGIN</div>
+      </div>
+
+      <!-- Category Pills -->
+      <nav class="category-pills" aria-label="Categories">
+        <button class="pill active" data-filter="all">All</button>
+        <button class="pill" data-filter="denim">Denim</button>
+        <button class="pill" data-filter="street">Street</button>
+        <button class="pill" data-filter="handmade">Handmade</button>
+        <button class="pill" data-filter="luxury">Luxury</button>
+        <button class="pill" data-filter="new">New Drops</button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="mainContent" class="main-content" role="main">
+      <!-- Pages will be injected here by JS -->
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" aria-label="Primary">
+      <a href="#home" class="nav-item active" data-page="home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="#shop" class="nav-item" data-page="shop">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span>Shop</span>
+      </a>
+      <a href="#invest" class="nav-item" data-page="invest">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        <span>Invest</span>
+      </a>
+      <a href="#about" class="nav-item" data-page="about">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span>About</span>
+      </a>
+      <a href="#account" class="nav-item" data-page="account">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Side Menu Overlay -->
+  <div id="sideMenu" class="side-menu" aria-hidden="true">
+    <div class="side-menu-header">
+      <span class="brand-icon">AB</span>
+      <button id="closeMenu" aria-label="Close menu">✕</button>
+    </div>
+    <nav class="side-nav">
+      <a href="#home" data-page="home">Home</a>
+      <a href="#shop" data-page="shop">Shop All Designer Wears</a>
+      <a href="#collections" data-page="collections">Collections</a>
+      <a href="#invest" data-page="invest">Investment & Equity</a>
+      <a href="#about" data-page="about">Our Story</a>
+      <a href="#contact" data-page="contact">Contact</a>
+    </nav>
+    <div class="side-footer">
+      <p>Total Equity</p>
+      <strong>\~$758,000</strong>
+    </div>
+  </div>
+  <div id="overlay" class="overlay"></div>
+
+  <script src="js/app.js"></script>
 </body>
 </html>
