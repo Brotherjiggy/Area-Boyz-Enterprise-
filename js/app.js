@@ -2,3471 +2,3328 @@
 
 /* =========================================================
    AREA BOYZ ENTERPRISE
-   PREMIUM COMMERCE FRONTEND
-   VERSION 3.0
+   PREMIUM FRONTEND ENGINE
+   VERSION 4.0
+   HTML-MATCHED EDITION
 
    FEATURES
-   - 120+ named products
-   - Product/image mapping
-   - Multi-image product galleries
-   - Product variants
-   - Sizes
-   - Colors
-   - Stock status
-   - Search
-   - Category filtering
-   - Sorting
-   - Cart persistence
-   - Variant-aware cart
-   - Product quick view
-   - Mobile navigation
-   - Auto-hide navbar
-   - Dark/light mode
-   - Investment calculator
    - SPA navigation
-   ========================================================= */
+   - Desktop navigation
+   - Mobile navigation
+   - Search panel
+   - Product search
+   - Product filtering
+   - Product sorting
+   - 120-product catalogue
+   - Product quick view
+   - Multi-image product gallery
+   - Size / colour selection
+   - Quantity controls
+   - Shopping cart
+   - Cart drawer
+   - LocalStorage cart
+   - Equity calculator
+   - Announcement close
+   - Auto-hiding navbar
+   - Keyboard shortcuts
+   - Preloader failsafe
+========================================================= */
 
-(() => {
-  "use strict";
 
-  /* =========================================================
-     CONFIGURATION
-     ========================================================= */
+/* =========================================================
+   CONFIG
+========================================================= */
 
-  const CONFIG = {
+const CONFIG = {
     brand: "Area Boyz Enterprise",
     totalEquity: 758000,
     currency: "USD",
     storageKey: "areaBoyzCart",
-    themeKey: "areaBoyzTheme",
     defaultPage: "home",
     preloaderDuration: 1100
-  };
+};
 
-  /* =========================================================
-     STATE
-     ========================================================= */
 
-  const state = {
-    currentPage: CONFIG.defaultPage,
+/* =========================================================
+   DOM HELPERS
+========================================================= */
+
+const $ = (selector, parent = document) =>
+    parent.querySelector(selector);
+
+const $$ = (selector, parent = document) =>
+    Array.from(parent.querySelectorAll(selector));
+
+
+/* =========================================================
+   APPLICATION STATE
+========================================================= */
+
+const state = {
+    currentPage: "home",
     currentCategory: "all",
     currentSearch: "",
     currentSort: "featured",
     cart: loadCart(),
-    products: [],
-    selectedProduct: null,
-    selectedImageIndex: 0,
-    selectedSize: "",
-    selectedColor: "",
-    selectedQuantity: 1
-  };
-
-  /* =========================================================
-     PRODUCT CATALOGUE
-     ========================================================= */
-
-  const catalogue = [
-
-    /* -------------------------------------------------------
-       001 - 010
-       STREETWEAR / TEES
-       ------------------------------------------------------- */
-
-    {
-      name: "AB Essential Oversized Tee",
-      category: "streetwear",
-      price: 55,
-      badge: "Essential",
-      description: "A relaxed everyday tee built around the Area Boyz identity. Clean, comfortable and designed for effortless street style.",
-      colors: ["Black", "White", "Gold"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 28
-    },
-
-    {
-      name: "Area Motion Graphic Tee",
-      category: "streetwear",
-      price: 65,
-      badge: "New",
-      description: "A graphic-driven streetwear piece inspired by movement, confidence and the Area Boyz evolution.",
-      colors: ["Black", "Cream"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 22
-    },
-
-    {
-      name: "Evolution Heavyweight Tee",
-      category: "streetwear",
-      price: 75,
-      badge: "Premium",
-      description: "Heavyweight construction with a structured silhouette for a stronger premium streetwear look.",
-      colors: ["Black", "Washed Black", "Stone"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 18
-    },
-
-    {
-      name: "Area Boyz Signature Tee",
-      category: "streetwear",
-      price: 70,
-      badge: "Signature",
-      description: "The signature everyday Area Boyz tee combining minimal branding with a confident modern fit.",
-      colors: ["Black", "White"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 31
-    },
-
-    {
-      name: "Street Philosophy Tee",
-      category: "streetwear",
-      price: 68,
-      badge: "Popular",
-      description: "A statement streetwear tee inspired by individuality, ambition and everyday city culture.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 24
-    },
-
-    {
-      name: "Move Different Tee",
-      category: "streetwear",
-      price: 62,
-      badge: "Move Different",
-      description: "Relaxed streetwear built for people who choose their own lane and move with intention.",
-      colors: ["Black", "Cream", "Olive"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 20
-    },
-
-    {
-      name: "Everyday Energy Tee",
-      category: "streetwear",
-      price: 52,
-      badge: "Everyday",
-      description: "Simple, versatile and easy to wear from casual days to late-night city movement.",
-      colors: ["White", "Black", "Grey"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 35
-    },
-
-    {
-      name: "AB Core Cotton Tee",
-      category: "streetwear",
-      price: 48,
-      badge: "Core",
-      description: "A clean cotton essential designed to become one of the most reliable pieces in your wardrobe.",
-      colors: ["Black", "White", "Navy"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 40
-    },
-
-    {
-      name: "Area Boyz Archive Tee",
-      category: "streetwear",
-      price: 78,
-      badge: "Archive",
-      description: "An archive-inspired piece combining classic Area Boyz attitude with a contemporary silhouette.",
-      colors: ["Washed Black", "Vintage Grey"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 15
-    },
-
-    {
-      name: "The Evolution Tee",
-      category: "streetwear",
-      price: 72,
-      badge: "Evolution",
-      description: "A premium statement tee representing the continual evolution of the Area Boyz platform.",
-      colors: ["Black", "Sand"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 19
-    },
-
-    /* -------------------------------------------------------
-       011 - 020
-       HOODIES / SWEATSHIRTS
-       ------------------------------------------------------- */
-
-    {
-      name: "Evolution Heavyweight Hoodie",
-      category: "hoodies",
-      price: 125,
-      badge: "Premium",
-      description: "Heavyweight fleece hoodie with a structured fit and elevated Area Boyz streetwear character.",
-      colors: ["Black", "Grey", "Cream"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 17
-    },
-
-    {
-      name: "AB Essential Pullover Hoodie",
-      category: "hoodies",
-      price: 110,
-      badge: "Essential",
-      description: "A dependable everyday hoodie with a clean silhouette and soft interior.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 26
-    },
-
-    {
-      name: "Move Different Hoodie",
-      category: "hoodies",
-      price: 135,
-      badge: "New",
-      description: "A statement hoodie designed around individuality, movement and modern street culture.",
-      colors: ["Black", "Olive"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 14
-    },
-
-    {
-      name: "Area Boyz Studio Hoodie",
-      category: "hoodies",
-      price: 145,
-      badge: "Studio",
-      description: "Premium studio-inspired hoodie with a refined oversized silhouette.",
-      colors: ["Black", "Stone"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 13
-    },
-
-    {
-      name: "Tranquility Heavy Hoodie",
-      category: "hoodies",
-      price: 130,
-      badge: "Tranquility",
-      description: "A calm, heavyweight layer inspired by comfort, balance and quiet confidence.",
-      colors: ["Cream", "Brown", "Black"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 16
-    },
-
-    {
-      name: "AB Zip-Up Hoodie",
-      category: "hoodies",
-      price: 120,
-      badge: "Core",
-      description: "Versatile zip hoodie designed for easy layering throughout the day.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 21
-    },
-
-    {
-      name: "Street Culture Hoodie",
-      category: "hoodies",
-      price: 128,
-      badge: "Street",
-      description: "Graphic-led hoodie inspired by city energy and independent street culture.",
-      colors: ["Black", "Washed Black"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 12
-    },
-
-    {
-      name: "Crafted Soul Hoodie",
-      category: "hoodies",
-      price: 155,
-      badge: "Crafted",
-      description: "A more artistic hoodie combining relaxed comfort with handcrafted visual details.",
-      colors: ["Brown", "Cream"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 10
-    },
-
-    {
-      name: "Area Motion Crewneck",
-      category: "hoodies",
-      price: 105,
-      badge: "Motion",
-      description: "Classic crewneck sweatshirt made for everyday movement and easy styling.",
-      colors: ["Black", "Grey", "Navy"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 27
-    },
-
-    {
-      name: "AB Signature Crewneck",
-      category: "hoodies",
-      price: 115,
-      badge: "Signature",
-      description: "Minimal premium crewneck carrying the signature Area Boyz identity.",
-      colors: ["Black", "Cream"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 20
-    },
-
-    /* -------------------------------------------------------
-       021 - 030
-       SHIRTS
-       ------------------------------------------------------- */
-
-    {
-      name: "Crafted Tranquility Shirt",
-      category: "shirts",
-      price: 115,
-      badge: "Crafted",
-      description: "Relaxed shirt inspired by tranquility, craftsmanship and intentional everyday dressing.",
-      colors: ["Cream", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 16
-    },
-
-    {
-      name: "AB Artisan Overshirt",
-      category: "shirts",
-      price: 135,
-      badge: "Artisan",
-      description: "Layerable overshirt with an elevated crafted finish.",
-      colors: ["Black", "Olive", "Sand"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 14
-    },
-
-    {
-      name: "Area Utility Shirt",
-      category: "shirts",
-      price: 105,
-      badge: "Utility",
-      description: "Functional everyday shirt featuring a practical modern silhouette.",
-      colors: ["Black", "Olive", "Khaki"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 23
-    },
-
-    {
-      name: "Intention Patchwork Shirt",
-      category: "shirts",
-      price: 165,
-      badge: "Limited",
-      description: "Patchwork-inspired statement shirt created around the idea of handmade intention.",
-      colors: ["Multi", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 8
-    },
-
-    {
-      name: "Area Boyz Resort Shirt",
-      category: "shirts",
-      price: 95,
-      badge: "New",
-      description: "Relaxed short-sleeve shirt designed for warm-weather style and easy movement.",
-      colors: ["Cream", "Black", "Green"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 19
-    },
-
-    {
-      name: "AB Classic Oxford",
-      category: "shirts",
-      price: 100,
-      badge: "Classic",
-      description: "Clean Oxford-inspired shirt balancing classic structure with modern Area Boyz styling.",
-      colors: ["White", "Black", "Blue"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 25
-    },
-
-    {
-      name: "Streetline Button Shirt",
-      category: "shirts",
-      price: 108,
-      badge: "Street",
-      description: "Modern button shirt designed to transition between relaxed and polished looks.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 18
-    },
-
-    {
-      name: "Craft Culture Shirt",
-      category: "shirts",
-      price: 145,
-      badge: "Craft",
-      description: "A creative shirt combining artistic details with wearable everyday structure.",
-      colors: ["Brown", "Cream", "Black"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 11
-    },
-
-    {
-      name: "Area Signature Linen Shirt",
-      category: "shirts",
-      price: 125,
-      badge: "Premium",
-      description: "Lightweight premium shirt designed for relaxed luxury and warm-weather dressing.",
-      colors: ["White", "Cream", "Black"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 17
-    },
-
-    {
-      name: "AB Night Shift Shirt",
-      category: "shirts",
-      price: 118,
-      badge: "Night",
-      description: "Dark-toned statement shirt created for evening looks and city nights.",
-      colors: ["Black", "Charcoal"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 15
-    },
-
-    /* -------------------------------------------------------
-       031 - 040
-       JACKETS / OUTERWEAR
-       ------------------------------------------------------- */
-
-    {
-      name: "Handmade Intention Jacket",
-      category: "outerwear",
-      price: 210,
-      badge: "Limited",
-      description: "Statement jacket inspired by handmade construction and intentional design.",
-      colors: ["Black", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 7
-    },
-
-    {
-      name: "Area Boyz Utility Jacket",
-      category: "outerwear",
-      price: 185,
-      badge: "Utility",
-      description: "Functional outer layer built for everyday city movement.",
-      colors: ["Black", "Olive"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 12
-    },
-
-    {
-      name: "AB Evolution Bomber",
-      category: "outerwear",
-      price: 195,
-      badge: "Evolution",
-      description: "Contemporary bomber jacket with a premium streetwear silhouette.",
-      colors: ["Black", "Olive"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 9
-    },
-
-    {
-      name: "Area Motion Coach Jacket",
-      category: "outerwear",
-      price: 155,
-      badge: "Motion",
-      description: "Lightweight coach jacket made for layering and movement.",
-      colors: ["Black", "Navy"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 14
-    },
-
-    {
-      name: "Crafted Everyday Jacket",
-      category: "outerwear",
-      price: 220,
-      badge: "Crafted",
-      description: "Premium everyday jacket with handcrafted visual character.",
-      colors: ["Brown", "Cream"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 6
-    },
-
-    {
-      name: "AB Denim Trucker Jacket",
-      category: "outerwear",
-      price: 175,
-      badge: "Denim",
-      description: "Classic denim trucker silhouette updated with Area Boyz attitude.",
-      colors: ["Blue", "Black"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 18
-    },
-
-    {
-      name: "Street Armor Overshirt",
-      category: "outerwear",
-      price: 160,
-      badge: "Street",
-      description: "Structured overshirt designed to add depth to everyday streetwear outfits.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 10
-    },
-
-    {
-      name: "Tranquility Work Jacket",
-      category: "outerwear",
-      price: 180,
-      badge: "Tranquility",
-      description: "Relaxed workwear-inspired jacket with a softer premium finish.",
-      colors: ["Cream", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 8
-    },
-
-    {
-      name: "AB City Rain Shell",
-      category: "outerwear",
-      price: 170,
-      badge: "City",
-      description: "Lightweight protective outer layer for changing city conditions.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 13
-    },
-
-    {
-      name: "Area Boyz Varsity Jacket",
-      category: "outerwear",
-      price: 240,
-      badge: "Premium",
-      description: "Statement varsity jacket blending classic athletic heritage with Area Boyz identity.",
-      colors: ["Black", "Cream"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 5
-    },
-
-    /* -------------------------------------------------------
-       041 - 050
-       TROUSERS / CARGO
-       ------------------------------------------------------- */
-
-    {
-      name: "AB Utility Cargo Pants",
-      category: "bottoms",
-      price: 135,
-      badge: "Utility",
-      description: "Relaxed cargo trousers with functional pockets and a modern streetwear fit.",
-      colors: ["Black", "Olive", "Khaki"],
-      sizes: ["28", "30", "32", "34", "36", "38"],
-      stock: 22
-    },
-
-    {
-      name: "Area Motion Cargo",
-      category: "bottoms",
-      price: 145,
-      badge: "Motion",
-      description: "Comfortable cargo trousers designed for movement and everyday city wear.",
-      colors: ["Black", "Grey"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 18
-    },
-
-    {
-      name: "Evolution Relaxed Trousers",
-      category: "bottoms",
-      price: 125,
-      badge: "Evolution",
-      description: "Relaxed trousers balancing comfort, structure and modern proportions.",
-      colors: ["Black", "Cream", "Brown"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 16
-    },
-
-    {
-      name: "AB Wide Leg Utility Pant",
-      category: "bottoms",
-      price: 140,
-      badge: "New",
-      description: "Wide-leg utility trousers with a contemporary streetwear silhouette.",
-      colors: ["Black", "Olive"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 13
-    },
-
-    {
-      name: "Streetline Parachute Pant",
-      category: "bottoms",
-      price: 150,
-      badge: "Street",
-      description: "Relaxed parachute-style pants designed for bold contemporary styling.",
-      colors: ["Black", "Grey"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 11
-    },
-
-    {
-      name: "AB Everyday Tailored Pant",
-      category: "bottoms",
-      price: 120,
-      badge: "Essential",
-      description: "A cleaner trouser option designed for smart-casual Area Boyz styling.",
-      colors: ["Black", "Charcoal", "Cream"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 20
-    },
-
-    {
-      name: "Crafted Patch Pocket Pant",
-      category: "bottoms",
-      price: 165,
-      badge: "Crafted",
-      description: "Artisan-inspired trousers with distinctive utility pocket detailing.",
-      colors: ["Brown", "Cream"],
-      sizes: ["28", "30", "32", "34"],
-      stock: 8
-    },
-
-    {
-      name: "AB Tech Utility Pant",
-      category: "bottoms",
-      price: 155,
-      badge: "Tech",
-      description: "Modern technical trousers built around utility and clean urban styling.",
-      colors: ["Black", "Grey"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 14
-    },
-
-    {
-      name: "Area Boyz Straight Pant",
-      category: "bottoms",
-      price: 110,
-      badge: "Core",
-      description: "Straight-leg everyday trousers with a versatile clean finish.",
-      colors: ["Black", "Navy", "Cream"],
-      sizes: ["28", "30", "32", "34", "36", "38"],
-      stock: 26
-    },
-
-    {
-      name: "Move Different Track Pant",
-      category: "bottoms",
-      price: 115,
-      badge: "Move",
-      description: "Comfort-focused track pants created for relaxed days and active movement.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 24
-    },
-
-    /* -------------------------------------------------------
-       051 - 060
-       DENIM / SHORTS
-       ------------------------------------------------------- */
-
-    {
-      name: "AB Classic Straight Jeans",
-      category: "denim",
-      price: 130,
-      badge: "Classic",
-      description: "Straight-leg denim designed as an everyday Area Boyz staple.",
-      colors: ["Indigo", "Black"],
-      sizes: ["28", "30", "32", "34", "36", "38"],
-      stock: 21
-    },
-
-    {
-      name: "Evolution Baggy Jeans",
-      category: "denim",
-      price: 150,
-      badge: "Popular",
-      description: "Relaxed baggy jeans built for modern streetwear silhouettes.",
-      colors: ["Washed Blue", "Black"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 17
-    },
-
-    {
-      name: "Area Washed Black Jeans",
-      category: "denim",
-      price: 145,
-      badge: "Washed",
-      description: "Washed black denim with a worn-in finish and contemporary shape.",
-      colors: ["Washed Black"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 19
-    },
-
-    {
-      name: "AB Carpenter Denim",
-      category: "denim",
-      price: 155,
-      badge: "Utility",
-      description: "Workwear-inspired carpenter denim with a relaxed fit.",
-      colors: ["Blue", "Black"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 12
-    },
-
-    {
-      name: "Street Archive Denim",
-      category: "denim",
-      price: 165,
-      badge: "Archive",
-      description: "Vintage-inspired denim with an archival streetwear character.",
-      colors: ["Vintage Blue", "Black"],
-      sizes: ["28", "30", "32", "34"],
-      stock: 9
-    },
-
-    {
-      name: "AB Denim Shorts",
-      category: "denim",
-      price: 85,
-      badge: "Summer",
-      description: "Relaxed denim shorts designed for casual warm-weather styling.",
-      colors: ["Blue", "Black"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 25
-    },
-
-    {
-      name: "Area Utility Shorts",
-      category: "bottoms",
-      price: 80,
-      badge: "Utility",
-      description: "Everyday utility shorts with practical pocket space.",
-      colors: ["Black", "Olive", "Khaki"],
-      sizes: ["28", "30", "32", "34", "36"],
-      stock: 29
-    },
-
-    {
-      name: "Move Different Shorts",
-      category: "bottoms",
-      price: 72,
-      badge: "Move",
-      description: "Relaxed shorts built for comfort and easy everyday movement.",
-      colors: ["Black", "Grey", "Cream"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 30
-    },
-
-    {
-      name: "AB Studio Shorts",
-      category: "bottoms",
-      price: 78,
-      badge: "Studio",
-      description: "Minimal premium shorts with a clean contemporary silhouette.",
-      colors: ["Black", "Stone"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 16
-    },
-
-    {
-      name: "Crafted Lounge Shorts",
-      category: "bottoms",
-      price: 75,
-      badge: "Crafted",
-      description: "Soft relaxed shorts inspired by comfort and intentional design.",
-      colors: ["Cream", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 18
-    },
-
-    /* -------------------------------------------------------
-       061 - 070
-       FOOTWEAR
-       ------------------------------------------------------- */
-
-    {
-      name: "AB Motion Runner",
-      category: "footwear",
-      price: 145,
-      badge: "New",
-      description: "Lightweight everyday runner combining comfort with modern Area Boyz styling.",
-      colors: ["Black", "White"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 16
-    },
-
-    {
-      name: "Area Street Trainer",
-      category: "footwear",
-      price: 155,
-      badge: "Popular",
-      description: "Versatile street trainer designed for everyday city wear.",
-      colors: ["Black", "Cream"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 20
-    },
-
-    {
-      name: "Evolution High Top",
-      category: "footwear",
-      price: 185,
-      badge: "Evolution",
-      description: "High-top silhouette inspired by classic street culture with a modern Area Boyz identity.",
-      colors: ["Black", "White"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 11
-    },
-
-    {
-      name: "Craft Runner",
-      category: "footwear",
-      price: 175,
-      badge: "Crafted",
-      description: "Artistic runner combining handcrafted visual details with everyday comfort.",
-      colors: ["Cream", "Brown"],
-      sizes: ["40", "41", "42", "43", "44"],
-      stock: 9
-    },
-
-    {
-      name: "AB Daily Sneaker",
-      category: "footwear",
-      price: 135,
-      badge: "Everyday",
-      description: "Clean everyday sneaker designed to work with almost every Area Boyz look.",
-      colors: ["White", "Black", "Grey"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 27
-    },
-
-    {
-      name: "Area Boyz Court Shoe",
-      category: "footwear",
-      price: 165,
-      badge: "Court",
-      description: "Classic court-inspired sneaker with a refined modern profile.",
-      colors: ["White", "Black"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 18
-    },
-
-    {
-      name: "Tranquility Slide",
-      category: "footwear",
-      price: 65,
-      badge: "Comfort",
-      description: "Easy everyday slide focused on comfort and relaxed Area Boyz style.",
-      colors: ["Black", "Cream", "Brown"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 34
-    },
-
-    {
-      name: "AB Utility Boot",
-      category: "footwear",
-      price: 220,
-      badge: "Premium",
-      description: "Durable utility boot designed to add strength to streetwear outfits.",
-      colors: ["Black", "Brown"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 8
-    },
-
-    {
-      name: "Evolution Street Runner",
-      category: "footwear",
-      price: 195,
-      badge: "Evolution",
-      description: "Performance-inspired street runner with a bold contemporary silhouette.",
-      colors: ["Black", "Grey"],
-      sizes: ["40", "41", "42", "43", "44"],
-      stock: 12
-    },
-
-    {
-      name: "Area Classic Trainer",
-      category: "footwear",
-      price: 150,
-      badge: "Classic",
-      description: "Timeless trainer designed for everyday Area Boyz styling.",
-      colors: ["White", "Black"],
-      sizes: ["40", "41", "42", "43", "44", "45"],
-      stock: 22
-    },
-
-    /* -------------------------------------------------------
-       071 - 080
-       BAGS
-       ------------------------------------------------------- */
-
-    {
-      name: "Area Boyz Crossbody Bag",
-      category: "bags",
-      price: 85,
-      badge: "Popular",
-      description: "Compact crossbody bag designed for everyday essentials and city movement.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 26
-    },
-
-    {
-      name: "Evolution Mini Bag",
-      category: "bags",
-      price: 70,
-      badge: "New",
-      description: "Compact statement bag with a clean Area Boyz profile.",
-      colors: ["Black", "Cream"],
-      sizes: ["One Size"],
-      stock: 18
-    },
-
-    {
-      name: "AB Utility Tote",
-      category: "bags",
-      price: 75,
-      badge: "Utility",
-      description: "Large everyday tote designed to carry your essentials in style.",
-      colors: ["Black", "Cream"],
-      sizes: ["One Size"],
-      stock: 30
-    },
-
-    {
-      name: "Crafted Canvas Bag",
-      category: "bags",
-      price: 95,
-      badge: "Crafted",
-      description: "Canvas carry bag inspired by handmade craftsmanship and practical design.",
-      colors: ["Natural", "Black"],
-      sizes: ["One Size"],
-      stock: 15
-    },
-
-    {
-      name: "AB Travel Duffel",
-      category: "bags",
-      price: 135,
-      badge: "Travel",
-      description: "Spacious duffel designed for weekends, travel and active lifestyles.",
-      colors: ["Black", "Grey"],
-      sizes: ["One Size"],
-      stock: 12
-    },
-
-    {
-      name: "Area Studio Backpack",
-      category: "bags",
-      price: 125,
-      badge: "Studio",
-      description: "Clean modern backpack designed for daily city and creative work.",
-      colors: ["Black", "Olive"],
-      sizes: ["One Size"],
-      stock: 17
-    },
-
-    {
-      name: "AB Everyday Backpack",
-      category: "bags",
-      price: 105,
-      badge: "Everyday",
-      description: "Practical everyday backpack with a minimal Area Boyz aesthetic.",
-      colors: ["Black", "Grey"],
-      sizes: ["One Size"],
-      stock: 23
-    },
-
-    {
-      name: "Street Archive Shoulder Bag",
-      category: "bags",
-      price: 90,
-      badge: "Archive",
-      description: "Streetwear-inspired shoulder bag built around an archival utility aesthetic.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 14
-    },
-
-    {
-      name: "AB Premium Leather Tote",
-      category: "bags",
-      price: 180,
-      badge: "Premium",
-      description: "Elevated tote designed for a more refined Area Boyz look.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 7
-    },
-
-    {
-      name: "Area Mini Utility Pouch",
-      category: "bags",
-      price: 45,
-      badge: "Essential",
-      description: "Small utility pouch for carrying compact daily essentials.",
-      colors: ["Black", "Olive", "Cream"],
-      sizes: ["One Size"],
-      stock: 38
-    },
-
-    /* -------------------------------------------------------
-       081 - 090
-       CAPS / HEADWEAR
-       ------------------------------------------------------- */
-
-    {
-      name: "AB Signature Cap",
-      category: "headwear",
-      price: 45,
-      badge: "Signature",
-      description: "Classic Area Boyz cap featuring clean signature branding.",
-      colors: ["Black", "Cream"],
-      sizes: ["One Size"],
-      stock: 40
-    },
-
-    {
-      name: "Area Boyz Script Cap",
-      category: "headwear",
-      price: 48,
-      badge: "New",
-      description: "Everyday cap featuring a refined Area Boyz script identity.",
-      colors: ["Black", "Grey"],
-      sizes: ["One Size"],
-      stock: 31
-    },
-
-    {
-      name: "Evolution 6-Panel Cap",
-      category: "headwear",
-      price: 52,
-      badge: "Evolution",
-      description: "Structured six-panel cap inspired by the evolution of the brand.",
-      colors: ["Black", "Olive"],
-      sizes: ["One Size"],
-      stock: 24
-    },
-
-    {
-      name: "AB Washed Denim Cap",
-      category: "headwear",
-      price: 50,
-      badge: "Denim",
-      description: "Washed denim cap with a relaxed vintage finish.",
-      colors: ["Blue", "Black"],
-      sizes: ["One Size"],
-      stock: 20
-    },
-
-    {
-      name: "Crafted Patch Cap",
-      category: "headwear",
-      price: 58,
-      badge: "Crafted",
-      description: "Casual cap featuring a handcrafted-inspired patch detail.",
-      colors: ["Brown", "Cream"],
-      sizes: ["One Size"],
-      stock: 16
-    },
-
-    {
-      name: "Move Different Cap",
-      category: "headwear",
-      price: 47,
-      badge: "Move",
-      description: "Minimal cap carrying the Move Different attitude.",
-      colors: ["Black", "White"],
-      sizes: ["One Size"],
-      stock: 28
-    },
-
-    {
-      name: "AB Tranquility Beanie",
-      category: "headwear",
-      price: 42,
-      badge: "Tranquility",
-      description: "Soft knit beanie designed for relaxed everyday styling.",
-      colors: ["Black", "Cream", "Brown"],
-      sizes: ["One Size"],
-      stock: 25
-    },
-
-    {
-      name: "Area Boyz Everyday Beanie",
-      category: "headwear",
-      price: 38,
-      badge: "Everyday",
-      description: "Simple comfortable beanie designed for everyday wear.",
-      colors: ["Black", "Grey"],
-      sizes: ["One Size"],
-      stock: 34
-    },
-
-    {
-      name: "AB Archive Bucket Hat",
-      category: "headwear",
-      price: 55,
-      badge: "Archive",
-      description: "Bucket hat inspired by relaxed archival streetwear.",
-      colors: ["Black", "Cream"],
-      sizes: ["One Size"],
-      stock: 19
-    },
-
-    {
-      name: "Area Utility Bucket Hat",
-      category: "headwear",
-      price: 60,
-      badge: "Utility",
-      description: "Functional bucket hat with a modern Area Boyz identity.",
-      colors: ["Black", "Olive"],
-      sizes: ["One Size"],
-      stock: 22
-    },
-
-    /* -------------------------------------------------------
-       091 - 100
-       ACCESSORIES
-       ------------------------------------------------------- */
-
-    {
-      name: "Area Signature Belt",
-      category: "accessories",
-      price: 55,
-      badge: "Signature",
-      description: "Clean everyday belt designed to finish an Area Boyz outfit.",
-      colors: ["Black", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 25
-    },
-
-    {
-      name: "AB Statement Sunglasses",
-      category: "accessories",
-      price: 65,
-      badge: "Statement",
-      description: "Bold sunglasses designed to add attitude to everyday looks.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 22
-    },
-
-    {
-      name: "Area Boyz Wallet",
-      category: "accessories",
-      price: 48,
-      badge: "Essential",
-      description: "Compact everyday wallet designed around clean functionality.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 30
-    },
-
-    {
-      name: "Evolution Card Holder",
-      category: "accessories",
-      price: 35,
-      badge: "Minimal",
-      description: "Slim card holder designed for simple everyday carry.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 36
-    },
-
-    {
-      name: "AB Everyday Keychain",
-      category: "accessories",
-      price: 25,
-      badge: "Everyday",
-      description: "Compact branded keychain designed as an easy Area Boyz accessory.",
-      colors: ["Black", "Gold"],
-      sizes: ["One Size"],
-      stock: 50
-    },
-
-    {
-      name: "Area Utility Bracelet",
-      category: "accessories",
-      price: 32,
-      badge: "Utility",
-      description: "Minimal bracelet designed for everyday styling.",
-      colors: ["Black", "Silver"],
-      sizes: ["S", "M", "L"],
-      stock: 29
-    },
-
-    {
-      name: "AB Canvas Belt",
-      category: "accessories",
-      price: 40,
-      badge: "Street",
-      description: "Casual canvas belt inspired by utility streetwear.",
-      colors: ["Black", "Olive"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 32
-    },
-
-    {
-      name: "Area Boyz Phone Pouch",
-      category: "accessories",
-      price: 42,
-      badge: "Utility",
-      description: "Compact phone pouch designed for hands-free movement.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 21
-    },
-
-    {
-      name: "AB Metal Key Ring",
-      category: "accessories",
-      price: 28,
-      badge: "New",
-      description: "Minimal metal key ring carrying a subtle Area Boyz identity.",
-      colors: ["Silver", "Gold"],
-      sizes: ["One Size"],
-      stock: 45
-    },
-
-    {
-      name: "Area Premium Sunglasses",
-      category: "accessories",
-      price: 90,
-      badge: "Premium",
-      description: "Premium statement eyewear designed for a stronger fashion silhouette.",
-      colors: ["Black", "Brown"],
-      sizes: ["One Size"],
-      stock: 13
-    },
-
-    /* -------------------------------------------------------
-       101 - 110
-       JEWELRY
-       ------------------------------------------------------- */
-
-    {
-      name: "Evolution Chain",
-      category: "jewelry",
-      price: 75,
-      badge: "Evolution",
-      description: "Statement chain designed to complement contemporary Area Boyz outfits.",
-      colors: ["Silver", "Gold"],
-      sizes: ["One Size"],
-      stock: 18
-    },
-
-    {
-      name: "AB Signature Chain",
-      category: "jewelry",
-      price: 85,
-      badge: "Signature",
-      description: "Signature chain designed around the Area Boyz identity.",
-      colors: ["Silver", "Gold"],
-      sizes: ["One Size"],
-      stock: 16
-    },
-
-    {
-      name: "Area Boyz Pendant",
-      category: "jewelry",
-      price: 70,
-      badge: "New",
-      description: "Minimal pendant designed as a subtle statement piece.",
-      colors: ["Silver", "Gold"],
-      sizes: ["One Size"],
-      stock: 19
-    },
-
-    {
-      name: "AB Studio Ring",
-      category: "jewelry",
-      price: 45,
-      badge: "Studio",
-      description: "Clean contemporary ring designed for everyday styling.",
-      colors: ["Silver", "Gold"],
-      sizes: ["7", "8", "9", "10", "11", "12"],
-      stock: 24
-    },
-
-    {
-      name: "Evolution Signet Ring",
-      category: "jewelry",
-      price: 55,
-      badge: "Archive",
-      description: "Bold signet-inspired ring representing confidence and evolution.",
-      colors: ["Silver", "Gold"],
-      sizes: ["7", "8", "9", "10", "11", "12"],
-      stock: 15
-    },
-
-    {
-      name: "AB Minimal Bracelet",
-      category: "jewelry",
-      price: 48,
-      badge: "Minimal",
-      description: "Simple bracelet designed to layer effortlessly with other accessories.",
-      colors: ["Silver", "Gold"],
-      sizes: ["S", "M", "L"],
-      stock: 26
-    },
-
-    {
-      name: "Area Chain Bracelet",
-      category: "jewelry",
-      price: 62,
-      badge: "Popular",
-      description: "Classic chain bracelet with a modern fashion profile.",
-      colors: ["Silver", "Gold"],
-      sizes: ["S", "M", "L"],
-      stock: 20
-    },
-
-    {
-      name: "AB Layer Necklace",
-      category: "jewelry",
-      price: 68,
-      badge: "Layered",
-      description: "Layered necklace designed for a stronger contemporary look.",
-      colors: ["Silver", "Gold"],
-      sizes: ["One Size"],
-      stock: 14
-    },
-
-    {
-      name: "Crafted Metal Pendant",
-      category: "jewelry",
-      price: 58,
-      badge: "Crafted",
-      description: "Artisan-inspired pendant with a raw contemporary character.",
-      colors: ["Silver", "Black"],
-      sizes: ["One Size"],
-      stock: 12
-    },
-
-    {
-      name: "Area Statement Ring",
-      category: "jewelry",
-      price: 50,
-      badge: "Statement",
-      description: "Bold statement ring designed to finish a confident outfit.",
-      colors: ["Silver", "Gold", "Black"],
-      sizes: ["7", "8", "9", "10", "11", "12"],
-      stock: 17
-    },
-
-    /* -------------------------------------------------------
-       111 - 120
-       PREMIUM / LIFESTYLE
-       ------------------------------------------------------- */
-
-    {
-      name: "AB Premium Lounge Set",
-      category: "sets",
-      price: 175,
-      badge: "Premium",
-      description: "Coordinated lounge set designed around comfort, simplicity and elevated everyday style.",
-      colors: ["Black", "Cream", "Grey"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 12
-    },
-
-    {
-      name: "Area Evolution Tracksuit",
-      category: "sets",
-      price: 195,
-      badge: "Evolution",
-      description: "Full coordinated tracksuit designed for relaxed movement and statement styling.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 9
-    },
-
-    {
-      name: "AB Studio Co-Ord Set",
-      category: "sets",
-      price: 185,
-      badge: "Studio",
-      description: "Premium coordinated set with a clean contemporary silhouette.",
-      colors: ["Black", "Cream"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 8
-    },
-
-    {
-      name: "Tranquility Knit Set",
-      category: "sets",
-      price: 170,
-      badge: "Tranquility",
-      description: "Soft coordinated knit set designed around comfort and relaxed luxury.",
-      colors: ["Cream", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 10
-    },
-
-    {
-      name: "Area Weekend Set",
-      category: "sets",
-      price: 155,
-      badge: "Weekend",
-      description: "Relaxed matching set designed for weekends, travel and casual movement.",
-      colors: ["Black", "Grey", "Olive"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 15
-    },
-
-    {
-      name: "AB Movement Tracksuit",
-      category: "sets",
-      price: 180,
-      badge: "Movement",
-      description: "Athletic-inspired set designed for active everyday lifestyles.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 11
-    },
-
-    {
-      name: "Crafted Everyday Set",
-      category: "sets",
-      price: 190,
-      badge: "Crafted",
-      description: "Artisan-inspired coordinated outfit combining comfort and intentional design.",
-      colors: ["Brown", "Cream"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 7
-    },
-
-    {
-      name: "AB Essential Travel Set",
-      category: "sets",
-      price: 165,
-      badge: "Travel",
-      description: "Comfortable coordinated set created for travel days and relaxed movement.",
-      colors: ["Black", "Grey"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      stock: 13
-    },
-
-    {
-      name: "Area Boyz Signature Set",
-      category: "sets",
-      price: 210,
-      badge: "Signature",
-      description: "Premium matching set representing the core Area Boyz visual identity.",
-      colors: ["Black", "Cream"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 6
-    },
-
-    {
-      name: "Area Boyz Archive Set",
-      category: "sets",
-      price: 225,
-      badge: "Archive",
-      description: "Limited archive-inspired coordinated set designed for collectors and dedicated Area Boyz supporters.",
-      colors: ["Washed Black", "Brown"],
-      sizes: ["S", "M", "L", "XL"],
-      stock: 4
+    products: []
+};
+
+
+/* =========================================================
+   PRODUCT DATA
+========================================================= */
+
+const productNames = [
+
+    /* 001 - 010 */
+    ["AB Essential Oversized Tee", "streetwear", 55],
+    ["Area Motion Graphic Tee", "streetwear", 60],
+    ["Evolution Heavyweight Tee", "streetwear", 68],
+    ["Area Boyz Signature Tee", "streetwear", 58],
+    ["Street Philosophy Tee", "streetwear", 62],
+    ["Move Different Tee", "streetwear", 55],
+    ["Everyday Energy Tee", "streetwear", 52],
+    ["AB Core Cotton Tee", "streetwear", 48],
+    ["Area Boyz Archive Tee", "streetwear", 65],
+    ["The Evolution Tee", "streetwear", 70],
+
+    /* 011 - 020 */
+    ["Evolution Heavyweight Hoodie", "hoodies", 125],
+    ["AB Essential Pullover Hoodie", "hoodies", 110],
+    ["Area Motion Zip Hoodie", "hoodies", 135],
+    ["Street Energy Hoodie", "hoodies", 120],
+    ["Move Different Hoodie", "hoodies", 118],
+    ["AB Signature Hoodie", "hoodies", 145],
+    ["Tranquility Hoodie", "hoodies", 130],
+    ["Crafted Intention Hoodie", "hoodies", 155],
+    ["Archive Logo Hoodie", "hoodies", 115],
+    ["Area Boyz Premium Hoodie", "hoodies", 165],
+
+    /* 021 - 030 */
+    ["AB Classic Button Shirt", "shirts", 85],
+    ["Area Boyz Resort Shirt", "shirts", 95],
+    ["Motion Utility Shirt", "shirts", 105],
+    ["Everyday Camp Shirt", "shirts", 78],
+    ["Evolution Linen Shirt", "shirts", 110],
+    ["Street Collar Shirt", "shirts", 88],
+    ["AB Relaxed Shirt", "shirts", 82],
+    ["Craft Cotton Shirt", "shirts", 115],
+    ["Archive Pattern Shirt", "shirts", 120],
+    ["Intention Overshirt", "shirts", 125],
+
+    /* 031 - 040 */
+    ["AB Utility Jacket", "outerwear", 180],
+    ["Evolution Coach Jacket", "outerwear", 165],
+    ["Area Motion Bomber", "outerwear", 220],
+    ["Street Command Jacket", "outerwear", 195],
+    ["Crafted Work Jacket", "outerwear", 210],
+    ["Tranquility Overshirt Jacket", "outerwear", 175],
+    ["AB Technical Shell", "outerwear", 240],
+    ["Archive Track Jacket", "outerwear", 155],
+    ["Everyday Windbreaker", "outerwear", 135],
+    ["Intention Utility Coat", "outerwear", 260],
+
+    /* 041 - 050 */
+    ["AB Everyday Cargo", "bottoms", 95],
+    ["Area Motion Track Pant", "bottoms", 105],
+    ["Evolution Wide Leg Pant", "bottoms", 115],
+    ["Street Utility Pant", "bottoms", 120],
+    ["Tranquility Relaxed Pant", "bottoms", 98],
+    ["Crafted Work Pant", "bottoms", 130],
+    ["AB Signature Jogger", "bottoms", 90],
+    ["Move Different Sweatpant", "bottoms", 100],
+    ["Archive Cargo Pant", "bottoms", 125],
+    ["Intention Pleated Pant", "bottoms", 140],
+
+    /* 051 - 060 */
+    ["AB Classic Denim", "denim", 110],
+    ["Evolution Washed Denim", "denim", 125],
+    ["Area Boyz Straight Denim", "denim", 115],
+    ["Motion Relaxed Denim", "denim", 130],
+    ["Street Blue Denim", "denim", 105],
+    ["Archive Black Denim", "denim", 135],
+    ["AB Carpenter Denim", "denim", 145],
+    ["Crafted Denim Jean", "denim", 150],
+    ["Evolution Wide Denim", "denim", 140],
+    ["Intention Raw Denim", "denim", 165],
+
+    /* 061 - 070 */
+    ["AB Motion Runner", "footwear", 150],
+    ["Area Boyz Street Runner", "footwear", 165],
+    ["Evolution High Top", "footwear", 180],
+    ["AB Classic Sneaker", "footwear", 145],
+    ["Move Different Trainer", "footwear", 175],
+    ["Street Court Sneaker", "footwear", 155],
+    ["Crafted Leather Sneaker", "footwear", 220],
+    ["Tranquility Slide", "footwear", 85],
+    ["Archive High Top", "footwear", 195],
+    ["Intention Platform Sneaker", "footwear", 240],
+
+    /* 071 - 080 */
+    ["AB Everyday Tote", "bags", 75],
+    ["Area Motion Crossbody", "bags", 85],
+    ["Evolution Utility Bag", "bags", 105],
+    ["Street Carry Bag", "bags", 65],
+    ["Crafted Canvas Tote", "bags", 90],
+    ["AB Signature Backpack", "bags", 125],
+    ["Archive Messenger Bag", "bags", 115],
+    ["Tranquility Shoulder Bag", "bags", 95],
+    ["Move Different Sling", "bags", 80],
+    ["Intention Leather Bag", "bags", 180],
+
+    /* 081 - 090 */
+    ["AB Classic Cap", "headwear", 40],
+    ["Area Boyz Logo Cap", "headwear", 45],
+    ["Evolution Five Panel", "headwear", 48],
+    ["Street Trucker Cap", "headwear", 42],
+    ["Crafted Bucket Hat", "headwear", 55],
+    ["Tranquility Knit Beanie", "headwear", 38],
+    ["Archive Dad Cap", "headwear", 40],
+    ["Move Different Cap", "headwear", 45],
+    ["Intention Bucket Hat", "headwear", 60],
+    ["AB Premium Headwear", "headwear", 65],
+
+    /* 091 - 100 */
+    ["AB Signature Belt", "accessories", 55],
+    ["Area Boyz Utility Belt", "accessories", 65],
+    ["Evolution Card Holder", "accessories", 45],
+    ["Street Key Chain", "accessories", 30],
+    ["Crafted Leather Wallet", "accessories", 75],
+    ["AB Everyday Socks", "accessories", 28],
+    ["Archive Phone Pouch", "accessories", 50],
+    ["Move Different Sunglasses", "accessories", 70],
+    ["Tranquility Scarf", "accessories", 60],
+    ["Intention Leather Gloves", "accessories", 85],
+
+    /* 101 - 110 */
+    ["AB Core Chain", "jewelry", 65],
+    ["Area Boyz Signature Chain", "jewelry", 90],
+    ["Evolution Pendant", "jewelry", 85],
+    ["Street Identity Bracelet", "jewelry", 55],
+    ["Crafted Metal Ring", "jewelry", 45],
+    ["AB Signet Ring", "jewelry", 75],
+    ["Archive Pendant", "jewelry", 80],
+    ["Move Different Bracelet", "jewelry", 60],
+    ["Tranquility Beaded Chain", "jewelry", 70],
+    ["Intention Statement Ring", "jewelry", 95],
+
+    /* 111 - 120 */
+    ["AB Everyday Set", "sets", 145],
+    ["Evolution Lounge Set", "sets", 175],
+    ["Area Motion Tracksuit", "sets", 190],
+    ["Street Energy Set", "sets", 160],
+    ["Crafted Intention Set", "sets", 220],
+    ["Tranquility Co-Ord Set", "sets", 185],
+    ["Archive Signature Set", "sets", 200],
+    ["Move Different Set", "sets", 170],
+    ["AB Premium Travel Set", "sets", 240],
+    ["Intention Evolution Set", "sets", 260]
+];
+
+
+/* =========================================================
+   CATEGORY DISPLAY NAMES
+========================================================= */
+
+const categoryNames = {
+    streetwear: "Streetwear",
+    hoodies: "Hoodies",
+    shirts: "Shirts",
+    outerwear: "Outerwear",
+    bottoms: "Bottoms",
+    denim: "Denim",
+    footwear: "Footwear",
+    bags: "Bags",
+    headwear: "Headwear",
+    accessories: "Accessories",
+    jewelry: "Jewelry",
+    sets: "Sets"
+};
+
+
+/* =========================================================
+   CATEGORY GROUPING
+   Your HTML has four main filters.
+========================================================= */
+
+function primaryCategory(category) {
+
+    if (
+        [
+            "streetwear",
+            "hoodies",
+            "shirts",
+            "outerwear",
+            "bottoms",
+            "denim",
+            "sets"
+        ].includes(category)
+    ) {
+        return "streetwear";
     }
 
-  ];
-
-  /* =========================================================
-     CREATE PRODUCT OBJECTS
-     ========================================================= */
-
-  function generateProducts() {
-    return catalogue.map((item, index) => {
-      const number = index + 1;
-      const padded = String(number).padStart(3, "0");
-
-      return {
-        id: `AB-${padded}`,
-        number,
-        image: `images/products/product-${padded}.jpg`,
-        images: [
-          `images/products/product-${padded}.jpg`,
-          `images/products/product-${padded}-2.jpg`,
-          `images/products/product-${padded}-3.jpg`,
-          `images/products/product-${padded}-4.jpg`
-        ],
-        rating: 4 + ((index % 10) / 10),
-        reviews: 8 + (index * 7) % 140,
-        ...item
-      };
-    });
-  }
-
-  state.products = generateProducts();
-
-  /* =========================================================
-     DOM REFERENCES
-     ========================================================= */
-
-  const $ = (selector, parent = document) =>
-    parent.querySelector(selector);
-
-  const $$ = (selector, parent = document) =>
-    [...parent.querySelectorAll(selector)];
-
-  const dom = {
-    preloader: $(".preloader"),
-    siteHeader: $(".site-header"),
-    siteWrapper: $(".site-wrapper"),
-    app: $("#app"),
-
-    menuToggle: $("#menu-toggle"),
-    mobileMenu: $("#mobile-menu"),
-    mobileOverlay: $(".mobile-overlay"),
-
-    searchInput: $("#search-input"),
-    searchForm: $("#search-form"),
-
-    cartButton: $("#cart-button"),
-    cartDrawer: $("#cart-drawer"),
-    cartOverlay: $(".cart-overlay"),
-    cartItems: $("#cart-items"),
-    cartCount: $("#cart-count"),
-    cartTotal: $("#cart-total"),
-
-    featuredProducts: $("#featured-products"),
-    shopProducts: $("#shop-products"),
-    productGrid: $(".product-grid"),
-
-    shopSearch: $("#shop-search"),
-    sortSelect: $("#sort-products"),
-
-    equityValue: $("#equity-value"),
-    investmentAmount: $("#investment-amount"),
-    shareOutput: $("#share-output"),
-    equityOutput: $("#equity-output"),
-
-    announcement: $(".announcement-bar"),
-    announcementClose: $("#announcement-close"),
-
-    year: $("#year")
-  };
-
-  /* =========================================================
-     STORAGE
-     ========================================================= */
-
-  function loadCart() {
-    try {
-      const saved = localStorage.getItem(CONFIG.storageKey);
-
-      if (!saved) {
-        return [];
-      }
-
-      const parsed = JSON.parse(saved);
-
-      if (!Array.isArray(parsed)) {
-        return [];
-      }
-
-      return parsed.map(item => ({
-        id: item.id,
-        quantity: Number(item.quantity) || 1,
-        size: item.size || "",
-        color: item.color || ""
-      }));
-
-    } catch (error) {
-      console.warn("Unable to load cart:", error);
-      return [];
-    }
-  }
-
-  function saveCart() {
-    localStorage.setItem(
-      CONFIG.storageKey,
-      JSON.stringify(state.cart)
-    );
-  }
-
-  /* =========================================================
-     UTILITIES
-     ========================================================= */
-
-  function escapeHTML(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function formatCurrency(value) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: CONFIG.currency,
-      maximumFractionDigits: 0
-    }).format(value);
-  }
-
-  function slugify(value) {
-    return value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  }
-
-  function findProduct(id) {
-    return state.products.find(product => product.id === id);
-  }
-
-  function getCategoryLabel(category) {
-    const labels = {
-      streetwear: "Streetwear",
-      hoodies: "Hoodies",
-      shirts: "Shirts",
-      outerwear: "Outerwear",
-      bottoms: "Trousers",
-      denim: "Denim",
-      footwear: "Footwear",
-      bags: "Bags",
-      headwear: "Headwear",
-      accessories: "Accessories",
-      jewelry: "Jewelry",
-      sets: "Sets"
-    };
-
-    return labels[category] || category;
-  }
-
-  function showToast(message) {
-    let toast = $("#ab-toast");
-
-    if (!toast) {
-      toast = document.createElement("div");
-      toast.id = "ab-toast";
-
-      toast.style.cssText = `
-        position:fixed;
-        left:50%;
-        bottom:24px;
-        transform:translate(-50%,20px);
-        background:#080808;
-        color:#fff;
-        border:1px solid rgba(255,212,0,.45);
-        padding:13px 20px;
-        border-radius:999px;
-        z-index:100000;
-        opacity:0;
-        pointer-events:none;
-        transition:.3s ease;
-        font-size:14px;
-        box-shadow:0 15px 40px rgba(0,0,0,.3);
-      `;
-
-      document.body.appendChild(toast);
+    if (category === "footwear") {
+        return "footwear";
     }
 
-    toast.textContent = message;
-
-    requestAnimationFrame(() => {
-      toast.style.opacity = "1";
-      toast.style.transform = "translate(-50%,0)";
-    });
-
-    clearTimeout(toast._timer);
-
-    toast._timer = setTimeout(() => {
-      toast.style.opacity = "0";
-      toast.style.transform = "translate(-50%,20px)";
-    }, 2200);
-  }
-
-  /* =========================================================
-     PRODUCT IMAGE FALLBACK
-     ========================================================= */
-
-  function imageFallback(image) {
-    if (!image.dataset.fallbackApplied) {
-      image.dataset.fallbackApplied = "true";
-      image.src = "images/hero/hero-main.jpg";
-    }
-  }
-
-  /* =========================================================
-     PRODUCT CARDS
-     ========================================================= */
-
-  function productCard(product) {
-    return `
-      <article
-        class="product-card"
-        data-product-id="${product.id}"
-        data-category="${product.category}"
-      >
-
-        <div class="product-card-image">
-
-          <button
-            class="product-image-button"
-            type="button"
-            data-product="${product.id}"
-            aria-label="View ${escapeHTML(product.name)}"
-          >
-            <img
-              src="${product.image}"
-              alt="${escapeHTML(product.name)}"
-              loading="lazy"
-              onerror="imageFallback(this)"
-            >
-          </button>
-
-          ${
-            product.badge
-              ? `<span class="product-badge">${escapeHTML(product.badge)}</span>`
-              : ""
-          }
-
-          <button
-            class="quick-view-button"
-            type="button"
-            data-product="${product.id}"
-          >
-            Quick view
-          </button>
-
-        </div>
-
-        <div class="product-card-body">
-
-          <p class="product-category">
-            ${escapeHTML(getCategoryLabel(product.category))}
-          </p>
-
-          <h3 class="product-name">
-            ${escapeHTML(product.name)}
-          </h3>
-
-          <div class="product-rating">
-            <span>★</span>
-            <span>${product.rating.toFixed(1)}</span>
-            <small>(${product.reviews})</small>
-          </div>
-
-          <div class="product-card-bottom">
-
-            <strong class="product-price">
-              ${formatCurrency(product.price)}
-            </strong>
-
-            <button
-              class="add-to-cart"
-              type="button"
-              data-add-product="${product.id}"
-            >
-              Add to bag
-            </button>
-
-          </div>
-
-        </div>
-
-      </article>
-    `;
-  }
-
-  /* =========================================================
-     RENDER FEATURED
-     ========================================================= */
-
-  function renderFeaturedProducts() {
-    if (!dom.featuredProducts) {
-      return;
+    if (category === "accessories") {
+        return "accessories";
     }
 
-    const featured = state.products
-      .filter(product =>
-        ["Premium", "Signature", "New", "Popular", "Evolution"]
-          .includes(product.badge)
-      )
-      .slice(0, 12);
-
-    dom.featuredProducts.innerHTML =
-      featured.map(productCard).join("");
-
-    bindProductActions(dom.featuredProducts);
-  }
-
-  /* =========================================================
-     SHOP FILTERING
-     ========================================================= */
-
-  function getFilteredProducts() {
-    let products = [...state.products];
-
-    if (state.currentCategory !== "all") {
-      products = products.filter(product =>
-        product.category === state.currentCategory
-      );
+    if (
+        [
+            "bags",
+            "headwear",
+            "jewelry"
+        ].includes(category)
+    ) {
+        return "accessories";
     }
 
-    const search = state.currentSearch.trim().toLowerCase();
-
-    if (search) {
-      products = products.filter(product => {
-        const searchable = [
-          product.name,
-          product.category,
-          product.description,
-          ...(product.colors || [])
-        ]
-          .join(" ")
-          .toLowerCase();
-
-        return searchable.includes(search);
-      });
+    if (category === "handmade") {
+        return "handmade";
     }
 
-    switch (state.currentSort) {
-      case "price-low":
-        products.sort((a, b) => a.price - b.price);
-        break;
+    return category;
+}
 
-      case "price-high":
-        products.sort((a, b) => b.price - a.price);
-        break;
 
-      case "name":
-        products.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
-        break;
+/* =========================================================
+   CREATE PRODUCTS
+========================================================= */
 
-      case "rating":
-        products.sort((a, b) =>
-          b.rating - a.rating
-        );
-        break;
+function createProducts() {
 
-      default:
-        break;
-    }
+    return productNames.map((item, index) => {
 
-    return products;
-  }
+        const number = String(index + 1).padStart(3, "0");
 
-  function renderShopProducts() {
-    if (!dom.shopProducts) {
-      return;
-    }
+        const [name, category, price] = item;
 
-    const products = getFilteredProducts();
-
-    if (!products.length) {
-      dom.shopProducts.innerHTML = `
-        <div class="empty-products">
-          <h3>No products found</h3>
-          <p>
-            Try another search term or choose another category.
-          </p>
-        </div>
-      `;
-
-      return;
-    }
-
-    dom.shopProducts.innerHTML =
-      products.map(productCard).join("");
-
-    bindProductActions(dom.shopProducts);
-  }
-
-  /* =========================================================
-     PRODUCT ACTION BINDING
-     ========================================================= */
-
-  function bindProductActions(parent = document) {
-
-    $$("[data-product]", parent).forEach(button => {
-      button.addEventListener("click", event => {
-        event.preventDefault();
-
-        const id = button.dataset.product;
-
-        openProductModal(id);
-      });
-    });
-
-    $$("[data-add-product]", parent).forEach(button => {
-      button.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const id = button.dataset.addProduct;
-        const product = findProduct(id);
-
-        if (!product) {
-          return;
-        }
-
-        addToCart(
-          product.id,
-          product.sizes?.[0] || "",
-          product.colors?.[0] || "",
-          1
-        );
-      });
-    });
-  }
-
-  /* =========================================================
-     PRODUCT MODAL
-     ========================================================= */
-
-  function injectProductModalStyles() {
-    if ($("#ab-product-modal-styles")) {
-      return;
-    }
-
-    const style = document.createElement("style");
-
-    style.id = "ab-product-modal-styles";
-
-    style.textContent = `
-      .ab-product-modal {
-        position:fixed;
-        inset:0;
-        z-index:90000;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:20px;
-        opacity:0;
-        visibility:hidden;
-        pointer-events:none;
-        transition:.25s ease;
-      }
-
-      .ab-product-modal.open {
-        opacity:1;
-        visibility:visible;
-        pointer-events:auto;
-      }
-
-      .ab-product-modal-backdrop {
-        position:absolute;
-        inset:0;
-        background:rgba(0,0,0,.78);
-        backdrop-filter:blur(8px);
-      }
-
-      .ab-product-modal-panel {
-        position:relative;
-        width:min(1100px,100%);
-        max-height:92vh;
-        overflow:auto;
-        background:#fff;
-        color:#111;
-        border-radius:22px;
-        box-shadow:0 30px 100px rgba(0,0,0,.5);
-        display:grid;
-        grid-template-columns:1.05fr .95fr;
-        z-index:1;
-      }
-
-      .ab-product-gallery {
-        padding:22px;
-        background:#f4f4f4;
-      }
-
-      .ab-product-main-image {
-        position:relative;
-        aspect-ratio:1 / 1;
-        background:#eaeaea;
-        border-radius:16px;
-        overflow:hidden;
-      }
-
-      .ab-product-main-image img {
-        width:100%;
-        height:100%;
-        object-fit:cover;
-        display:block;
-      }
-
-      .ab-gallery-arrow {
-        position:absolute;
-        top:50%;
-        transform:translateY(-50%);
-        width:42px;
-        height:42px;
-        border:0;
-        border-radius:50%;
-        background:rgba(0,0,0,.75);
-        color:#fff;
-        cursor:pointer;
-        font-size:20px;
-        z-index:3;
-      }
-
-      .ab-gallery-prev {
-        left:12px;
-      }
-
-      .ab-gallery-next {
-        right:12px;
-      }
-
-      .ab-thumbnails {
-        display:flex;
-        gap:10px;
-        overflow:auto;
-        margin-top:14px;
-        padding-bottom:3px;
-      }
-
-      .ab-thumbnail {
-        flex:0 0 72px;
-        width:72px;
-        height:72px;
-        padding:0;
-        border:2px solid transparent;
-        border-radius:10px;
-        overflow:hidden;
-        background:#ddd;
-        cursor:pointer;
-      }
-
-      .ab-thumbnail.active {
-        border-color:#ffd400;
-      }
-
-      .ab-thumbnail img {
-        width:100%;
-        height:100%;
-        object-fit:cover;
-      }
-
-      .ab-product-info {
-        padding:34px;
-      }
-
-      .ab-modal-close {
-        position:absolute;
-        right:15px;
-        top:15px;
-        width:42px;
-        height:42px;
-        border:0;
-        border-radius:50%;
-        background:#111;
-        color:#fff;
-        cursor:pointer;
-        font-size:22px;
-        z-index:4;
-      }
-
-      .ab-product-badge {
-        display:inline-flex;
-        background:#ffd400;
-        color:#111;
-        font-size:11px;
-        font-weight:800;
-        text-transform:uppercase;
-        padding:7px 11px;
-        border-radius:999px;
-        letter-spacing:.08em;
-      }
-
-      .ab-product-category {
-        margin:18px 0 7px;
-        font-size:12px;
-        text-transform:uppercase;
-        letter-spacing:.12em;
-        color:#777;
-      }
-
-      .ab-product-title {
-        margin:0;
-        font-size:clamp(26px,4vw,42px);
-        line-height:1.05;
-      }
-
-      .ab-product-price {
-        margin:18px 0;
-        font-size:25px;
-        font-weight:800;
-      }
-
-      .ab-product-description {
-        color:#555;
-        line-height:1.7;
-        font-size:14px;
-      }
-
-      .ab-option-group {
-        margin-top:22px;
-      }
-
-      .ab-option-label {
-        display:flex;
-        justify-content:space-between;
-        font-size:13px;
-        font-weight:800;
-        margin-bottom:10px;
-      }
-
-      .ab-option-buttons {
-        display:flex;
-        flex-wrap:wrap;
-        gap:8px;
-      }
-
-      .ab-option-button {
-        min-width:48px;
-        padding:10px 13px;
-        background:#fff;
-        border:1px solid #ccc;
-        border-radius:8px;
-        cursor:pointer;
-        font-size:13px;
-      }
-
-      .ab-option-button.selected {
-        background:#111;
-        color:#fff;
-        border-color:#111;
-      }
-
-      .ab-stock {
-        margin-top:18px;
-        font-size:13px;
-        font-weight:700;
-      }
-
-      .ab-stock.low {
-        color:#b45b00;
-      }
-
-      .ab-stock.out {
-        color:#c62828;
-      }
-
-      .ab-purchase-row {
-        display:flex;
-        gap:10px;
-        margin-top:24px;
-      }
-
-      .ab-quantity {
-        display:flex;
-        align-items:center;
-        border:1px solid #ccc;
-        border-radius:10px;
-        overflow:hidden;
-      }
-
-      .ab-quantity button {
-        width:40px;
-        height:48px;
-        border:0;
-        background:#f4f4f4;
-        cursor:pointer;
-        font-size:18px;
-      }
-
-      .ab-quantity span {
-        width:42px;
-        text-align:center;
-        font-weight:800;
-      }
-
-      .ab-add-main {
-        flex:1;
-        border:0;
-        border-radius:10px;
-        background:#ffd400;
-        color:#111;
-        font-weight:900;
-        cursor:pointer;
-        padding:0 20px;
-        min-height:48px;
-      }
-
-      @media(max-width:800px) {
-        .ab-product-modal {
-          padding:8px;
-          align-items:flex-end;
-        }
-
-        .ab-product-modal-panel {
-          max-height:96vh;
-          grid-template-columns:1fr;
-          border-radius:20px 20px 0 0;
-        }
-
-        .ab-product-gallery {
-          padding:12px;
-        }
-
-        .ab-product-info {
-          padding:24px 18px 30px;
-        }
-
-        .ab-product-main-image {
-          max-height:52vh;
-        }
-
-        .ab-product-main-image img {
-          object-fit:contain;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  function openProductModal(id) {
-    const product = findProduct(id);
-
-    if (!product) {
-      return;
-    }
-
-    state.selectedProduct = product;
-    state.selectedImageIndex = 0;
-    state.selectedSize = product.sizes?.[0] || "";
-    state.selectedColor = product.colors?.[0] || "";
-    state.selectedQuantity = 1;
-
-    injectProductModalStyles();
-
-    let modal = $("#ab-product-modal");
-
-    if (!modal) {
-      modal = document.createElement("div");
-
-      modal.id = "ab-product-modal";
-      modal.className = "ab-product-modal";
-
-      document.body.appendChild(modal);
-    }
-
-    modal.innerHTML = `
-      <div class="ab-product-modal-backdrop" data-close-product></div>
-
-      <div
-        class="ab-product-modal-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-label="${escapeHTML(product.name)}"
-      >
-
-        <button
-          class="ab-modal-close"
-          type="button"
-          data-close-product
-          aria-label="Close"
-        >
-          ×
-        </button>
-
-        <section class="ab-product-gallery">
-
-          <div class="ab-product-main-image">
-
-            <button
-              class="ab-gallery-arrow ab-gallery-prev"
-              type="button"
-              data-gallery-prev
-              aria-label="Previous image"
-            >
-              ‹
-            </button>
-
-            <img
-              id="ab-main-product-image"
-              src="${product.images[0]}"
-              alt="${escapeHTML(product.name)}"
-              onerror="this.style.display='none'"
-            >
-
-            <button
-              class="ab-gallery-arrow ab-gallery-next"
-              type="button"
-              data-gallery-next
-              aria-label="Next image"
-            >
-              ›
-            </button>
-
-          </div>
-
-          <div class="ab-thumbnails">
-            ${product.images.map((image, index) => `
-              <button
-                type="button"
-                class="ab-thumbnail ${index === 0 ? "active" : ""}"
-                data-thumbnail="${index}"
-              >
-                <img
-                  src="${image}"
-                  alt="${escapeHTML(product.name)} view ${index + 1}"
-                  onerror="this.parentElement.style.display='none'"
-                >
-              </button>
-            `).join("")}
-          </div>
-
-        </section>
-
-        <section class="ab-product-info">
-
-          ${
-            product.badge
-              ? `<span class="ab-product-badge">${escapeHTML(product.badge)}</span>`
-              : ""
-          }
-
-          <p class="ab-product-category">
-            ${escapeHTML(getCategoryLabel(product.category))}
-          </p>
-
-          <h2 class="ab-product-title">
-            ${escapeHTML(product.name)}
-          </h2>
-
-          <div class="ab-product-price">
-            ${formatCurrency(product.price)}
-          </div>
-
-          <p class="ab-product-description">
-            ${escapeHTML(product.description)}
-          </p>
-
-          <div class="ab-option-group">
-
-            <div class="ab-option-label">
-              <span>Color</span>
-              <span id="ab-selected-color">
-                ${escapeHTML(state.selectedColor)}
-              </span>
-            </div>
-
-            <div class="ab-option-buttons">
-              ${product.colors.map(color => `
-                <button
-                  type="button"
-                  class="ab-option-button ${
-                    color === state.selectedColor ? "selected" : ""
-                  }"
-                  data-color="${escapeHTML(color)}"
-                >
-                  ${escapeHTML(color)}
-                </button>
-              `).join("")}
-            </div>
-
-          </div>
-
-          <div class="ab-option-group">
-
-            <div class="ab-option-label">
-              <span>Size</span>
-              <span id="ab-selected-size">
-                ${escapeHTML(state.selectedSize)}
-              </span>
-            </div>
-
-            <div class="ab-option-buttons">
-              ${product.sizes.map(size => `
-                <button
-                  type="button"
-                  class="ab-option-button ${
-                    size === state.selectedSize ? "selected" : ""
-                  }"
-                  data-size="${escapeHTML(size)}"
-                >
-                  ${escapeHTML(size)}
-                </button>
-              `).join("")}
-            </div>
-
-          </div>
-
-          <div
-            class="ab-stock ${
-              product.stock <= 5
-                ? "low"
-                : ""
-            }"
-          >
-            ${
-              product.stock > 0
-                ? `${product.stock} available`
-                : "Out of stock"
-            }
-          </div>
-
-          <div class="ab-purchase-row">
-
-            <div class="ab-quantity">
-
-              <button
-                type="button"
-                data-quantity-minus
-              >
-                −
-              </button>
-
-              <span id="ab-selected-quantity">
-                1
-              </span>
-
-              <button
-                type="button"
-                data-quantity-plus
-              >
-                +
-              </button>
-
-            </div>
-
-            <button
-              type="button"
-              class="ab-add-main"
-              data-modal-add
-              ${product.stock <= 0 ? "disabled" : ""}
-            >
-              Add to bag
-            </button>
-
-          </div>
-
-        </section>
-
-      </div>
-    `;
-
-    modal.classList.add("open");
-
-    document.body.style.overflow = "hidden";
-
-    bindModalEvents(modal);
-  }
-
-  function bindModalEvents(modal) {
-
-    $$("[data-close-product]", modal).forEach(button => {
-      button.addEventListener("click", closeProductModal);
-    });
-
-    const prev = $("[data-gallery-prev]", modal);
-
-    if (prev) {
-      prev.addEventListener("click", () => {
-        changeProductImage(-1);
-      });
-    }
-
-    const next = $("[data-gallery-next]", modal);
-
-    if (next) {
-      next.addEventListener("click", () => {
-        changeProductImage(1);
-      });
-    }
-
-    $$("[data-thumbnail]", modal).forEach(button => {
-      button.addEventListener("click", () => {
-        state.selectedImageIndex =
-          Number(button.dataset.thumbnail);
-
-        updateProductImage(modal);
-      });
-    });
-
-    $$("[data-color]", modal).forEach(button => {
-      button.addEventListener("click", () => {
-        state.selectedColor = button.dataset.color;
-
-        $$("[data-color]", modal).forEach(item =>
-          item.classList.remove("selected")
-        );
-
-        button.classList.add("selected");
-
-        const output = $("#ab-selected-color", modal);
-
-        if (output) {
-          output.textContent = state.selectedColor;
-        }
-      });
-    });
-
-    $$("[data-size]", modal).forEach(button => {
-      button.addEventListener("click", () => {
-        state.selectedSize = button.dataset.size;
-
-        $$("[data-size]", modal).forEach(item =>
-          item.classList.remove("selected")
-        );
-
-        button.classList.add("selected");
-
-        const output = $("#ab-selected-size", modal);
-
-        if (output) {
-          output.textContent = state.selectedSize;
-        }
-      });
-    });
-
-    const minus = $("[data-quantity-minus]", modal);
-
-    if (minus) {
-      minus.addEventListener("click", () => {
-        state.selectedQuantity =
-          Math.max(1, state.selectedQuantity - 1);
-
-        updateQuantityDisplay(modal);
-      });
-    }
-
-    const plus = $("[data-quantity-plus]", modal);
-
-    if (plus) {
-      plus.addEventListener("click", () => {
-        const stock = state.selectedProduct?.stock || 1;
-
-        state.selectedQuantity =
-          Math.min(stock, state.selectedQuantity + 1);
-
-        updateQuantityDisplay(modal);
-      });
-    }
-
-    const addButton = $("[data-modal-add]", modal);
-
-    if (addButton) {
-      addButton.addEventListener("click", () => {
-
-        if (!state.selectedProduct) {
-          return;
-        }
-
-        addToCart(
-          state.selectedProduct.id,
-          state.selectedSize,
-          state.selectedColor,
-          state.selectedQuantity
-        );
-
-        closeProductModal();
-      });
-    }
-  }
-
-  function updateQuantityDisplay(modal) {
-    const display = $("#ab-selected-quantity", modal);
-
-    if (display) {
-      display.textContent = state.selectedQuantity;
-    }
-  }
-
-  function changeProductImage(direction) {
-    const product = state.selectedProduct;
-
-    if (!product) {
-      return;
-    }
-
-    state.selectedImageIndex += direction;
-
-    if (state.selectedImageIndex < 0) {
-      state.selectedImageIndex =
-        product.images.length - 1;
-    }
-
-    if (state.selectedImageIndex >= product.images.length) {
-      state.selectedImageIndex = 0;
-    }
-
-    const modal = $("#ab-product-modal");
-
-    if (modal) {
-      updateProductImage(modal);
-    }
-  }
-
-  function updateProductImage(modal) {
-    const product = state.selectedProduct;
-
-    if (!product) {
-      return;
-    }
-
-    const image = $("#ab-main-product-image", modal);
-
-    if (image) {
-      image.style.display = "block";
-      image.src = product.images[state.selectedImageIndex];
-    }
-
-    $$("[data-thumbnail]", modal).forEach((button, index) => {
-      button.classList.toggle(
-        "active",
-        index === state.selectedImageIndex
-      );
-    });
-  }
-
-  function closeProductModal() {
-    const modal = $("#ab-product-modal");
-
-    if (!modal) {
-      return;
-    }
-
-    modal.classList.remove("open");
-
-    document.body.style.overflow = "";
-  }
-
-  /* =========================================================
-     CART
-     ========================================================= */
-
-  function addToCart(id, size = "", color = "", quantity = 1) {
-    const product = findProduct(id);
-
-    if (!product) {
-      return;
-    }
-
-    if (product.stock <= 0) {
-      showToast("This product is currently out of stock.");
-      return;
-    }
-
-    const existing = state.cart.find(item =>
-      item.id === id &&
-      item.size === size &&
-      item.color === color
-    );
-
-    if (existing) {
-      existing.quantity = Math.min(
-        product.stock,
-        existing.quantity + quantity
-      );
-    } else {
-      state.cart.push({
-        id,
-        size,
-        color,
-        quantity: Math.min(product.stock, quantity)
-      });
-    }
-
-    saveCart();
-
-    renderCart();
-
-    showToast(`${product.name} added to your bag.`);
-  }
-
-  function removeFromCart(index) {
-    state.cart.splice(index, 1);
-
-    saveCart();
-
-    renderCart();
-  }
-
-  function changeCartQuantity(index, change) {
-    const item = state.cart[index];
-
-    if (!item) {
-      return;
-    }
-
-    const product = findProduct(item.id);
-
-    if (!product) {
-      return;
-    }
-
-    item.quantity += change;
-
-    if (item.quantity <= 0) {
-      removeFromCart(index);
-      return;
-    }
-
-    item.quantity =
-      Math.min(product.stock, item.quantity);
-
-    saveCart();
-
-    renderCart();
-  }
-
-  function getCartDetails() {
-    return state.cart
-      .map((item, index) => {
-        const product = findProduct(item.id);
-
-        if (!product) {
-          return null;
-        }
+        const handmade =
+            category === "sets" ||
+            category === "jewelry" ||
+            category === "bags";
 
         return {
-          ...item,
-          index,
-          product,
-          subtotal: product.price * item.quantity
+
+            id: `AB-${number}`,
+
+            name,
+
+            category,
+
+            categoryLabel:
+                categoryNames[category] || category,
+
+            primaryCategory:
+                primaryCategory(category),
+
+            price,
+
+            image:
+                `images/products/product-${number}.jpg`,
+
+            gallery: [
+
+                `images/products/product-${number}.jpg`,
+
+                `images/products/product-${number}-2.jpg`,
+
+                `images/products/product-${number}-3.jpg`,
+
+                `images/products/product-${number}-4.jpg`
+
+            ],
+
+            rating:
+                Number((4.5 + ((index % 5) * 0.1)).toFixed(1)),
+
+            reviews:
+                18 + ((index * 13) % 180),
+
+            badge:
+                index < 6
+                    ? "NEW"
+                    : index % 11 === 0
+                        ? "LIMITED"
+                        : index % 7 === 0
+                            ? "BESTSELLER"
+                            : "",
+
+            description:
+                `${name} by Area Boyz Enterprise. Designed around movement, individuality and intentional everyday style.`,
+
+            colors:
+                handmade
+                    ? ["Black", "Gold", "Cream"]
+                    : ["Black", "White", "Yellow"],
+
+            sizes:
+                category === "jewelry" ||
+                category === "accessories"
+                    ? ["One Size"]
+                    : ["S", "M", "L", "XL", "XXL"],
+
+            stock:
+                3 + ((index * 7) % 28)
+
         };
-      })
-      .filter(Boolean);
-  }
 
-  function getCartTotal() {
-    return getCartDetails()
-      .reduce(
-        (total, item) => total + item.subtotal,
-        0
-      );
-  }
+    });
 
-  function getCartCount() {
-    return state.cart.reduce(
-      (total, item) => total + item.quantity,
-      0
+}
+
+
+/* =========================================================
+   CART STORAGE
+========================================================= */
+
+function loadCart() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(CONFIG.storageKey);
+
+        return saved
+            ? JSON.parse(saved)
+            : [];
+
+    } catch (error) {
+
+        console.warn(
+            "Could not load cart.",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+function saveCart() {
+
+    localStorage.setItem(
+        CONFIG.storageKey,
+        JSON.stringify(state.cart)
     );
-  }
 
-  function renderCart() {
-    const details = getCartDetails();
+}
 
-    if (dom.cartCount) {
-      dom.cartCount.textContent = getCartCount();
-    }
 
-    if (dom.cartTotal) {
-      dom.cartTotal.textContent =
-        formatCurrency(getCartTotal());
-    }
+/* =========================================================
+   CURRENCY
+========================================================= */
 
-    if (!dom.cartItems) {
-      return;
-    }
+function money(value) {
 
-    if (!details.length) {
-      dom.cartItems.innerHTML = `
-        <div class="empty-cart">
-          <h3>Your bag is empty</h3>
-          <p>
-            Add something from the collection and it will appear here.
-          </p>
-        </div>
-      `;
+    return new Intl.NumberFormat(
+        "en-US",
+        {
+            style: "currency",
+            currency: CONFIG.currency
+        }
+    ).format(value);
 
-      return;
-    }
+}
 
-    dom.cartItems.innerHTML = details.map(item => `
-      <div class="cart-item">
 
-        <div class="cart-item-image">
-          <img
-            src="${item.product.image}"
-            alt="${escapeHTML(item.product.name)}"
-            onerror="imageFallback(this)"
-          >
-        </div>
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
-        <div class="cart-item-info">
+function navigateTo(page) {
 
-          <h4>
-            ${escapeHTML(item.product.name)}
-          </h4>
-
-          <p>
-            ${formatCurrency(item.product.price)}
-          </p>
-
-          ${
-            item.color
-              ? `<small>Color: ${escapeHTML(item.color)}</small>`
-              : ""
-          }
-
-          ${
-            item.size
-              ? `<small>Size: ${escapeHTML(item.size)}</small>`
-              : ""
-          }
-
-          <div class="cart-item-controls">
-
-            <button
-              type="button"
-              data-cart-minus="${item.index}"
-            >
-              −
-            </button>
-
-            <span>${item.quantity}</span>
-
-            <button
-              type="button"
-              data-cart-plus="${item.index}"
-            >
-              +
-            </button>
-
-            <button
-              type="button"
-              data-cart-remove="${item.index}"
-              class="cart-remove"
-            >
-              Remove
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-    `).join("");
-
-    $$("[data-cart-minus]", dom.cartItems).forEach(button => {
-      button.addEventListener("click", () => {
-        changeCartQuantity(
-          Number(button.dataset.cartMinus),
-          -1
-        );
-      });
-    });
-
-    $$("[data-cart-plus]", dom.cartItems).forEach(button => {
-      button.addEventListener("click", () => {
-        changeCartQuantity(
-          Number(button.dataset.cartPlus),
-          1
-        );
-      });
-    });
-
-    $$("[data-cart-remove]", dom.cartItems).forEach(button => {
-      button.addEventListener("click", () => {
-        removeFromCart(
-          Number(button.dataset.cartRemove)
-        );
-      });
-    });
-  }
-
-  function openCart() {
-    if (dom.cartDrawer) {
-      dom.cartDrawer.classList.add("open");
-    }
-
-    if (dom.cartOverlay) {
-      dom.cartOverlay.classList.add("open");
-    }
-
-    document.body.classList.add("cart-open");
-  }
-
-  function closeCart() {
-    if (dom.cartDrawer) {
-      dom.cartDrawer.classList.remove("open");
-    }
-
-    if (dom.cartOverlay) {
-      dom.cartOverlay.classList.remove("open");
-    }
-
-    document.body.classList.remove("cart-open");
-  }
-
-  /* =========================================================
-     NAVIGATION
-     ========================================================= */
-
-  function normalizePage(page) {
     const validPages = [
-      "home",
-      "shop",
-      "collections",
-      "investment",
-      "about",
-      "contact"
+        "home",
+        "shop",
+        "collections",
+        "investment",
+        "about",
+        "contact"
     ];
 
-    return validPages.includes(page)
-      ? page
-      : CONFIG.defaultPage;
-  }
-
-  function navigate(page, updateHistory = true) {
-    page = normalizePage(page);
+    if (!validPages.includes(page)) {
+        page = "home";
+    }
 
     state.currentPage = page;
 
-    document.body.dataset.page = page;
+    $$("[data-page-section]").forEach(section => {
 
-    if (updateHistory) {
-      history.pushState(
-        { page },
-        "",
-        `#${page}`
-      );
-    }
+        const isActive =
+            section.dataset.pageSection === page;
 
-    renderPageState();
+        section.classList.toggle(
+            "active-page",
+            isActive
+        );
+
+        section.classList.toggle(
+            "active",
+            isActive
+        );
+
+    });
+
+
+    $$("[data-page]").forEach(link => {
+
+        link.classList.toggle(
+            "active",
+            link.dataset.page === page
+        );
+
+    });
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
 
     closeMobileMenu();
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
+    closeSearchPanel();
 
-  function renderPageState() {
+    if (window.location.hash !== `#${page}`) {
 
-    $$("[data-page-link]").forEach(link => {
-      link.classList.toggle(
-        "active",
-        link.dataset.pageLink === state.currentPage
-      );
-    });
-
-    $$("[data-page-section]").forEach(section => {
-      section.classList.toggle(
-        "active",
-        section.dataset.pageSection === state.currentPage
-      );
-    });
-  }
-
-  function setupNavigation() {
-
-    $$("[data-page-link]").forEach(link => {
-      link.addEventListener("click", event => {
-        event.preventDefault();
-
-        navigate(
-          link.dataset.pageLink
-        );
-      });
-    });
-
-    window.addEventListener("popstate", () => {
-      const page =
-        location.hash.replace("#", "") ||
-        CONFIG.defaultPage;
-
-      navigate(page, false);
-    });
-
-    const initialPage =
-      location.hash.replace("#", "") ||
-      CONFIG.defaultPage;
-
-    state.currentPage =
-      normalizePage(initialPage);
-
-    renderPageState();
-  }
-
-  /* =========================================================
-     CATEGORY FILTERS
-     ========================================================= */
-
-  function setupCategoryFilters() {
-
-    $$(".filter-btn").forEach(button => {
-      button.addEventListener("click", () => {
-
-        $$(".filter-btn").forEach(item =>
-          item.classList.remove("active")
+        history.replaceState(
+            null,
+            "",
+            `#${page}`
         );
 
-        button.classList.add("active");
+    }
 
-        state.currentCategory =
-          button.dataset.filter || "all";
 
+    if (page === "shop") {
         renderShopProducts();
-      });
+    }
+
+}
+
+
+/* =========================================================
+   NAVIGATION CLICK HANDLERS
+========================================================= */
+
+function bindNavigation() {
+
+    $$("[data-page]").forEach(link => {
+
+        link.addEventListener(
+            "click",
+            event => {
+
+                const page =
+                    link.dataset.page;
+
+                if (!page) return;
+
+                event.preventDefault();
+
+                navigateTo(page);
+
+            }
+        );
+
     });
 
-    $$(".category-card").forEach(card => {
-      card.addEventListener("click", () => {
+}
 
-        const category =
-          card.dataset.category || "all";
 
-        state.currentCategory = category;
+/* =========================================================
+   HEADER AUTO HIDE
+========================================================= */
 
-        $$(".filter-btn").forEach(button => {
-          button.classList.toggle(
-            "active",
-            button.dataset.filter === category
-          );
-        });
+function initAutoHideHeader() {
 
-        navigate("shop");
-        renderShopProducts();
-      });
-    });
-  }
+    const header =
+        $("#siteHeader");
 
-  /* =========================================================
-     SEARCH
-     ========================================================= */
+    if (!header) return;
 
-  function setupSearch() {
-
-    if (dom.searchForm) {
-      dom.searchForm.addEventListener(
-        "submit",
-        event => {
-          event.preventDefault();
-
-          const input =
-            dom.searchInput?.value || "";
-
-          state.currentSearch = input;
-
-          navigate("shop");
-
-          renderShopProducts();
-        }
-      );
-    }
-
-    if (dom.searchInput) {
-      dom.searchInput.addEventListener(
-        "input",
-        () => {
-          state.currentSearch =
-            dom.searchInput.value;
-
-          if (state.currentPage === "shop") {
-            renderShopProducts();
-          }
-        }
-      );
-    }
-
-    if (dom.shopSearch) {
-      dom.shopSearch.addEventListener(
-        "input",
-        () => {
-          state.currentSearch =
-            dom.shopSearch.value;
-
-          renderShopProducts();
-        }
-      );
-    }
-  }
-
-  /* =========================================================
-     SORT
-     ========================================================= */
-
-  function setupSorting() {
-
-    if (!dom.sortSelect) {
-      return;
-    }
-
-    dom.sortSelect.addEventListener(
-      "change",
-      () => {
-
-        state.currentSort =
-          dom.sortSelect.value;
-
-        renderShopProducts();
-      }
-    );
-  }
-
-  /* =========================================================
-     MOBILE MENU
-     ========================================================= */
-
-  function openMobileMenu() {
-
-    if (dom.mobileMenu) {
-      dom.mobileMenu.classList.add("open");
-    }
-
-    if (dom.mobileOverlay) {
-      dom.mobileOverlay.classList.add("open");
-    }
-
-    document.body.classList.add("menu-open");
-  }
-
-  function closeMobileMenu() {
-
-    if (dom.mobileMenu) {
-      dom.mobileMenu.classList.remove("open");
-    }
-
-    if (dom.mobileOverlay) {
-      dom.mobileOverlay.classList.remove("open");
-    }
-
-    document.body.classList.remove("menu-open");
-  }
-
-  function setupMobileMenu() {
-
-    if (dom.menuToggle) {
-      dom.menuToggle.addEventListener(
-        "click",
-        () => {
-
-          const open =
-            dom.mobileMenu?.classList.contains("open");
-
-          if (open) {
-            closeMobileMenu();
-          } else {
-            openMobileMenu();
-          }
-        }
-      );
-    }
-
-    if (dom.mobileOverlay) {
-      dom.mobileOverlay.addEventListener(
-        "click",
-        closeMobileMenu
-      );
-    }
-
-    $$(".mobile-menu a").forEach(link => {
-      link.addEventListener(
-        "click",
-        closeMobileMenu
-      );
-    });
-  }
-
-  /* =========================================================
-     CART EVENTS
-     ========================================================= */
-
-  function setupCart() {
-
-    if (dom.cartButton) {
-      dom.cartButton.addEventListener(
-        "click",
-        openCart
-      );
-    }
-
-    if (dom.cartOverlay) {
-      dom.cartOverlay.addEventListener(
-        "click",
-        closeCart
-      );
-    }
-
-    $$("[data-close-cart]").forEach(button => {
-      button.addEventListener(
-        "click",
-        closeCart
-      );
-    });
-  }
-
-  /* =========================================================
-     HEADER AUTO HIDE
-     ========================================================= */
-
-  function setupHeaderAutoHide() {
-
-    if (!dom.siteHeader) {
-      return;
-    }
-
-    let lastScroll = window.scrollY;
+    let lastScroll = 0;
 
     window.addEventListener(
-      "scroll",
-      () => {
+        "scroll",
+        () => {
 
-        const currentScroll =
-          window.scrollY;
+            const current =
+                window.scrollY;
 
-        if (
-          currentScroll > lastScroll &&
-          currentScroll > 120
-        ) {
-          dom.siteHeader.classList.add(
-            "header-hidden"
-          );
-        } else {
-          dom.siteHeader.classList.remove(
-            "header-hidden"
-          );
-        }
+            if (current > 120) {
 
-        lastScroll = currentScroll;
-      },
-      { passive: true }
+                if (current > lastScroll) {
+
+                    header.classList.add(
+                        "header-hidden"
+                    );
+
+                } else {
+
+                    header.classList.remove(
+                        "header-hidden"
+                    );
+
+                }
+
+            } else {
+
+                header.classList.remove(
+                    "header-hidden"
+                );
+
+            }
+
+            lastScroll = current;
+
+        },
+        { passive: true }
     );
-  }
 
-  /* =========================================================
-     THEME
-     ========================================================= */
+}
 
-  function setupTheme() {
 
-    const savedTheme =
-      localStorage.getItem(CONFIG.themeKey);
+/* =========================================================
+   MOBILE MENU
+========================================================= */
 
-    if (savedTheme) {
-      document.documentElement.dataset.theme =
-        savedTheme;
+function openMobileMenu() {
+
+    const menu =
+        $("#mobileMenu");
+
+    const overlay =
+        $("#menuOverlay");
+
+    const toggle =
+        $("#menuToggle");
+
+    if (menu) {
+
+        menu.classList.add("open");
+
+        menu.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
     }
 
-    $$("[data-theme-toggle]").forEach(button => {
+    if (overlay) {
 
-      button.addEventListener(
+        overlay.classList.add("active");
+
+    }
+
+    if (toggle) {
+
+        toggle.classList.add("active");
+
+        toggle.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+    }
+
+    document.body.classList.add(
+        "menu-open"
+    );
+
+}
+
+
+function closeMobileMenu() {
+
+    const menu =
+        $("#mobileMenu");
+
+    const overlay =
+        $("#menuOverlay");
+
+    const toggle =
+        $("#menuToggle");
+
+    if (menu) {
+
+        menu.classList.remove("open");
+
+        menu.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+    }
+
+    if (overlay) {
+
+        overlay.classList.remove("active");
+
+    }
+
+    if (toggle) {
+
+        toggle.classList.remove("active");
+
+        toggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+    document.body.classList.remove(
+        "menu-open"
+    );
+
+}
+
+
+function initMobileMenu() {
+
+    const toggle =
+        $("#menuToggle");
+
+    const close =
+        $("#mobileMenuClose");
+
+    const overlay =
+        $("#menuOverlay");
+
+    if (toggle) {
+
+        toggle.addEventListener(
+            "click",
+            () => {
+
+                const menu =
+                    $("#mobileMenu");
+
+                const open =
+                    menu &&
+                    menu.classList.contains(
+                        "open"
+                    );
+
+                if (open) {
+
+                    closeMobileMenu();
+
+                } else {
+
+                    openMobileMenu();
+
+                }
+
+            }
+        );
+
+    }
+
+    if (close) {
+
+        close.addEventListener(
+            "click",
+            closeMobileMenu
+        );
+
+    }
+
+    if (overlay) {
+
+        overlay.addEventListener(
+            "click",
+            closeMobileMenu
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SEARCH PANEL
+========================================================= */
+
+function openSearchPanel() {
+
+    const panel =
+        $("#searchPanel");
+
+    const input =
+        $("#productSearch");
+
+    if (!panel) return;
+
+    panel.classList.add("active");
+
+    panel.classList.add("open");
+
+    if (input) {
+
+        setTimeout(
+            () => input.focus(),
+            100
+        );
+
+    }
+
+}
+
+
+function closeSearchPanel() {
+
+    const panel =
+        $("#searchPanel");
+
+    if (!panel) return;
+
+    panel.classList.remove("active");
+
+    panel.classList.remove("open");
+
+}
+
+
+function initSearch() {
+
+    const toggle =
+        $("#searchToggle");
+
+    const close =
+        $("#closeSearch");
+
+    const input =
+        $("#productSearch");
+
+    if (toggle) {
+
+        toggle.addEventListener(
+            "click",
+            () => {
+
+                const panel =
+                    $("#searchPanel");
+
+                const open =
+                    panel &&
+                    (
+                        panel.classList.contains(
+                            "active"
+                        ) ||
+                        panel.classList.contains(
+                            "open"
+                        )
+                    );
+
+                if (open) {
+
+                    closeSearchPanel();
+
+                } else {
+
+                    openSearchPanel();
+
+                }
+
+            }
+        );
+
+    }
+
+    if (close) {
+
+        close.addEventListener(
+            "click",
+            closeSearchPanel
+        );
+
+    }
+
+    if (input) {
+
+        input.addEventListener(
+            "input",
+            () => {
+
+                state.currentSearch =
+                    input.value.trim().toLowerCase();
+
+                if (
+                    state.currentSearch
+                ) {
+
+                    navigateTo("shop");
+
+                }
+
+                renderShopProducts();
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRODUCT FILTERING
+========================================================= */
+
+function getFilteredProducts() {
+
+    let products =
+        [...state.products];
+
+
+    /* CATEGORY */
+
+    if (
+        state.currentCategory !== "all"
+    ) {
+
+        products =
+            products.filter(
+                product =>
+                    product.primaryCategory ===
+                    state.currentCategory
+            );
+
+    }
+
+
+    /* SEARCH */
+
+    if (state.currentSearch) {
+
+        products =
+            products.filter(
+                product => {
+
+                    const searchable = [
+
+                        product.name,
+
+                        product.category,
+
+                        product.categoryLabel,
+
+                        product.description
+
+                    ]
+                        .join(" ")
+                        .toLowerCase();
+
+                    return searchable.includes(
+                        state.currentSearch
+                    );
+
+                }
+            );
+
+    }
+
+
+    /* SORT */
+
+    switch (state.currentSort) {
+
+        case "price-low":
+
+            products.sort(
+                (a, b) =>
+                    a.price - b.price
+            );
+
+            break;
+
+
+        case "price-high":
+
+            products.sort(
+                (a, b) =>
+                    b.price - a.price
+            );
+
+            break;
+
+
+        case "name":
+
+            products.sort(
+                (a, b) =>
+                    a.name.localeCompare(
+                        b.name
+                    )
+            );
+
+            break;
+
+
+        default:
+
+            products.sort(
+                (a, b) =>
+                    a.id.localeCompare(
+                        b.id
+                    )
+            );
+
+    }
+
+
+    return products;
+
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
+
+function productCard(product) {
+
+    return `
+
+        <article
+            class="product-card"
+            data-product-id="${product.id}"
+        >
+
+            <div class="product-image-wrap">
+
+                ${
+                    product.badge
+                        ? `
+                            <span class="product-badge">
+                                ${product.badge}
+                            </span>
+                        `
+                        : ""
+                }
+
+                <button
+                    class="quick-view"
+                    type="button"
+                    data-product-action="quick-view"
+                    data-product-id="${product.id}"
+                    aria-label="Quick view ${product.name}"
+                >
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <img
+                    src="${product.image}"
+                    alt="${product.name}"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='images/hero/hero-main.jpg';"
+                >
+
+            </div>
+
+
+            <div class="product-info">
+
+                <span class="product-category">
+                    ${product.categoryLabel}
+                </span>
+
+                <h3>
+                    ${product.name}
+                </h3>
+
+                <div class="product-rating">
+
+                    <span>
+                        ${"★".repeat(Math.round(product.rating))}
+                    </span>
+
+                    <small>
+                        ${product.rating}
+                        (${product.reviews})
+                    </small>
+
+                </div>
+
+                <div class="product-bottom">
+
+                    <strong>
+                        ${money(product.price)}
+                    </strong>
+
+                    <button
+                        class="add-to-cart"
+                        type="button"
+                        data-product-action="add"
+                        data-product-id="${product.id}"
+                    >
+                        Add to bag
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================================================
+   FEATURED PRODUCTS
+========================================================= */
+
+function renderFeaturedProducts() {
+
+    const container =
+        $("#featuredProducts");
+
+    if (!container) return;
+
+    const featured =
+        state.products.slice(0, 8);
+
+    container.innerHTML =
+        featured.map(productCard).join("");
+
+}
+
+
+/* =========================================================
+   SHOP PRODUCTS
+========================================================= */
+
+function renderShopProducts() {
+
+    const container =
+        $("#shopProducts");
+
+    if (!container) return;
+
+    const products =
+        getFilteredProducts();
+
+    if (!products.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-products">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <h3>
+                    No products found.
+                </h3>
+
+                <p>
+                    Try another search or category.
+                </p>
+
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    id="clearFilters"
+                >
+                    Clear filters
+                </button>
+
+            </div>
+
+        `;
+
+        const clear =
+            $("#clearFilters");
+
+        if (clear) {
+
+            clear.addEventListener(
+                "click",
+                clearFilters
+            );
+
+        }
+
+        return;
+
+    }
+
+    container.innerHTML =
+        products.map(productCard).join("");
+
+}
+
+
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
+
+function initFilters() {
+
+    $$(".filter-btn").forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                $$(".filter-btn")
+                    .forEach(btn =>
+                        btn.classList.remove(
+                            "active"
+                        )
+                    );
+
+                button.classList.add(
+                    "active"
+                );
+
+                state.currentCategory =
+                    button.dataset.filter ||
+                    "all";
+
+                renderShopProducts();
+
+            }
+        );
+
+    });
+
+
+    const sort =
+        $("#sortProducts");
+
+    if (sort) {
+
+        sort.addEventListener(
+            "change",
+            () => {
+
+                state.currentSort =
+                    sort.value;
+
+                renderShopProducts();
+
+            }
+        );
+
+    }
+
+
+    $$(".category-card").forEach(card => {
+
+        card.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                const category =
+                    card.dataset.category ||
+                    "all";
+
+                navigateTo("shop");
+
+                state.currentCategory =
+                    category === "handmade"
+                        ? "handmade"
+                        : category;
+
+                $$(".filter-btn")
+                    .forEach(btn => {
+
+                        btn.classList.toggle(
+                            "active",
+                            btn.dataset.filter ===
+                            state.currentCategory
+                        );
+
+                    });
+
+                if (
+                    ![
+                        "all",
+                        "streetwear",
+                        "handmade",
+                        "footwear",
+                        "accessories"
+                    ].includes(
+                        state.currentCategory
+                    )
+                ) {
+
+                    state.currentCategory =
+                        "streetwear";
+
+                    $$(".filter-btn")
+                        .forEach(btn => {
+
+                            btn.classList.toggle(
+                                "active",
+                                btn.dataset.filter ===
+                                "streetwear"
+                            );
+
+                        });
+
+                }
+
+                renderShopProducts();
+
+            }
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   CLEAR FILTERS
+========================================================= */
+
+function clearFilters() {
+
+    state.currentCategory = "all";
+
+    state.currentSearch = "";
+
+    state.currentSort = "featured";
+
+
+    const search =
+        $("#productSearch");
+
+    if (search) {
+        search.value = "";
+    }
+
+
+    const sort =
+        $("#sortProducts");
+
+    if (sort) {
+        sort.value = "featured";
+    }
+
+
+    $$(".filter-btn")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.filter ===
+                "all"
+            );
+
+        });
+
+
+    renderShopProducts();
+
+}
+
+
+/* =========================================================
+   PRODUCT MODAL
+========================================================= */
+
+function createProductModal() {
+
+    if ($("#productModal")) return;
+
+    const modal =
+        document.createElement("div");
+
+    modal.id =
+        "productModal";
+
+    modal.className =
+        "product-modal";
+
+    modal.innerHTML = `
+
+        <div
+            class="product-modal-backdrop"
+            data-modal-close
+        ></div>
+
+        <div
+            class="product-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Product details"
+        >
+
+            <button
+                class="product-modal-close"
+                type="button"
+                data-modal-close
+                aria-label="Close product"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div
+                class="product-modal-content"
+                id="productModalContent"
+            ></div>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+
+    modal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.closest(
+                    "[data-modal-close]"
+                )
+            ) {
+
+                closeProductModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+function openProductModal(productId) {
+
+    const product =
+        state.products.find(
+            item =>
+                item.id === productId
+        );
+
+    if (!product) return;
+
+    createProductModal();
+
+    const modal =
+        $("#productModal");
+
+    const content =
+        $("#productModalContent");
+
+    if (!modal || !content) return;
+
+
+    content.innerHTML = `
+
+        <div class="product-detail">
+
+            <div class="product-gallery">
+
+                <div class="product-main-image">
+
+                    <img
+                        id="productMainImage"
+                        src="${product.image}"
+                        alt="${product.name}"
+                        onerror="this.onerror=null;this.src='images/hero/hero-main.jpg';"
+                    >
+
+                    <button
+                        type="button"
+                        class="gallery-arrow gallery-prev"
+                        data-gallery-prev
+                        aria-label="Previous image"
+                    >
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="gallery-arrow gallery-next"
+                        data-gallery-next
+                        aria-label="Next image"
+                    >
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                </div>
+
+                <div
+                    class="product-thumbnails"
+                    id="productThumbnails"
+                >
+
+                    ${product.gallery.map(
+                        (image, index) => `
+
+                            <button
+                                type="button"
+                                class="gallery-thumb ${index === 0 ? "active" : ""}"
+                                data-gallery-index="${index}"
+                            >
+
+                                <img
+                                    src="${image}"
+                                    alt="${product.name} view ${index + 1}"
+                                    onerror="this.closest('.gallery-thumb').style.display='none';"
+                                >
+
+                            </button>
+
+                        `
+                    ).join("")}
+
+                </div>
+
+            </div>
+
+
+            <div class="product-detail-info">
+
+                <span class="product-category">
+                    ${product.categoryLabel}
+                </span>
+
+                <h2>
+                    ${product.name}
+                </h2>
+
+                <div class="product-rating">
+
+                    <span>
+                        ${"★".repeat(Math.round(product.rating))}
+                    </span>
+
+                    <small>
+                        ${product.rating}
+                        (${product.reviews} reviews)
+                    </small>
+
+                </div>
+
+                <strong class="product-detail-price">
+                    ${money(product.price)}
+                </strong>
+
+                <p>
+                    ${product.description}
+                </p>
+
+
+                <div class="product-option">
+
+                    <label>
+                        Size
+                    </label>
+
+                    <div class="option-buttons">
+
+                        ${product.sizes.map(
+                            (size, index) => `
+
+                                <button
+                                    type="button"
+                                    class="option-btn ${index === 0 ? "active" : ""}"
+                                    data-size="${size}"
+                                >
+                                    ${size}
+                                </button>
+
+                            `
+                        ).join("")}
+
+                    </div>
+
+                </div>
+
+
+                <div class="product-option">
+
+                    <label>
+                        Colour
+                    </label>
+
+                    <div class="option-buttons">
+
+                        ${product.colors.map(
+                            (color, index) => `
+
+                                <button
+                                    type="button"
+                                    class="option-btn ${index === 0 ? "active" : ""}"
+                                    data-color="${color}"
+                                >
+                                    ${color}
+                                </button>
+
+                            `
+                        ).join("")}
+
+                    </div>
+
+                </div>
+
+
+                <div class="product-purchase">
+
+                    <div class="quantity-control">
+
+                        <button
+                            type="button"
+                            data-quantity-minus
+                        >
+                            −
+                        </button>
+
+                        <span id="productQuantity">
+                            1
+                        </span>
+
+                        <button
+                            type="button"
+                            data-quantity-plus
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary product-add-button"
+                        data-modal-add="${product.id}"
+                    >
+                        Add to bag
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </button>
+
+                </div>
+
+
+                <small class="product-stock">
+                    ${product.stock} available
+                </small>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    modal.classList.add("open");
+
+    document.body.classList.add(
+        "modal-open"
+    );
+
+
+    initProductModalControls(product);
+
+}
+
+
+function closeProductModal() {
+
+    const modal =
+        $("#productModal");
+
+    if (!modal) return;
+
+    modal.classList.remove(
+        "open"
+    );
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+
+}
+
+
+/* =========================================================
+   PRODUCT MODAL CONTROLS
+========================================================= */
+
+function initProductModalControls(product) {
+
+    let galleryIndex = 0;
+
+    let quantity = 1;
+
+
+    const mainImage =
+        $("#productMainImage");
+
+    const thumbnails =
+        $$(".gallery-thumb");
+
+    const quantityDisplay =
+        $("#productQuantity");
+
+
+    function showGallery(index) {
+
+        galleryIndex =
+            (index + product.gallery.length) %
+            product.gallery.length;
+
+        if (mainImage) {
+
+            mainImage.src =
+                product.gallery[galleryIndex];
+
+        }
+
+        thumbnails.forEach(
+            (thumb, i) => {
+
+                thumb.classList.toggle(
+                    "active",
+                    i === galleryIndex
+                );
+
+            }
+        );
+
+    }
+
+
+    thumbnails.forEach(
+        thumb => {
+
+            thumb.addEventListener(
+                "click",
+                () => {
+
+                    showGallery(
+                        Number(
+                            thumb.dataset.galleryIndex
+                        )
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    const previous =
+        $("[data-gallery-prev]");
+
+    const next =
+        $("[data-gallery-next]");
+
+
+    if (previous) {
+
+        previous.addEventListener(
+            "click",
+            () => showGallery(
+                galleryIndex - 1
+            )
+        );
+
+    }
+
+
+    if (next) {
+
+        next.addEventListener(
+            "click",
+            () => showGallery(
+                galleryIndex + 1
+            )
+        );
+
+    }
+
+
+    const minus =
+        $("[data-quantity-minus]");
+
+    const plus =
+        $("[data-quantity-plus]");
+
+
+    if (minus) {
+
+        minus.addEventListener(
+            "click",
+            () => {
+
+                quantity =
+                    Math.max(
+                        1,
+                        quantity - 1
+                    );
+
+                if (quantityDisplay) {
+
+                    quantityDisplay.textContent =
+                        quantity;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if (plus) {
+
+        plus.addEventListener(
+            "click",
+            () => {
+
+                quantity =
+                    Math.min(
+                        product.stock,
+                        quantity + 1
+                    );
+
+                if (quantityDisplay) {
+
+                    quantityDisplay.textContent =
+                        quantity;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    $$("[data-size]").forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    $$("[data-size]")
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "active"
+                                )
+                        );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    $$("[data-color]").forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    $$("[data-color]")
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "active"
+                                )
+                        );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    const addButton =
+        $(`[data-modal-add="${product.id}"]`);
+
+
+    if (addButton) {
+
+        addButton.addEventListener(
+            "click",
+            () => {
+
+                const selectedSize =
+                    $("[data-size].active")?.dataset.size ||
+                    product.sizes[0];
+
+                const selectedColor =
+                    $("[data-color].active")?.dataset.color ||
+                    product.colors[0];
+
+                addToCart(
+                    product.id,
+                    quantity,
+                    selectedSize,
+                    selectedColor
+                );
+
+                closeProductModal();
+
+                openCart();
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRODUCT ACTION DELEGATION
+========================================================= */
+
+function initProductActions() {
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const action =
+                event.target.closest(
+                    "[data-product-action]"
+                );
+
+            if (!action) return;
+
+            const productId =
+                action.dataset.productId;
+
+            const type =
+                action.dataset.productAction;
+
+
+            if (type === "quick-view") {
+
+                openProductModal(
+                    productId
+                );
+
+            }
+
+
+            if (type === "add") {
+
+                const product =
+                    state.products.find(
+                        item =>
+                            item.id === productId
+                    );
+
+                if (!product) return;
+
+                addToCart(
+                    product.id,
+                    1,
+                    product.sizes[0],
+                    product.colors[0]
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ADD TO CART
+========================================================= */
+
+function addToCart(
+    productId,
+    quantity = 1,
+    size = "One Size",
+    color = "Black"
+) {
+
+    const product =
+        state.products.find(
+            item =>
+                item.id === productId
+        );
+
+    if (!product) return;
+
+
+    const existing =
+        state.cart.find(
+            item =>
+                item.id === productId &&
+                item.size === size &&
+                item.color === color
+        );
+
+
+    if (existing) {
+
+        existing.quantity =
+            Math.min(
+                product.stock,
+                existing.quantity + quantity
+            );
+
+    } else {
+
+        state.cart.push({
+
+            id: productId,
+
+            quantity:
+
+                Math.min(
+                    product.stock,
+                    quantity
+                ),
+
+            size,
+
+            color
+
+        });
+
+    }
+
+
+    saveCart();
+
+    renderCart();
+
+    updateCartCount();
+
+    showToast(
+        `${product.name} added to your bag.`
+    );
+
+}
+
+
+/* =========================================================
+   CART
+========================================================= */
+
+function getCartTotal() {
+
+    return state.cart.reduce(
+        (total, item) => {
+
+            const product =
+                state.products.find(
+                    product =>
+                        product.id === item.id
+                );
+
+            if (!product) {
+                return total;
+            }
+
+            return total +
+                product.price *
+                item.quantity;
+
+        },
+        0
+    );
+
+}
+
+
+function getCartCount() {
+
+    return state.cart.reduce(
+        (total, item) =>
+            total + item.quantity,
+        0
+    );
+
+}
+
+
+function updateCartCount() {
+
+    const count =
+        $("#cartCount");
+
+    if (!count) return;
+
+    count.textContent =
+        getCartCount();
+
+}
+
+
+/* =========================================================
+   RENDER CART
+========================================================= */
+
+function renderCart() {
+
+    const container =
+        $("#cartItems");
+
+    const total =
+        $("#cartTotal");
+
+    if (!container) return;
+
+
+    if (!state.cart.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-cart">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <h3>
+                    Your bag is empty.
+                </h3>
+
+                <p>
+                    Find something that fits your life.
+                </p>
+
+            </div>
+
+        `;
+
+    } else {
+
+        container.innerHTML =
+            state.cart.map(
+                cartItemMarkup
+            ).join("");
+
+    }
+
+
+    if (total) {
+
+        total.textContent =
+            money(
+                getCartTotal()
+            );
+
+    }
+
+    updateCartCount();
+
+}
+
+
+function cartItemMarkup(item) {
+
+    const product =
+        state.products.find(
+            product =>
+                product.id === item.id
+        );
+
+    if (!product) return "";
+
+    return `
+
+        <article
+            class="cart-item"
+            data-cart-item="${product.id}"
+        >
+
+            <div class="cart-item-image">
+
+                <img
+                    src="${product.image}"
+                    alt="${product.name}"
+                    onerror="this.onerror=null;this.src='images/hero/hero-main.jpg';"
+                >
+
+            </div>
+
+            <div class="cart-item-info">
+
+                <span>
+                    ${product.categoryLabel}
+                </span>
+
+                <h3>
+                    ${product.name}
+                </h3>
+
+                <small>
+                    ${item.size} / ${item.color}
+                </small>
+
+                <strong>
+                    ${money(product.price * item.quantity)}
+                </strong>
+
+                <div class="cart-item-controls">
+
+                    <button
+                        type="button"
+                        data-cart-minus="${product.id}"
+                        data-size="${item.size}"
+                        data-color="${item.color}"
+                    >
+                        −
+                    </button>
+
+                    <span>
+                        ${item.quantity}
+                    </span>
+
+                    <button
+                        type="button"
+                        data-cart-plus="${product.id}"
+                        data-size="${item.size}"
+                        data-color="${item.color}"
+                    >
+                        +
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cart-remove"
+                        data-cart-remove="${product.id}"
+                        data-size="${item.size}"
+                        data-color="${item.color}"
+                    >
+                        Remove
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================================================
+   CART ACTIONS
+========================================================= */
+
+function findCartItem(
+    productId,
+    size,
+    color
+) {
+
+    return state.cart.find(
+        item =>
+            item.id === productId &&
+            item.size === size &&
+            item.color === color
+    );
+
+}
+
+
+function changeCartQuantity(
+    productId,
+    size,
+    color,
+    amount
+) {
+
+    const item =
+        findCartItem(
+            productId,
+            size,
+            color
+        );
+
+    if (!item) return;
+
+
+    const product =
+        state.products.find(
+            product =>
+                product.id === productId
+        );
+
+
+    if (!product) return;
+
+
+    item.quantity += amount;
+
+
+    if (
+        item.quantity <= 0
+    ) {
+
+        state.cart =
+            state.cart.filter(
+                cartItem =>
+                    !(
+                        cartItem.id === productId &&
+                        cartItem.size === size &&
+                        cartItem.color === color
+                    )
+            );
+
+    } else {
+
+        item.quantity =
+            Math.min(
+                product.stock,
+                item.quantity
+            );
+
+    }
+
+
+    saveCart();
+
+    renderCart();
+
+}
+
+
+function removeCartItem(
+    productId,
+    size,
+    color
+) {
+
+    state.cart =
+        state.cart.filter(
+            item =>
+                !(
+                    item.id === productId &&
+                    item.size === size &&
+                    item.color === color
+                )
+        );
+
+    saveCart();
+
+    renderCart();
+
+}
+
+
+/* =========================================================
+   CART EVENT DELEGATION
+========================================================= */
+
+function initCartActions() {
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const plus =
+                event.target.closest(
+                    "[data-cart-plus]"
+                );
+
+            const minus =
+                event.target.closest(
+                    "[data-cart-minus]"
+                );
+
+            const remove =
+                event.target.closest(
+                    "[data-cart-remove]"
+                );
+
+
+            if (plus) {
+
+                changeCartQuantity(
+                    plus.dataset.cartPlus,
+                    plus.dataset.size,
+                    plus.dataset.color,
+                    1
+                );
+
+            }
+
+
+            if (minus) {
+
+                changeCartQuantity(
+                    minus.dataset.cartMinus,
+                    minus.dataset.size,
+                    minus.dataset.color,
+                    -1
+                );
+
+            }
+
+
+            if (remove) {
+
+                removeCartItem(
+                    remove.dataset.cartRemove,
+                    remove.dataset.size,
+                    remove.dataset.color
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CART DRAWER
+========================================================= */
+
+function openCart() {
+
+    const drawer =
+        $("#cartDrawer");
+
+    const overlay =
+        $("#cartOverlay");
+
+    if (drawer) {
+
+        drawer.classList.add(
+            "open"
+        );
+
+        drawer.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+    }
+
+    if (overlay) {
+
+        overlay.classList.add(
+            "active"
+        );
+
+    }
+
+    document.body.classList.add(
+        "cart-open"
+    );
+
+}
+
+
+function closeCart() {
+
+    const drawer =
+        $("#cartDrawer");
+
+    const overlay =
+        $("#cartOverlay");
+
+    if (drawer) {
+
+        drawer.classList.remove(
+            "open"
+        );
+
+        drawer.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+    }
+
+    if (overlay) {
+
+        overlay.classList.remove(
+            "active"
+        );
+
+    }
+
+    document.body.classList.remove(
+        "cart-open"
+    );
+
+}
+
+
+function initCartDrawer() {
+
+    const button =
+        $("#cartButton");
+
+    const close =
+        $("#cartClose");
+
+    const overlay =
+        $("#cartOverlay");
+
+    const checkout =
+        $("#checkoutButton");
+
+
+    if (button) {
+
+        button.addEventListener(
+            "click",
+            openCart
+        );
+
+    }
+
+
+    if (close) {
+
+        close.addEventListener(
+            "click",
+            closeCart
+        );
+
+    }
+
+
+    if (overlay) {
+
+        overlay.addEventListener(
+            "click",
+            closeCart
+        );
+
+    }
+
+
+    if (checkout) {
+
+        checkout.addEventListener(
+            "click",
+            () => {
+
+                if (!state.cart.length) {
+
+                    showToast(
+                        "Your bag is empty."
+                    );
+
+                    return;
+
+                }
+
+                showToast(
+                    "Checkout is ready for the next payment integration step."
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   EQUITY CALCULATOR
+========================================================= */
+
+function initEquityCalculator() {
+
+    const button =
+        $("#calculateEquity");
+
+    const amountInput =
+        $("#investmentAmount");
+
+    const percentageInput =
+        $("#equityPercentage");
+
+    const result =
+        $("#calculatorResult");
+
+
+    if (
+        !button ||
+        !amountInput ||
+        !percentageInput ||
+        !result
+    ) {
+        return;
+    }
+
+
+    button.addEventListener(
         "click",
         () => {
 
-          const current =
-            document.documentElement.dataset.theme;
+            const amount =
+                Number(
+                    amountInput.value
+                );
 
-          const next =
-            current === "dark"
-              ? "light"
-              : "dark";
+            const percentage =
+                Number(
+                    percentageInput.value
+                );
 
-          document.documentElement.dataset.theme =
-            next;
 
-          localStorage.setItem(
-            CONFIG.themeKey,
-            next
-          );
+            if (
+                !amount ||
+                amount <= 0 ||
+                percentage < 0 ||
+                percentage > 100
+            ) {
+
+                result.innerHTML = `
+
+                    <span>
+                        Illustration
+                    </span>
+
+                    <strong>
+                        Check your figures
+                    </strong>
+
+                    <p>
+                        Enter a positive amount and
+                        an equity percentage from 0 to 100.
+                    </p>
+
+                `;
+
+                return;
+
+            }
+
+
+            const impliedValue =
+                amount /
+                (percentage / 100);
+
+
+            result.innerHTML = `
+
+                <span>
+                    Hypothetical allocation
+                </span>
+
+                <strong>
+                    ${percentage}% = ${money(amount)}
+                </strong>
+
+                <p>
+                    Implied enterprise value:
+                    <strong>
+                        ${money(impliedValue)}
+                    </strong>
+                </p>
+
+            `;
+
         }
-      );
-
-    });
-  }
-
-  /* =========================================================
-     INVESTMENT CALCULATOR
-     ========================================================= */
-
-  function calculateInvestment() {
-
-    if (!dom.investmentAmount) {
-      return;
-    }
-
-    const amount =
-      Number(dom.investmentAmount.value) || 0;
-
-    const percentage =
-      amount > 0
-        ? (amount / CONFIG.totalEquity) * 100
-        : 0;
-
-    if (dom.shareOutput) {
-      dom.shareOutput.textContent =
-        `${percentage.toFixed(2)}%`;
-    }
-
-    if (dom.equityOutput) {
-      dom.equityOutput.textContent =
-        formatCurrency(
-          CONFIG.totalEquity
-        );
-    }
-
-    if (dom.equityValue) {
-      dom.equityValue.textContent =
-        formatCurrency(
-          CONFIG.totalEquity
-        );
-    }
-  }
-
-  function setupInvestment() {
-
-    if (dom.investmentAmount) {
-      dom.investmentAmount.addEventListener(
-        "input",
-        calculateInvestment
-      );
-
-      calculateInvestment();
-    }
-  }
-
-  /* =========================================================
-     ANNOUNCEMENT BAR
-     ========================================================= */
-
-  function setupAnnouncement() {
-
-    if (!dom.announcementClose) {
-      return;
-    }
-
-    dom.announcementClose.addEventListener(
-      "click",
-      () => {
-
-        if (dom.announcement) {
-          dom.announcement.style.display =
-            "none";
-        }
-      }
     );
-  }
 
-  /* =========================================================
-     KEYBOARD EVENTS
-     ========================================================= */
+}
 
-  function setupKeyboard() {
+
+/* =========================================================
+   ANNOUNCEMENT BAR
+========================================================= */
+
+function initAnnouncement() {
+
+    const close =
+        $("#announcementClose");
+
+    const bar =
+        $(".announcement-bar");
+
+    if (!close || !bar) return;
+
+
+    close.addEventListener(
+        "click",
+        () => {
+
+            bar.classList.add(
+                "hidden"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message) {
+
+    let toast =
+        $("#areaBoyzToast");
+
+
+    if (!toast) {
+
+        toast =
+            document.createElement(
+                "div"
+            );
+
+        toast.id =
+            "areaBoyzToast";
+
+        toast.className =
+            "area-boyz-toast";
+
+        document.body.appendChild(
+            toast
+        );
+
+    }
+
+
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        showToast.timer
+    );
+
+
+    showToast.timer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2500
+        );
+
+}
+
+
+/* =========================================================
+   TOAST STYLES
+   Injected so the functionality works even if CSS
+   does not yet contain toast styling.
+========================================================= */
+
+function injectFunctionalStyles() {
+
+    if ($("#areaBoyzFunctionalStyles")) {
+        return;
+    }
+
+    const style =
+        document.createElement(
+            "style"
+        );
+
+    style.id =
+        "areaBoyzFunctionalStyles";
+
+    style.textContent = `
+
+        .area-boyz-toast {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translate(-50%, 20px);
+            background: #111;
+            color: #fff;
+            padding: 14px 20px;
+            border: 1px solid #ffd400;
+            border-radius: 999px;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .3s ease;
+            font-size: 14px;
+            max-width: calc(100% - 30px);
+            text-align: center;
+        }
+
+        .area-boyz-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+
+        .header-hidden {
+            transform: translateY(-100%);
+        }
+
+        .product-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9990;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .3s ease;
+        }
+
+        .product-modal.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .product-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,.78);
+            backdrop-filter: blur(8px);
+        }
+
+        .product-modal-dialog {
+            position: relative;
+            width: min(1100px, 100%);
+            max-height: 92vh;
+            overflow-y: auto;
+            background: #fff;
+            color: #111;
+            border-radius: 18px;
+            z-index: 2;
+        }
+
+        .product-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 42px;
+            height: 42px;
+            border: 0;
+            border-radius: 50%;
+            background: #ffd400;
+            cursor: pointer;
+            z-index: 5;
+            font-size: 18px;
+        }
+
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            gap: 35px;
+            padding: 35px;
+        }
+
+        .product-main-image {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            background: #f5f5f5;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .product-main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 42px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,.9);
+            cursor: pointer;
+        }
+
+        .gallery-prev {
+            left: 15px;
+        }
+
+        .gallery-next {
+            right: 15px;
+        }
+
+        .product-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            overflow-x: auto;
+        }
+
+        .gallery-thumb {
+            flex: 0 0 75px;
+            height: 75px;
+            padding: 0;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #eee;
+            cursor: pointer;
+        }
+
+        .gallery-thumb.active {
+            border-color: #ffd400;
+        }
+
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-detail-info {
+            padding: 20px 5px;
+        }
+
+        .product-detail-info h2 {
+            font-size: clamp(28px, 4vw, 48px);
+            margin: 8px 0 12px;
+        }
+
+        .product-detail-price {
+            display: block;
+            font-size: 25px;
+            margin: 20px 0;
+        }
+
+        .product-option {
+            margin: 24px 0;
+        }
+
+        .product-option > label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .option-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .option-btn {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .option-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
+
+        .product-purchase {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 25px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .quantity-control button {
+            width: 40px;
+            height: 45px;
+            border: 0;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .quantity-control span {
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .product-add-button {
+            flex: 1;
+        }
+
+        @media (max-width: 800px) {
+
+            .product-detail {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                gap: 10px;
+            }
+
+            .product-modal {
+                padding: 8px;
+            }
+
+            .product-modal-dialog {
+                max-height: 96vh;
+            }
+
+        }
+
+    `;
+
+    document.head.appendChild(
+        style
+    );
+
+}
+
+
+/* =========================================================
+   KEYBOARD SHORTCUTS
+========================================================= */
+
+function initKeyboard() {
 
     document.addEventListener(
-      "keydown",
-      event => {
+        "keydown",
+        event => {
 
-        if (event.key === "Escape") {
-          closeProductModal();
-          closeCart();
-          closeMobileMenu();
+            if (
+                event.key === "/" &&
+                document.activeElement.tagName !==
+                "INPUT"
+            ) {
+
+                event.preventDefault();
+
+                openSearchPanel();
+
+            }
+
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeSearchPanel();
+
+                closeMobileMenu();
+
+                closeCart();
+
+                closeProductModal();
+
+            }
+
         }
-
-        const modal =
-          $("#ab-product-modal");
-
-        if (
-          modal &&
-          modal.classList.contains("open")
-        ) {
-
-          if (event.key === "ArrowLeft") {
-            changeProductImage(-1);
-          }
-
-          if (event.key === "ArrowRight") {
-            changeProductImage(1);
-          }
-        }
-      }
     );
-  }
 
-  /* =========================================================
-     PRELOADER
-     ========================================================= */
+}
 
-  function finishPreloader() {
 
-    if (!dom.preloader) {
-      return;
+/* =========================================================
+   HASH ROUTING
+========================================================= */
+
+function initHashRouting() {
+
+    const hash =
+        window.location.hash
+            .replace("#", "")
+            .trim();
+
+    const validPages = [
+        "home",
+        "shop",
+        "collections",
+        "investment",
+        "about",
+        "contact"
+    ];
+
+
+    if (
+        validPages.includes(hash)
+    ) {
+
+        state.currentPage =
+            hash;
+
+    } else {
+
+        state.currentPage =
+            CONFIG.defaultPage;
+
     }
 
-    dom.preloader.classList.add("loaded");
+}
 
-    setTimeout(() => {
-      if (dom.preloader) {
-        dom.preloader.style.display = "none";
-      }
-    }, 500);
-  }
 
-  /* =========================================================
-     YEAR
-     ========================================================= */
+function listenForHashChanges() {
 
-  function setYear() {
+    window.addEventListener(
+        "hashchange",
+        () => {
 
-    if (dom.year) {
-      dom.year.textContent =
-        new Date().getFullYear();
+            const page =
+                window.location.hash
+                    .replace("#", "");
+
+            if (page) {
+
+                navigateTo(page);
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   YEAR
+========================================================= */
+
+function updateYear() {
+
+    const year =
+        $("#currentYear");
+
+    if (year) {
+
+        year.textContent =
+            new Date().getFullYear();
+
     }
-  }
 
-  /* =========================================================
-     DEBUG INFO
-     ========================================================= */
+}
 
-  function developmentInfo() {
 
-    console.log(
-      `%c AREA BOYZ ENTERPRISE `,
-      "background:#ffd400;color:#080808;font-weight:900;padding:6px 10px;"
+/* =========================================================
+   PRELOADER
+========================================================= */
+
+function finishPreloader() {
+
+    const preloader =
+        $("#preloader");
+
+    if (!preloader) return;
+
+    preloader.classList.add(
+        "loaded"
     );
 
-    console.log(
-      `Catalogue loaded: ${state.products.length} products`
+    setTimeout(
+        () => {
+
+            preloader.style.display =
+                "none";
+
+        },
+        900
     );
 
-    console.log(
-      "Product image format: images/products/product-001.jpg"
+}
+
+
+function initPreloader() {
+
+    setTimeout(
+        finishPreloader,
+        CONFIG.preloaderDuration
     );
 
-    console.log(
-      "Additional gallery images: product-001-2.jpg, product-001-3.jpg, product-001-4.jpg"
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            setTimeout(
+                finishPreloader,
+                250
+            );
+
+        }
     );
-  }
 
-  /* =========================================================
-     INITIALIZATION
-     ========================================================= */
+}
 
-  function init() {
+
+/* =========================================================
+   INITIALIZE APPLICATION
+========================================================= */
+
+function initApp() {
+
+    console.log(
+        "AREA BOYZ ENTERPRISE — APP 4.0 INITIALIZING"
+    );
+
+
+    /* Products */
 
     state.products =
-      generateProducts();
+        createProducts();
+
+
+    /* Functional styles */
+
+    injectFunctionalStyles();
+
+
+    /* Create modal */
+
+    createProductModal();
+
+
+    /* Navigation */
+
+    initHashRouting();
+
+    bindNavigation();
+
+    listenForHashChanges();
+
+
+    /* Header */
+
+    initAutoHideHeader();
+
+
+    /* Mobile */
+
+    initMobileMenu();
+
+
+    /* Search */
+
+    initSearch();
+
+
+    /* Shop */
+
+    initFilters();
+
+
+    /* Product actions */
+
+    initProductActions();
+
+
+    /* Cart */
+
+    initCartActions();
+
+    initCartDrawer();
+
+    renderCart();
+
+
+    /* Featured */
 
     renderFeaturedProducts();
 
     renderShopProducts();
 
-    renderCart();
 
-    setupNavigation();
+    /* Equity */
 
-    setupCategoryFilters();
+    initEquityCalculator();
 
-    setupSearch();
 
-    setupSorting();
+    /* Announcement */
 
-    setupMobileMenu();
+    initAnnouncement();
 
-    setupCart();
 
-    setupHeaderAutoHide();
+    /* Keyboard */
 
-    setupTheme();
+    initKeyboard();
 
-    setupInvestment();
 
-    setupAnnouncement();
+    /* Footer */
 
-    setupKeyboard();
+    updateYear();
 
-    setYear();
 
-    developmentInfo();
+    /* Preloader */
 
-    setTimeout(
-      finishPreloader,
-      CONFIG.preloaderDuration
+    initPreloader();
+
+
+    /* Initial page */
+
+    navigateTo(
+        state.currentPage
     );
-  }
 
-  /* =========================================================
-     START
-     ========================================================= */
 
-  if (document.readyState === "loading") {
+    console.log(
+        `Loaded ${state.products.length} Area Boyz products.`
+    );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
     document.addEventListener(
-      "DOMContentLoaded",
-      init
+        "DOMContentLoaded",
+        initApp
     );
-  } else {
-    init();
-  }
 
-})();
+} else {
+
+    initApp();
+
+   }
