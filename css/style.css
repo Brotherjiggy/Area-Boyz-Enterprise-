@@ -3878,8 +3878,9 @@ main {
     }
 
                         }
+
 /* =========================================================
-   AREA BOYZ HERO SLIDESHOW
+   AREA BOYZ — CINEMATIC HERO SLIDESHOW
    ========================================================= */
 
 .hero-slideshow {
@@ -3889,67 +3890,142 @@ main {
     min-height: 520px;
     overflow: hidden;
     border-radius: inherit;
+    background: #000;
 }
+
+/* -----------------------------------------
+   SLIDES
+----------------------------------------- */
 
 .hero-slide {
     position: absolute;
     inset: 0;
+
     width: 100%;
     height: 100%;
+
     object-fit: cover;
+
     opacity: 0;
     visibility: hidden;
-    transform: scale(1.03);
+
+    transform: scale(1.08);
+
     transition:
-        opacity 0.8s ease,
-        visibility 0.8s ease,
-        transform 5s ease;
+        opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 1.4s ease,
+        transform 7s cubic-bezier(0.22, 1, 0.36, 1);
+
+    will-change:
+        opacity,
+        transform;
 }
+
+/* -----------------------------------------
+   ACTIVE SLIDE
+----------------------------------------- */
 
 .hero-slide.active {
     opacity: 1;
     visibility: visible;
+
     transform: scale(1);
 }
 
-/* Slideshow dots */
+/* -----------------------------------------
+   DARK CINEMATIC OVERLAY
+----------------------------------------- */
+
+.hero-slideshow::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.08) 0%,
+            rgba(0, 0, 0, 0.02) 45%,
+            rgba(0, 0, 0, 0.38) 100%
+        );
+}
+
+/* -----------------------------------------
+   SLIDE DOTS
+----------------------------------------- */
 
 .hero-slide-dots {
     position: absolute;
+
     left: 50%;
-    bottom: 22px;
+    bottom: 24px;
+
     z-index: 5;
+
     display: flex;
     align-items: center;
-    gap: 8px;
+
+    gap: 9px;
+
     transform: translateX(-50%);
 }
 
+/* -----------------------------------------
+   DOT
+----------------------------------------- */
+
 .hero-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
+
     padding: 0;
+
     border: 0;
     border-radius: 50%;
+
     background: rgba(255, 255, 255, 0.45);
+
     cursor: pointer;
+
     transition:
-        width 0.3s ease,
-        background 0.3s ease,
-        transform 0.3s ease;
+        width 0.4s ease,
+        background 0.4s ease,
+        transform 0.4s ease,
+        opacity 0.4s ease;
 }
+
+/* -----------------------------------------
+   DOT HOVER
+----------------------------------------- */
 
 .hero-dot:hover {
-    transform: scale(1.2);
+    transform: scale(1.35);
+
+    background: rgba(255, 255, 255, 0.85);
 }
+
+/* -----------------------------------------
+   ACTIVE DOT
+----------------------------------------- */
 
 .hero-dot.active {
-    width: 24px;
+    width: 28px;
+
     border-radius: 20px;
+
     background: var(--yellow);
+
+    transform: scale(1);
 }
 
-/* Mobile */
+/* -----------------------------------------
+   MOBILE
+----------------------------------------- */
 
 @media (max-width: 768px) {
 
@@ -3958,7 +4034,23 @@ main {
     }
 
     .hero-slide-dots {
-        bottom: 16px;
+        bottom: 17px;
+    }
+
+}
+
+/* -----------------------------------------
+   REDUCED MOTION ACCESSIBILITY
+----------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .hero-slide {
+        transition:
+            opacity 0.3s ease,
+            visibility 0.3s ease;
+
+        transform: none;
     }
 
 }
