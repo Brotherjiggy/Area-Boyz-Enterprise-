@@ -3191,60 +3191,100 @@ function initPreloader() {
 
 }
 
-
 /* =========================================================
-   INITIALIZE APPLICATION
+   HERO SLIDESHOW ENGINE
 ========================================================= */
 
-function // =========================================================
-// HERO SLIDESHOW ENGINE
-// =========================================================
-
 function initHeroSlideshow() {
-    const slides = document.querySelectorAll(".hero-slide");
-    const dots = document.querySelectorAll(".hero-dot");
 
-    if (!slides.length) return;
+    const slides =
+        document.querySelectorAll(".hero-slide");
+
+    const dots =
+        document.querySelectorAll(".hero-dot");
+
+    if (!slides.length) {
+        console.log("Hero slideshow: no slides found.");
+        return;
+    }
 
     let currentSlide = 0;
     let slideshowTimer;
 
     function showSlide(index) {
+
         slides.forEach((slide, i) => {
-            slide.classList.toggle("active", i === index);
+
+            slide.classList.toggle(
+                "active",
+                i === index
+            );
+
         });
 
         dots.forEach((dot, i) => {
-            dot.classList.toggle("active", i === index);
+
+            dot.classList.toggle(
+                "active",
+                i === index
+            );
+
         });
 
         currentSlide = index;
+
     }
 
     function nextSlide() {
-        const next = (currentSlide + 1) % slides.length;
+
+        const next =
+            (currentSlide + 1) % slides.length;
+
         showSlide(next);
+
     }
 
     function startSlideshow() {
+
         clearInterval(slideshowTimer);
 
-        slideshowTimer = setInterval(() => {
-            nextSlide();
-        }, 5000);
+        slideshowTimer = setInterval(
+            nextSlide,
+            5000
+        );
+
     }
 
     dots.forEach((dot, index) => {
-        dot.addEventListener("click", () => {
-            showSlide(index);
-            startSlideshow();
-        });
+
+        dot.addEventListener(
+            "click",
+            () => {
+
+                showSlide(index);
+                startSlideshow();
+
+            }
+        );
+
     });
 
     showSlide(0);
+
     startSlideshow();
-       } 
-initApp() {
+
+    console.log(
+        `Hero slideshow initialized with ${slides.length} slides.`
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZE APPLICATION
+========================================================= */
+
+function initApp() {
 
     console.log(
         "AREA BOYZ ENTERPRISE — APP 4.0 INITIALIZING"
@@ -3367,11 +3407,19 @@ if (
 
     document.addEventListener(
         "DOMContentLoaded",
-        initApp
+        () => {
+
+            initHeroSlideshow();
+
+            initApp();
+
+        }
     );
 
 } else {
 
+    initHeroSlideshow();
+
     initApp();
 
-   }
+}
