@@ -308,7 +308,6 @@ function saveCart() {
 /* =========================================================
    NAVIGATION
    ========================================================= */
-
 function navigateTo(page, updateHash = true) {
     const allowedPages = [
         "home",
@@ -325,13 +324,24 @@ function navigateTo(page, updateHash = true) {
 
     state.currentPage = page;
 
+    /* Show the correct page */
     $$("[data-page-section]").forEach(section => {
-        const active = section.id === page;
+        const isActive = section.id === page;
 
-        section.classList.toggle("active", active);
-        section.hidden = !active;
+        section.classList.toggle(
+            "active-page",
+            isActive
+        );
+
+        section.classList.toggle(
+            "active",
+            isActive
+        );
+
+        section.hidden = !isActive;
     });
 
+    /* Update navigation active state */
     $$("[data-page]").forEach(link => {
         link.classList.toggle(
             "active",
@@ -339,15 +349,22 @@ function navigateTo(page, updateHash = true) {
         );
     });
 
+    /* Update URL without allowing browser anchor scrolling */
     if (updateHash) {
-        history.replaceState(null, "", `#${page}`);
+        history.pushState(
+            null,
+            "",
+            `#${page}`
+        );
     }
 
     closeMobileMenu();
     closeSearch();
 
+    /* Always return to the top of the selected page */
     window.scrollTo({
         top: 0,
+        left: 0,
         behavior: "smooth"
     });
 
