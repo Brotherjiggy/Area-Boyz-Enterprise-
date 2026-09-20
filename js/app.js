@@ -1,6 +1,7 @@
 /* =========================================================
    AREA BOYZ ENTERPRISE
-   APP.JS — VERSION 6.1
+   APP.JS — VERSION 7.0
+   COLLECTION / PRODUCT SYSTEM
    ========================================================= */
 
 "use strict";
@@ -22,8 +23,11 @@ const CONFIG = {
    HELPERS
    ========================================================= */
 
-const $ = (selector, parent = document) => parent.querySelector(selector);
-const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
+const $ = (selector, parent = document) =>
+    parent.querySelector(selector);
+
+const $$ = (selector, parent = document) =>
+    [...parent.querySelectorAll(selector)];
 
 function escapeHTML(value) {
     return String(value ?? "")
@@ -49,24 +53,17 @@ function slugify(value) {
         .replace(/^-|-$/g, "");
 }
 
-function primaryCategory(category) {
-    const map = {
-        streetwear: "streetwear",
-        hoodies: "streetwear",
-        shirts: "streetwear",
-        outerwear: "streetwear",
-        bottoms: "streetwear",
-        denim: "streetwear",
-        footwear: "footwear",
-        bags: "accessories",
-        headwear: "accessories",
-        accessories: "accessories",
-        jewelry: "accessories",
-        sets: "streetwear"
-    };
+/* =========================================================
+   COLLECTION SYSTEM
+   ========================================================= */
 
-    return map[category] || category;
-}
+const collectionNames = {
+    all: "All Products",
+    streetwear: "Streetwear",
+    handmade: "Handmade",
+    footwear: "Footwear",
+    accessories: "Accessories"
+};
 
 const categoryNames = {
     streetwear: "Streetwear",
@@ -83,6 +80,176 @@ const categoryNames = {
     sets: "Sets"
 };
 
+/*
+ * Products containing crafted / craft language are placed
+ * into the Handmade collection.
+ *
+ * They still keep their original product category.
+ * This allows one product to have:
+ *
+ * collection = handmade
+ * category   = hoodies / shirts / footwear / etc.
+ *
+ * rather than creating duplicate products.
+ */
+
+function determineCollection(name, category) {
+
+    const lowerName = name.toLowerCase();
+
+    if (
+        lowerName.includes("crafted") ||
+        lowerName.includes("craft ")
+    ) {
+        return "handmade";
+    }
+
+    if (category === "footwear") {
+        return "footwear";
+    }
+
+    if (
+        [
+            "bags",
+            "headwear",
+            "accessories",
+            "jewelry"
+        ].includes(category)
+    ) {
+        return "accessories";
+    }
+
+    return "streetwear";
+}
+
+/* =========================================================
+   PRODUCT DESCRIPTIONS
+   ========================================================= */
+
+const categoryDescriptions = {
+
+    streetwear:
+        "A versatile Area Boyz streetwear piece designed for everyday styling, movement and modern urban looks.",
+
+    hoodies:
+        "A relaxed everyday hoodie designed for comfort, layering and a clean Area Boyz streetwear silhouette.",
+
+    shirts:
+        "A contemporary shirt designed to bring an easy, polished look into everyday Area Boyz styling.",
+
+    outerwear:
+        "A statement outer layer designed for practical everyday wear while maintaining a strong urban aesthetic.",
+
+    bottoms:
+        "A relaxed contemporary bottom designed for everyday movement and easy pairing with the Area Boyz collection.",
+
+    denim:
+        "A versatile denim piece designed to combine everyday durability with a modern relaxed silhouette.",
+
+    footwear:
+        "A footwear piece designed to complement everyday Area Boyz looks with a balance of comfort and contemporary style.",
+
+    bags:
+        "An everyday carry piece designed to combine practical storage with the Area Boyz visual identity.",
+
+    headwear:
+        "A finishing accessory designed to complete casual Area Boyz outfits with an understated statement.",
+
+    accessories:
+        "An everyday accessory designed to add function and personality to the Area Boyz wardrobe.",
+
+    jewelry:
+        "A statement accessory designed to add a distinctive finishing detail to modern Area Boyz styling.",
+
+    sets:
+        "A coordinated Area Boyz set designed to create an effortless complete look."
+};
+
+function getProductDescription(name, category, collection) {
+
+    if (collection === "handmade") {
+
+        return `${name} is part of the Area Boyz Handmade collection, featuring a crafted character designed to bring individuality and detail to everyday style.`;
+    }
+
+    return categoryDescriptions[category] ||
+        `${name} is part of the Area Boyz ${collectionNames[collection] || "collection"}, designed for contemporary everyday style.`;
+}
+
+function getMaterial(category) {
+
+    const materials = {
+
+        streetwear:
+            "Selected premium cotton blend",
+
+        hoodies:
+            "Premium heavyweight cotton blend",
+
+        shirts:
+            "Selected cotton and woven materials",
+
+        outerwear:
+            "Durable technical and woven materials",
+
+        bottoms:
+            "Premium cotton and structured fabric",
+
+        denim:
+            "Durable premium denim",
+
+        footwear:
+            "Engineered upper with durable sole construction",
+
+        bags:
+            "Durable woven or synthetic construction",
+
+        headwear:
+            "Structured cotton or woven construction",
+
+        accessories:
+            "Selected durable everyday materials",
+
+        jewelry:
+            "Premium metal finish",
+
+        sets:
+            "Premium coordinated fabric construction"
+    };
+
+    return materials[category] ||
+        "Premium selected materials";
+}
+
+function getFit(category) {
+
+    if (
+        [
+            "footwear",
+            "jewelry",
+            "accessories",
+            "bags",
+            "headwear"
+        ].includes(category)
+    ) {
+        return "Designed for everyday use";
+    }
+
+    if (category === "hoodies") {
+        return "Relaxed contemporary fit";
+    }
+
+    if (category === "outerwear") {
+        return "Contemporary relaxed outerwear fit";
+    }
+
+    if (category === "bottoms" || category === "denim") {
+        return "Relaxed contemporary silhouette";
+    }
+
+    return "Modern everyday fit";
+}
+
 /* =========================================================
    PRODUCT CATALOGUE
    ========================================================= */
@@ -90,6 +257,7 @@ const categoryNames = {
 const productNames = [
 
     /* STREETWEAR */
+
     ["AB Essential Oversized Tee", "streetwear", 55],
     ["Area Motion Graphic Tee", "streetwear", 60],
     ["Evolution Heavyweight Tee", "streetwear", 68],
@@ -102,6 +270,7 @@ const productNames = [
     ["The Evolution Tee", "streetwear", 70],
 
     /* HOODIES */
+
     ["Evolution Heavyweight Hoodie", "hoodies", 125],
     ["AB Essential Pullover Hoodie", "hoodies", 110],
     ["Area Motion Zip Hoodie", "hoodies", 135],
@@ -114,6 +283,7 @@ const productNames = [
     ["Area Boyz Premium Hoodie", "hoodies", 165],
 
     /* SHIRTS */
+
     ["AB Classic Button Shirt", "shirts", 85],
     ["Area Boyz Resort Shirt", "shirts", 95],
     ["Motion Utility Shirt", "shirts", 105],
@@ -126,6 +296,7 @@ const productNames = [
     ["Intention Overshirt", "shirts", 125],
 
     /* OUTERWEAR */
+
     ["AB Utility Jacket", "outerwear", 180],
     ["Evolution Coach Jacket", "outerwear", 165],
     ["Area Motion Bomber", "outerwear", 220],
@@ -138,6 +309,7 @@ const productNames = [
     ["Intention Utility Coat", "outerwear", 260],
 
     /* BOTTOMS */
+
     ["AB Everyday Cargo", "bottoms", 95],
     ["Area Motion Track Pant", "bottoms", 105],
     ["Evolution Wide Leg Pant", "bottoms", 115],
@@ -150,6 +322,7 @@ const productNames = [
     ["Intention Pleated Pant", "bottoms", 140],
 
     /* DENIM */
+
     ["AB Classic Denim", "denim", 110],
     ["Evolution Washed Denim", "denim", 125],
     ["Area Boyz Straight Denim", "denim", 115],
@@ -162,6 +335,7 @@ const productNames = [
     ["Intention Raw Denim", "denim", 165],
 
     /* FOOTWEAR */
+
     ["AB Motion Runner", "footwear", 150],
     ["Area Boyz Street Runner", "footwear", 165],
     ["Evolution High Top", "footwear", 180],
@@ -174,6 +348,7 @@ const productNames = [
     ["Intention Platform Sneaker", "footwear", 240],
 
     /* BAGS */
+
     ["AB Everyday Tote", "bags", 75],
     ["Area Motion Crossbody", "bags", 85],
     ["Evolution Utility Bag", "bags", 105],
@@ -186,6 +361,7 @@ const productNames = [
     ["Intention Leather Bag", "bags", 180],
 
     /* HEADWEAR */
+
     ["AB Classic Cap", "headwear", 40],
     ["Area Boyz Logo Cap", "headwear", 45],
     ["Evolution Five Panel", "headwear", 48],
@@ -198,6 +374,7 @@ const productNames = [
     ["AB Premium Headwear", "headwear", 65],
 
     /* ACCESSORIES */
+
     ["AB Signature Belt", "accessories", 55],
     ["Area Boyz Utility Belt", "accessories", 65],
     ["Evolution Card Holder", "accessories", 45],
@@ -210,6 +387,7 @@ const productNames = [
     ["Intention Leather Gloves", "accessories", 85],
 
     /* JEWELRY */
+
     ["AB Core Chain", "jewelry", 65],
     ["Area Boyz Signature Chain", "jewelry", 90],
     ["Evolution Pendant", "jewelry", 85],
@@ -222,6 +400,7 @@ const productNames = [
     ["Intention Statement Ring", "jewelry", 95],
 
     /* SETS */
+
     ["AB Everyday Set", "sets", 145],
     ["Evolution Lounge Set", "sets", 175],
     ["Area Motion Tracksuit", "sets", 190],
@@ -239,46 +418,151 @@ const productNames = [
    ========================================================= */
 
 const products = productNames.map((item, index) => {
+
     const [name, category, price] = item;
-    const number = String(index + 1).padStart(3, "0");
+
+    const number =
+        String(index + 1).padStart(3, "0");
+
+    const collection =
+        determineCollection(name, category);
 
     return {
+
         id: `product-${number}`,
+
         number,
+
         name,
+
         category,
-        categoryName: categoryNames[category],
+
+        categoryName:
+            categoryNames[category],
+
+        collection,
+
+        collectionName:
+            collectionNames[collection],
+
         price,
-        image: `images/products/product-${number}.jpg`,
-        slug: slugify(name),
-        description: `${name} from the ${categoryNames[category]} collection by Area Boyz Enterprise.`,
-        material: category === "jewelry"
-            ? "Premium metal finish"
-            : category === "footwear"
-                ? "Premium engineered construction"
-                : "Premium selected materials",
-        fit: ["footwear", "jewelry", "accessories"].includes(category)
-            ? "Designed for everyday use"
-            : "Relaxed contemporary fit",
-        care: "Follow product care instructions and store appropriately."
+
+        image:
+            `images/products/product-${number}.jpg`,
+
+        slug:
+            slugify(name),
+
+        description:
+            getProductDescription(
+                name,
+                category,
+                collection
+            ),
+
+        material:
+            getMaterial(category),
+
+        fit:
+            getFit(category),
+
+        care:
+            "Follow the product care instructions and store appropriately.",
+
+        /*
+         * Future gallery support.
+         *
+         * We do NOT require these images to exist now.
+         */
+
+        gallery: [
+            `images/products/product-${number}.jpg`,
+            `images/products/product-${number}-2.jpg`,
+            `images/products/product-${number}-3.jpg`,
+            `images/products/product-${number}-4.jpg`,
+            `images/products/product-${number}-5.jpg`
+        ]
     };
 });
+
+/* =========================================================
+   COLLECTION HELPERS
+   ========================================================= */
+
+function productsInCollection(collection) {
+
+    if (collection === "all") {
+        return [...products];
+    }
+
+    return products.filter(product =>
+        product.collection === collection
+    );
+}
+
+function collectionCount(collection) {
+    return productsInCollection(collection).length;
+}
+
+function collectionDescription(collection) {
+
+    const descriptions = {
+
+        all:
+            "Explore the complete Area Boyz Enterprise catalogue.",
+
+        streetwear:
+            "Modern everyday pieces built around the Area Boyz streetwear identity.",
+
+        handmade:
+            "Crafted pieces with distinctive character, detail and individuality.",
+
+        footwear:
+            "Sneakers, trainers and footwear designed to complete your everyday look.",
+
+        accessories:
+            "Bags, headwear, jewelry and everyday finishing pieces."
+    };
+
+    return descriptions[collection] ||
+        "Explore the Area Boyz collection.";
+}
 
 /* =========================================================
    STATE
    ========================================================= */
 
 const state = {
-    currentPage: CONFIG.defaultPage,
-    products: [...products],
-    filteredProducts: [...products],
-    activeFilter: "all",
-    searchTerm: "",
-    sort: "featured",
-    cart: loadCart(),
-    modalProduct: null,
-    galleryImages: [],
-    galleryIndex: 0
+
+    currentPage:
+        CONFIG.defaultPage,
+
+    products:
+        [...products],
+
+    filteredProducts:
+        [...products],
+
+    activeFilter:
+        "all",
+
+    searchTerm:
+        "",
+
+    sort:
+        "featured",
+
+    cart:
+        loadCart(),
+
+    modalProduct:
+        null,
+
+    galleryImages:
+        [],
+
+    galleryIndex:
+        0
 };
 
 /* =========================================================
@@ -286,29 +570,61 @@ const state = {
    ========================================================= */
 
 function loadCart() {
-    try {
-        const saved = localStorage.getItem(CONFIG.storageKey);
-        const parsed = saved ? JSON.parse(saved) : [];
 
-        return Array.isArray(parsed) ? parsed : [];
+    try {
+
+        const saved =
+            localStorage.getItem(
+                CONFIG.storageKey
+            );
+
+        const parsed =
+            saved
+                ? JSON.parse(saved)
+                : [];
+
+        return Array.isArray(parsed)
+            ? parsed
+            : [];
+
     } catch (error) {
-        console.warn("Unable to load cart:", error);
+
+        console.warn(
+            "Unable to load cart:",
+            error
+        );
+
         return [];
     }
 }
 
 function saveCart() {
+
     try {
-        localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.cart));
+
+        localStorage.setItem(
+            CONFIG.storageKey,
+            JSON.stringify(state.cart)
+        );
+
     } catch (error) {
-        console.warn("Unable to save cart:", error);
+
+        console.warn(
+            "Unable to save cart:",
+            error
+        );
     }
 }
 
 /* =========================================================
    NAVIGATION
    ========================================================= */
-function navigateTo(page, updateHash = true) {
+
+function navigateTo(
+    page,
+    updateHash = true
+) {
+
     const allowedPages = [
         "home",
         "shop",
@@ -318,39 +634,49 @@ function navigateTo(page, updateHash = true) {
         "contact"
     ];
 
-    if (!allowedPages.includes(page)) {
-        page = CONFIG.defaultPage;
+    if (
+        !allowedPages.includes(page)
+    ) {
+        page =
+            CONFIG.defaultPage;
     }
 
-    state.currentPage = page;
+    state.currentPage =
+        page;
 
-    /* Show the correct page */
-    $$("[data-page-section]").forEach(section => {
-        const isActive = section.id === page;
+    $$("[data-page-section]")
+        .forEach(section => {
 
-        section.classList.toggle(
-            "active-page",
-            isActive
-        );
+            const isActive =
+                section.id === page;
 
-        section.classList.toggle(
-            "active",
-            isActive
-        );
+            section.classList.toggle(
+                "active-page",
+                isActive
+            );
 
-        section.hidden = !isActive;
-    });
+            section.classList.toggle(
+                "active",
+                isActive
+            );
 
-    /* Update navigation active state */
-    $$("[data-page]").forEach(link => {
-        link.classList.toggle(
-            "active",
-            link.getAttribute("data-page") === page
-        );
-    });
+            section.hidden =
+                !isActive;
+        });
 
-    /* Update URL without allowing browser anchor scrolling */
+    $$("[data-page]")
+        .forEach(link => {
+
+            link.classList.toggle(
+                "active",
+                link.getAttribute(
+                    "data-page"
+                ) === page
+            );
+        });
+
     if (updateHash) {
+
         history.pushState(
             null,
             "",
@@ -361,7 +687,6 @@ function navigateTo(page, updateHash = true) {
     closeMobileMenu();
     closeSearch();
 
-    /* Always return to the top of the selected page */
     window.scrollTo({
         top: 0,
         left: 0,
@@ -371,30 +696,60 @@ function navigateTo(page, updateHash = true) {
     if (page === "shop") {
         renderShop();
     }
+
+    if (page === "collections") {
+        renderCollectionSummary();
+    }
 }
 
 function initNavigation() {
-    $$("[data-page]").forEach(link => {
-        link.addEventListener("click", event => {
-            event.preventDefault();
 
-            const page = link.getAttribute("data-page");
+    $$("[data-page]")
+        .forEach(link => {
 
-            if (page) {
-                navigateTo(page);
-            }
+            link.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    const page =
+                        link.getAttribute(
+                            "data-page"
+                        );
+
+                    if (page) {
+                        navigateTo(page);
+                    }
+                }
+            );
         });
-    });
 
-    window.addEventListener("hashchange", () => {
-        const page = location.hash.replace("#", "") || "home";
-        navigateTo(page, false);
-    });
+    window.addEventListener(
+        "hashchange",
+        () => {
+
+            const page =
+                location.hash
+                    .replace("#", "") ||
+                "home";
+
+            navigateTo(
+                page,
+                false
+            );
+        }
+    );
 
     const initialPage =
-        location.hash.replace("#", "") || CONFIG.defaultPage;
+        location.hash
+            .replace("#", "") ||
+        CONFIG.defaultPage;
 
-    navigateTo(initialPage, false);
+    navigateTo(
+        initialPage,
+        false
+    );
 }
 
 /* =========================================================
@@ -402,65 +757,123 @@ function initNavigation() {
    ========================================================= */
 
 function openMobileMenu() {
-    const menu = $("#mobileMenu");
-    const overlay = $("#menuOverlay");
+
+    const menu =
+        $("#mobileMenu");
+
+    const overlay =
+        $("#menuOverlay");
 
     if (!menu) return;
 
-    menu.classList.add("active", "open");
+    menu.classList.add(
+        "active",
+        "open"
+    );
 
     if (overlay) {
-        overlay.classList.add("active", "open");
+
+        overlay.classList.add(
+            "active",
+            "open"
+        );
     }
 
-    document.body.classList.add("menu-open");
+    document.body.classList.add(
+        "menu-open"
+    );
 }
 
 function closeMobileMenu() {
-    const menu = $("#mobileMenu");
-    const overlay = $("#menuOverlay");
+
+    const menu =
+        $("#mobileMenu");
+
+    const overlay =
+        $("#menuOverlay");
 
     if (menu) {
-        menu.classList.remove("active", "open");
+
+        menu.classList.remove(
+            "active",
+            "open"
+        );
     }
 
     if (overlay) {
-        overlay.classList.remove("active", "open");
+
+        overlay.classList.remove(
+            "active",
+            "open"
+        );
     }
 
-    document.body.classList.remove("menu-open");
+    document.body.classList.remove(
+        "menu-open"
+    );
 }
 
 function initMobileMenu() {
-    const toggle = $("#menuToggle");
-    const close = $("#mobileMenuClose");
-    const overlay = $("#menuOverlay");
+
+    const toggle =
+        $("#menuToggle");
+
+    const close =
+        $("#mobileMenuClose");
+
+    const overlay =
+        $("#menuOverlay");
 
     if (toggle) {
-        toggle.addEventListener("click", event => {
-            event.preventDefault();
 
-            const menu = $("#mobileMenu");
+        toggle.addEventListener(
+            "click",
+            event => {
 
-            if (menu && menu.classList.contains("active")) {
-                closeMobileMenu();
-            } else {
-                openMobileMenu();
+                event.preventDefault();
+
+                const menu =
+                    $("#mobileMenu");
+
+                if (
+                    menu &&
+                    menu.classList.contains(
+                        "active"
+                    )
+                ) {
+
+                    closeMobileMenu();
+
+                } else {
+
+                    openMobileMenu();
+                }
             }
-        });
+        );
     }
 
     if (close) {
-        close.addEventListener("click", closeMobileMenu);
+        close.addEventListener(
+            "click",
+            closeMobileMenu
+        );
     }
 
     if (overlay) {
-        overlay.addEventListener("click", closeMobileMenu);
+        overlay.addEventListener(
+            "click",
+            closeMobileMenu
+        );
     }
 
-    $$("#mobileMenu [data-page]").forEach(link => {
-        link.addEventListener("click", closeMobileMenu);
-    });
+    $$("#mobileMenu [data-page]")
+        .forEach(link => {
+
+            link.addEventListener(
+                "click",
+                closeMobileMenu
+            );
+        });
 }
 
 /* =========================================================
@@ -468,35 +881,65 @@ function initMobileMenu() {
    ========================================================= */
 
 function initHeader() {
-    const header = $("#siteHeader");
+
+    const header =
+        $("#siteHeader");
 
     if (!header) return;
 
-    let lastScroll = window.scrollY;
-    let ticking = false;
+    let lastScroll =
+        window.scrollY;
 
-    window.addEventListener("scroll", () => {
-        if (ticking) return;
+    let ticking =
+        false;
 
-        window.requestAnimationFrame(() => {
-            const current = window.scrollY;
+    window.addEventListener(
+        "scroll",
+        () => {
 
-            if (current > 100 && current > lastScroll) {
-                header.classList.add("header-hidden");
-            } else {
-                header.classList.remove("header-hidden");
-            }
+            if (ticking) return;
 
-            if (current <= 30) {
-                header.classList.remove("header-hidden");
-            }
+            window.requestAnimationFrame(
+                () => {
 
-            lastScroll = current;
-            ticking = false;
-        });
+                    const current =
+                        window.scrollY;
 
-        ticking = true;
-    });
+                    if (
+                        current > 100 &&
+                        current > lastScroll
+                    ) {
+
+                        header.classList.add(
+                            "header-hidden"
+                        );
+
+                    } else {
+
+                        header.classList.remove(
+                            "header-hidden"
+                        );
+                    }
+
+                    if (current <= 30) {
+
+                        header.classList.remove(
+                            "header-hidden"
+                        );
+                    }
+
+                    lastScroll =
+                        current;
+
+                    ticking =
+                        false;
+                }
+            );
+
+            ticking =
+                true;
+        }
+    );
 }
 
 /* =========================================================
@@ -504,60 +947,110 @@ function initHeader() {
    ========================================================= */
 
 function openSearch() {
-    const panel = $("#searchPanel");
+
+    const panel =
+        $("#searchPanel");
 
     if (!panel) return;
 
-    panel.classList.add("active", "open");
+    panel.classList.add(
+        "active",
+        "open"
+    );
 
-    const input = $("#productSearch");
+    const input =
+        $("#productSearch");
 
     if (input) {
-        setTimeout(() => input.focus(), 150);
+
+        setTimeout(
+            () => input.focus(),
+            150
+        );
     }
 }
 
 function closeSearch() {
-    const panel = $("#searchPanel");
+
+    const panel =
+        $("#searchPanel");
 
     if (panel) {
-        panel.classList.remove("active", "open");
+
+        panel.classList.remove(
+            "active",
+            "open"
+        );
     }
 }
 
 function initSearch() {
-    const toggle = $("#searchToggle");
-    const close = $("#closeSearch");
-    const input = $("#productSearch");
+
+    const toggle =
+        $("#searchToggle");
+
+    const close =
+        $("#closeSearch");
+
+    const input =
+        $("#productSearch");
 
     if (toggle) {
-        toggle.addEventListener("click", event => {
-            event.preventDefault();
-            openSearch();
-        });
+
+        toggle.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                openSearch();
+            }
+        );
     }
 
     if (close) {
-        close.addEventListener("click", closeSearch);
+
+        close.addEventListener(
+            "click",
+            closeSearch
+        );
     }
 
     if (input) {
-        input.addEventListener("input", event => {
-            state.searchTerm = event.target.value.trim().toLowerCase();
 
-            if (state.searchTerm) {
-                navigateTo("shop");
+        input.addEventListener(
+            "input",
+            event => {
+
+                state.searchTerm =
+                    event.target.value
+                        .trim()
+                        .toLowerCase();
+
+                if (
+                    state.searchTerm
+                ) {
+                    navigateTo("shop");
+                }
+
+                renderShop();
             }
+        );
 
-            renderShop();
-        });
+        input.addEventListener(
+            "keydown",
+            event => {
 
-        input.addEventListener("keydown", event => {
-            if (event.key === "Escape") {
-                closeSearch();
-                input.blur();
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    closeSearch();
+                    input.blur();
+                }
             }
-        });
+        );
     }
 }
 
@@ -566,104 +1059,188 @@ function initSearch() {
    ========================================================= */
 
 function initFilters() {
-    $$(".filter-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            const filter = button.dataset.filter || "all";
 
-            state.activeFilter = filter;
+    $$(".filter-btn")
+        .forEach(button => {
 
-            $$(".filter-btn").forEach(item => {
-                item.classList.toggle(
-                    "active",
-                    item === button
-                );
-            });
+            button.addEventListener(
+                "click",
+                () => {
 
-            renderShop();
+                    const filter =
+                        button.dataset.filter ||
+                        "all";
+
+                    state.activeFilter =
+                        filter;
+
+                    $$(".filter-btn")
+                        .forEach(item => {
+
+                            item.classList.toggle(
+                                "active",
+                                item === button
+                            );
+                        });
+
+                    renderShop();
+                }
+            );
         });
-    });
 
-    $$("[data-category]").forEach(card => {
-        card.addEventListener("click", () => {
-            const category = card.dataset.category;
+    $$("[data-category]")
+        .forEach(card => {
 
-            if (!category) return;
+            card.addEventListener(
+                "click",
+                () => {
 
-            state.activeFilter = category;
-            navigateTo("shop");
+                    const category =
+                        card.dataset.category;
 
-            setTimeout(() => {
-                $$(".filter-btn").forEach(button => {
-                    button.classList.toggle(
-                        "active",
-                        button.dataset.filter === category
+                    if (!category) return;
+
+                    state.activeFilter =
+                        category;
+
+                    navigateTo("shop");
+
+                    setTimeout(
+                        () => {
+
+                            $$(".filter-btn")
+                                .forEach(button => {
+
+                                    button.classList.toggle(
+                                        "active",
+                                        button.dataset.filter ===
+                                        category
+                                    );
+                                });
+
+                            renderShop();
+
+                        },
+                        50
                     );
-                });
-
-                renderShop();
-            }, 50);
+                }
+            );
         });
-    });
 
-    const sort = $("#sortProducts");
+    const sort =
+        $("#sortProducts");
 
     if (sort) {
-        sort.addEventListener("change", event => {
-            state.sort = event.target.value;
-            renderShop();
-        });
+
+        sort.addEventListener(
+            "change",
+            event => {
+
+                state.sort =
+                    event.target.value;
+
+                renderShop();
+            }
+        );
     }
 }
 
 /* =========================================================
-   PRODUCT FILTERING / SORTING
+   FILTERING / SORTING
    ========================================================= */
 
 function getFilteredProducts() {
-    let result = [...products];
 
-    if (state.activeFilter !== "all") {
-        result = result.filter(product =>
-            product.category === state.activeFilter ||
-            primaryCategory(product.category) === state.activeFilter
-        );
+    let result =
+        [...products];
+
+    /*
+     * COLLECTION FILTER
+     */
+
+    if (
+        state.activeFilter !==
+        "all"
+    ) {
+
+        result =
+            result.filter(
+                product =>
+                    product.collection ===
+                    state.activeFilter
+            );
     }
+
+    /*
+     * SEARCH
+     */
 
     if (state.searchTerm) {
-        result = result.filter(product => {
-            const searchable = [
-                product.name,
-                product.category,
-                product.categoryName,
-                product.description
-            ]
-                .join(" ")
-                .toLowerCase();
 
-            return searchable.includes(state.searchTerm);
-        });
+        result =
+            result.filter(
+                product => {
+
+                    const searchable = [
+                        product.name,
+                        product.category,
+                        product.categoryName,
+                        product.collection,
+                        product.collectionName,
+                        product.description
+                    ]
+                        .join(" ")
+                        .toLowerCase();
+
+                    return searchable.includes(
+                        state.searchTerm
+                    );
+                }
+            );
     }
 
+    /*
+     * SORT
+     */
+
     switch (state.sort) {
+
         case "price-low":
         case "price-asc":
-            result.sort((a, b) => a.price - b.price);
+
+            result.sort(
+                (a, b) =>
+                    a.price - b.price
+            );
+
             break;
 
         case "price-high":
         case "price-desc":
-            result.sort((a, b) => b.price - a.price);
+
+            result.sort(
+                (a, b) =>
+                    b.price - a.price
+            );
+
             break;
 
         case "name":
         case "name-asc":
-            result.sort((a, b) =>
-                a.name.localeCompare(b.name)
+
+            result.sort(
+                (a, b) =>
+                    a.name.localeCompare(
+                        b.name
+                    )
             );
+
             break;
 
         case "newest":
+
             result.reverse();
+
             break;
 
         default:
@@ -678,38 +1255,70 @@ function getFilteredProducts() {
    ========================================================= */
 
 function productImage(product) {
+
     return product.image;
 }
 
 function imageExists(url) {
-    return new Promise(resolve => {
-        const img = new Image();
 
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
+    return new Promise(
+        resolve => {
 
-        img.src = url;
-    });
+            const img =
+                new Image();
+
+            img.onload =
+                () => resolve(true);
+
+            img.onerror =
+                () => resolve(false);
+
+            img.src =
+                url;
+        }
+    );
 }
 
-function fallbackImageHTML(product, extraClass = "") {
+function fallbackImageHTML(
+    product,
+    extraClass = ""
+) {
+
     return `
-        <div class="product-image-placeholder ${extraClass}">
+        <div
+            class="product-image-placeholder ${extraClass}"
+        >
             <span>AREA BOYZ</span>
-            <small>${escapeHTML(product.categoryName)}</small>
+            <small>
+                ${escapeHTML(
+                    product.collectionName
+                )}
+            </small>
         </div>
     `;
 }
 
-function createProductImage(product, extraClass = "") {
+function createProductImage(
+    product,
+    extraClass = ""
+) {
+
     return `
         <img
             class="product-image ${extraClass}"
-            src="${escapeHTML(productImage(product))}"
-            alt="${escapeHTML(product.name)}"
+            src="${escapeHTML(
+                productImage(product)
+            )}"
+            alt="${escapeHTML(
+                product.name
+            )}"
             loading="lazy"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+            onerror="
+                this.style.display='none';
+                this.nextElementSibling.style.display='flex';
+            "
         >
+
         ${fallbackImageHTML(product)}
     `;
 }
@@ -719,25 +1328,39 @@ function createProductImage(product, extraClass = "") {
    ========================================================= */
 
 function productCard(product) {
+
     return `
-        <article class="product-card" data-product-id="${product.id}">
+        <article
+            class="product-card"
+            data-product-id="${product.id}"
+        >
 
             <button
                 class="product-card-image"
                 type="button"
                 data-product="${product.id}"
-                aria-label="View ${escapeHTML(product.name)}"
+                aria-label="View ${escapeHTML(
+                    product.name
+                )}"
             >
+
                 ${createProductImage(product)}
+
             </button>
 
             <div class="product-card-info">
 
                 <span class="product-category">
-                    ${escapeHTML(product.categoryName)}
+                    ${escapeHTML(
+                        product.categoryName
+                    )}
                 </span>
 
-                <h3>${escapeHTML(product.name)}</h3>
+                <h3>
+                    ${escapeHTML(
+                        product.name
+                    )}
+                </h3>
 
                 <p class="product-price">
                     ${money(product.price)}
@@ -764,6 +1387,7 @@ function productCard(product) {
                 </div>
 
             </div>
+
         </article>
     `;
 }
@@ -773,17 +1397,61 @@ function productCard(product) {
    ========================================================= */
 
 function renderFeatured() {
-    const container = $("#featuredProducts");
+
+    const container =
+        $("#featuredProducts");
 
     if (!container) return;
 
-    const featured = products.slice(0, 8);
+    const featured =
+        products.slice(0, 8);
 
-    container.innerHTML = featured
-        .map(productCard)
-        .join("");
+    container.innerHTML =
+        featured
+            .map(productCard)
+            .join("");
 
     bindProductActions(container);
+}
+
+/* =========================================================
+   SHOP HEADER INFORMATION
+   ========================================================= */
+
+function updateShopCollectionInfo() {
+
+    const title =
+        $("#shopCollectionTitle");
+
+    const description =
+        $("#shopCollectionDescription");
+
+    const count =
+        $("#shopProductCount");
+
+    const collection =
+        state.activeFilter;
+
+    if (title) {
+
+        title.textContent =
+            collectionNames[collection] ||
+            "All Products";
+    }
+
+    if (description) {
+
+        description.textContent =
+            collectionDescription(
+                collection
+            );
+    }
+
+    if (count) {
+
+        count.textContent =
+            `${state.filteredProducts.length} products`;
+    }
 }
 
 /* =========================================================
@@ -791,19 +1459,33 @@ function renderFeatured() {
    ========================================================= */
 
 function renderShop() {
-    const container = $("#shopProducts");
+
+    const container =
+        $("#shopProducts");
 
     if (!container) return;
 
-    state.filteredProducts = getFilteredProducts();
+    state.filteredProducts =
+        getFilteredProducts();
 
-    if (!state.filteredProducts.length) {
+    updateShopCollectionInfo();
+
+    if (
+        !state.filteredProducts.length
+    ) {
+
         container.innerHTML = `
             <div class="empty-products">
-                <h3>No products found</h3>
+
+                <h3>
+                    No products found
+                </h3>
+
                 <p>
-                    Try another search term or choose another category.
+                    Try another search term
+                    or choose another collection.
                 </p>
+
                 <button
                     class="btn"
                     type="button"
@@ -811,65 +1493,239 @@ function renderShop() {
                 >
                     View All Products
                 </button>
+
             </div>
         `;
 
-        const clear = $("#clearProductSearch");
+        const clear =
+            $("#clearProductSearch");
 
         if (clear) {
-            clear.addEventListener("click", () => {
-                state.searchTerm = "";
-                state.activeFilter = "all";
 
-                const input = $("#productSearch");
+            clear.addEventListener(
+                "click",
+                () => {
 
-                if (input) input.value = "";
+                    state.searchTerm =
+                        "";
 
-                $$(".filter-btn").forEach(button => {
-                    button.classList.toggle(
-                        "active",
-                        button.dataset.filter === "all"
-                    );
-                });
+                    state.activeFilter =
+                        "all";
 
-                renderShop();
-            });
+                    const input =
+                        $("#productSearch");
+
+                    if (input) {
+                        input.value = "";
+                    }
+
+                    $$(".filter-btn")
+                        .forEach(button => {
+
+                            button.classList.toggle(
+                                "active",
+                                button.dataset.filter ===
+                                "all"
+                            );
+                        });
+
+                    renderShop();
+                }
+            );
         }
 
         return;
     }
 
-    container.innerHTML = state.filteredProducts
-        .map(productCard)
-        .join("");
+    container.innerHTML =
+        state.filteredProducts
+            .map(productCard)
+            .join("");
 
     bindProductActions(container);
+}
+
+/* =========================================================
+   COLLECTION SUMMARY
+   ========================================================= */
+
+function renderCollectionSummary() {
+
+    /*
+     * This function looks for a collection container.
+     *
+     * If the current HTML doesn't have one yet,
+     * nothing breaks.
+     */
+
+    const container =
+        $("#collectionProducts");
+
+    if (!container) return;
+
+    const collections = [
+        "streetwear",
+        "handmade",
+        "footwear",
+        "accessories"
+    ];
+
+    container.innerHTML =
+        collections
+            .map(collection => {
+
+                const collectionProducts =
+                    productsInCollection(
+                        collection
+                    );
+
+                const preview =
+                    collectionProducts
+                        .slice(0, 4);
+
+                return `
+                    <section
+                        class="collection-block"
+                        data-collection="${collection}"
+                    >
+
+                        <div class="collection-block-heading">
+
+                            <div>
+
+                                <span>
+                                    ${escapeHTML(
+                                        collectionNames[
+                                            collection
+                                        ]
+                                    )}
+                                </span>
+
+                                <h2>
+                                    ${escapeHTML(
+                                        collectionNames[
+                                            collection
+                                        ]
+                                    )}
+                                </h2>
+
+                                <p>
+                                    ${escapeHTML(
+                                        collectionDescription(
+                                            collection
+                                        )
+                                    )}
+                                </p>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn"
+                                data-open-collection="${collection}"
+                            >
+                                Explore Collection
+                            </button>
+
+                        </div>
+
+                        <div class="collection-preview-grid">
+
+                            ${preview
+                                .map(productCard)
+                                .join("")}
+
+                        </div>
+
+                    </section>
+                `;
+            })
+            .join("");
+
+    bindProductActions(container);
+
+    $$(
+        "[data-open-collection]",
+        container
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                state.activeFilter =
+                    button.dataset.openCollection;
+
+                navigateTo("shop");
+
+                setTimeout(
+                    () => {
+
+                        $$(".filter-btn")
+                            .forEach(filterButton => {
+
+                                filterButton.classList.toggle(
+                                    "active",
+                                    filterButton.dataset.filter ===
+                                    state.activeFilter
+                                );
+                            });
+
+                        renderShop();
+
+                    },
+                    50
+                );
+            }
+        );
+    });
 }
 
 /* =========================================================
    PRODUCT ACTIONS
    ========================================================= */
 
-function bindProductActions(parent = document) {
+function bindProductActions(
+    parent = document
+) {
 
-    $$("[data-product]", parent).forEach(button => {
-        button.addEventListener("click", event => {
-            event.preventDefault();
+    $$(
+        "[data-product]",
+        parent
+    ).forEach(button => {
 
-            const id = button.dataset.product;
-            openProductModal(id);
-        });
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                const id =
+                    button.dataset.product;
+
+                openProductModal(id);
+            }
+        );
     });
 
-    $$("[data-add-cart]", parent).forEach(button => {
-        button.addEventListener("click", event => {
-            event.preventDefault();
-            event.stopPropagation();
+    $$(
+        "[data-add-cart]",
+        parent
+    ).forEach(button => {
 
-            const id = button.dataset.addCart;
+        button.addEventListener(
+            "click",
+            event => {
 
-            addToCart(id, 1);
-        });
+                event.preventDefault();
+                event.stopPropagation();
+
+                const id =
+                    button.dataset.addCart;
+
+                addToCart(id, 1);
+            }
+        );
     });
 }
 
@@ -878,17 +1734,30 @@ function bindProductActions(parent = document) {
    ========================================================= */
 
 function createModal() {
+
     if ($("#productModal")) return;
 
-    const modal = document.createElement("div");
+    const modal =
+        document.createElement("div");
 
-    modal.id = "productModal";
-    modal.className = "product-modal";
+    modal.id =
+        "productModal";
+
+    modal.className =
+        "product-modal";
 
     modal.innerHTML = `
-        <div class="product-modal-backdrop" data-close-modal></div>
 
-        <div class="product-modal-dialog" role="dialog" aria-modal="true">
+        <div
+            class="product-modal-backdrop"
+            data-close-modal
+        ></div>
+
+        <div
+            class="product-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+        >
 
             <button
                 class="product-modal-close"
@@ -904,76 +1773,125 @@ function createModal() {
         </div>
     `;
 
-    document.body.appendChild(modal);
+    document.body.appendChild(
+        modal
+    );
 
-    $$("[data-close-modal]", modal).forEach(button => {
-        button.addEventListener("click", closeProductModal);
+    $$(
+        "[data-close-modal]",
+        modal
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            closeProductModal
+        );
     });
 
-    modal.addEventListener("click", event => {
-        const add = event.target.closest("[data-modal-add]");
+    modal.addEventListener(
+        "click",
+        event => {
 
-        if (add) {
-            addToCart(add.dataset.modalAdd, 1);
+            const add =
+                event.target.closest(
+                    "[data-modal-add]"
+                );
+
+            if (add) {
+
+                addToCart(
+                    add.dataset.modalAdd,
+                    1
+                );
+            }
+
+            const prev =
+                event.target.closest(
+                    "[data-gallery-prev]"
+                );
+
+            const next =
+                event.target.closest(
+                    "[data-gallery-next]"
+                );
+
+            if (prev) {
+                changeGallery(-1);
+            }
+
+            if (next) {
+                changeGallery(1);
+            }
         }
-
-        const prev = event.target.closest("[data-gallery-prev]");
-        const next = event.target.closest("[data-gallery-next]");
-
-        if (prev) {
-            changeGallery(-1);
-        }
-
-        if (next) {
-            changeGallery(1);
-        }
-    });
+    );
 }
 
+/* =========================================================
+   PRODUCT GALLERY
+   ========================================================= */
+
 async function getGallery(product) {
+
     const images = [];
 
-    const base = `images/products/product-${product.number}`;
+    for (
+        const image of product.gallery
+    ) {
 
-    const possible = [
-        `${base}.jpg`,
-        `${base}-2.jpg`,
-        `${base}-3.jpg`,
-        `${base}-4.jpg`,
-        `${base}-5.jpg`
-    ];
+        if (
+            await imageExists(image)
+        ) {
 
-    for (const image of possible) {
-        if (await imageExists(image)) {
             images.push(image);
         }
     }
 
     if (!images.length) {
-        images.push(product.image);
+
+        images.push(
+            product.image
+        );
     }
 
     return images;
 }
 
 async function openProductModal(id) {
-    const product = products.find(item => item.id === id);
+
+    const product =
+        products.find(
+            item => item.id === id
+        );
 
     if (!product) return;
 
     createModal();
 
-    const modal = $("#productModal");
-    const content = $("#productModalContent");
+    const modal =
+        $("#productModal");
+
+    const content =
+        $("#productModalContent");
 
     if (!modal || !content) return;
 
-    state.modalProduct = product;
-    state.galleryImages = [];
-    state.galleryIndex = 0;
+    state.modalProduct =
+        product;
 
-    modal.classList.add("active", "open");
-    document.body.classList.add("modal-open");
+    state.galleryImages =
+        [];
+
+    state.galleryIndex =
+        0;
+
+    modal.classList.add(
+        "active",
+        "open"
+    );
+
+    document.body.classList.add(
+        "modal-open"
+    );
 
     content.innerHTML = `
         <div class="product-loading">
@@ -981,7 +1899,8 @@ async function openProductModal(id) {
         </div>
     `;
 
-    state.galleryImages = await getGallery(product);
+    state.galleryImages =
+        await getGallery(product);
 
     renderProductModal();
 
@@ -993,32 +1912,57 @@ async function openProductModal(id) {
 }
 
 function renderProductModal() {
-    const product = state.modalProduct;
-    const content = $("#productModalContent");
 
-    if (!product || !content) return;
+    const product =
+        state.modalProduct;
+
+    const content =
+        $("#productModalContent");
+
+    if (!product || !content)
+        return;
 
     const currentImage =
-        state.galleryImages[state.galleryIndex] ||
+        state.galleryImages[
+            state.galleryIndex
+        ] ||
         product.image;
 
-    const thumbnails = state.galleryImages
-        .map((image, index) => `
-            <button
-                class="gallery-thumb ${index === state.galleryIndex ? "active" : ""}"
-                type="button"
-                data-gallery-index="${index}"
-            >
-                <img
-                    src="${escapeHTML(image)}"
-                    alt="${escapeHTML(product.name)} ${index + 1}"
-                    onerror="this.style.display='none'"
-                >
-            </button>
-        `)
-        .join("");
+    const thumbnails =
+        state.galleryImages
+            .map(
+                (image, index) => `
+
+                    <button
+                        class="gallery-thumb ${
+                            index ===
+                            state.galleryIndex
+                                ? "active"
+                                : ""
+                        }"
+                        type="button"
+                        data-gallery-index="${index}"
+                    >
+
+                        <img
+                            src="${escapeHTML(
+                                image
+                            )}"
+                            alt="${escapeHTML(
+                                product.name
+                            )} ${index + 1}"
+                            onerror="
+                                this.style.display='none'
+                            "
+                        >
+
+                    </button>
+                `
+            )
+            .join("");
 
     content.innerHTML = `
+
         <div class="product-detail">
 
             <div class="product-gallery">
@@ -1026,15 +1970,23 @@ function renderProductModal() {
                 <div class="gallery-main">
 
                     <img
-                        src="${escapeHTML(currentImage)}"
-                        alt="${escapeHTML(product.name)}"
+                        src="${escapeHTML(
+                            currentImage
+                        )}"
+                        alt="${escapeHTML(
+                            product.name
+                        )}"
                         id="galleryMainImage"
-                        onerror="this.style.display='none'"
+                        onerror="
+                            this.style.display='none'
+                        "
                     >
 
                     ${
-                        state.galleryImages.length > 1
+                        state.galleryImages.length >
+                        1
                             ? `
+
                                 <button
                                     class="gallery-arrow gallery-prev"
                                     type="button"
@@ -1052,6 +2004,7 @@ function renderProductModal() {
                                 >
                                     &#10095;
                                 </button>
+
                             `
                             : ""
                     }
@@ -1059,11 +2012,14 @@ function renderProductModal() {
                 </div>
 
                 ${
-                    state.galleryImages.length > 1
+                    state.galleryImages.length >
+                    1
                         ? `
+
                             <div class="gallery-thumbnails">
                                 ${thumbnails}
                             </div>
+
                         `
                         : ""
                 }
@@ -1073,34 +2029,93 @@ function renderProductModal() {
             <div class="product-detail-info">
 
                 <span class="product-category">
-                    ${escapeHTML(product.categoryName)}
+                    ${escapeHTML(
+                        product.collectionName
+                    )}
+                    ·
+                    ${escapeHTML(
+                        product.categoryName
+                    )}
                 </span>
 
-                <h2>${escapeHTML(product.name)}</h2>
+                <h2>
+                    ${escapeHTML(
+                        product.name
+                    )}
+                </h2>
 
                 <div class="product-detail-price">
-                    ${money(product.price)}
+                    ${money(
+                        product.price
+                    )}
                 </div>
 
                 <p class="product-description">
-                    ${escapeHTML(product.description)}
+                    ${escapeHTML(
+                        product.description
+                    )}
                 </p>
 
                 <div class="product-specs">
 
                     <div>
-                        <strong>Material</strong>
-                        <span>${escapeHTML(product.material)}</span>
+                        <strong>
+                            Collection
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                product.collectionName
+                            )}
+                        </span>
                     </div>
 
                     <div>
-                        <strong>Fit</strong>
-                        <span>${escapeHTML(product.fit)}</span>
+                        <strong>
+                            Category
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                product.categoryName
+                            )}
+                        </span>
                     </div>
 
                     <div>
-                        <strong>Care</strong>
-                        <span>${escapeHTML(product.care)}</span>
+                        <strong>
+                            Material
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                product.material
+                            )}
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Fit
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                product.fit
+                            )}
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Care
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                product.care
+                            )}
+                        </span>
                     </div>
 
                 </div>
@@ -1118,46 +2133,89 @@ function renderProductModal() {
         </div>
     `;
 
-    $$("[data-gallery-index]", content).forEach(button => {
-        button.addEventListener("click", () => {
-            state.galleryIndex =
-                Number(button.dataset.galleryIndex);
+    $$(
+        "[data-gallery-index]",
+        content
+    ).forEach(button => {
 
-            renderProductModal();
-        });
+        button.addEventListener(
+            "click",
+            () => {
+
+                state.galleryIndex =
+                    Number(
+                        button.dataset.galleryIndex
+                    );
+
+                renderProductModal();
+            }
+        );
     });
 }
 
-function changeGallery(direction) {
-    if (state.galleryImages.length <= 1) return;
+function changeGallery(
+    direction
+) {
 
-    state.galleryIndex += direction;
-
-    if (state.galleryIndex < 0) {
-        state.galleryIndex =
-            state.galleryImages.length - 1;
+    if (
+        state.galleryImages.length <=
+        1
+    ) {
+        return;
     }
 
-    if (state.galleryIndex >= state.galleryImages.length) {
-        state.galleryIndex = 0;
+    state.galleryIndex +=
+        direction;
+
+    if (
+        state.galleryIndex < 0
+    ) {
+
+        state.galleryIndex =
+            state.galleryImages.length -
+            1;
+    }
+
+    if (
+        state.galleryIndex >=
+        state.galleryImages.length
+    ) {
+
+        state.galleryIndex =
+            0;
     }
 
     renderProductModal();
 }
 
 function closeProductModal() {
-    const modal = $("#productModal");
+
+    const modal =
+        $("#productModal");
 
     if (!modal) return;
 
-    modal.classList.remove("active", "open");
-    document.body.classList.remove("modal-open");
+    modal.classList.remove(
+        "active",
+        "open"
+    );
 
-    state.modalProduct = null;
+    document.body.classList.remove(
+        "modal-open"
+    );
+
+    state.modalProduct =
+        null;
 }
 
-function handleModalEscape(event) {
-    if (event.key === "Escape") {
+function handleModalEscape(
+    event
+) {
+
+    if (
+        event.key ===
+        "Escape"
+    ) {
         closeProductModal();
     }
 }
@@ -1166,18 +2224,34 @@ function handleModalEscape(event) {
    CART
    ========================================================= */
 
-function addToCart(productId, quantity = 1) {
-    const product = products.find(item => item.id === productId);
+function addToCart(
+    productId,
+    quantity = 1
+) {
+
+    const product =
+        products.find(
+            item =>
+                item.id ===
+                productId
+        );
 
     if (!product) return;
 
-    const existing = state.cart.find(
-        item => item.id === productId
-    );
+    const existing =
+        state.cart.find(
+            item =>
+                item.id ===
+                productId
+        );
 
     if (existing) {
-        existing.quantity += quantity;
+
+        existing.quantity +=
+            quantity;
+
     } else {
+
         state.cart.push({
             id: product.id,
             quantity
@@ -1185,183 +2259,302 @@ function addToCart(productId, quantity = 1) {
     }
 
     saveCart();
+
     updateCartUI();
-    showToast(`${product.name} added to cart`);
+
+    showToast(
+        `${product.name} added to cart`
+    );
 
     openCartDrawer();
 }
 
-function removeFromCart(productId) {
-    state.cart = state.cart.filter(
-        item => item.id !== productId
-    );
+function removeFromCart(
+    productId
+) {
+
+    state.cart =
+        state.cart.filter(
+            item =>
+                item.id !==
+                productId
+        );
 
     saveCart();
+
     updateCartUI();
 }
 
-function updateCartQuantity(productId, quantity) {
-    const item = state.cart.find(
-        cartItem => cartItem.id === productId
-    );
+function updateCartQuantity(
+    productId,
+    quantity
+) {
+
+    const item =
+        state.cart.find(
+            cartItem =>
+                cartItem.id ===
+                productId
+        );
 
     if (!item) return;
 
-    item.quantity = Math.max(1, Number(quantity) || 1);
+    item.quantity =
+        Math.max(
+            1,
+            Number(quantity) || 1
+        );
 
     saveCart();
+
     updateCartUI();
 }
 
 function cartDetailedItems() {
+
     return state.cart
         .map(item => {
-            const product = products.find(
-                product => product.id === item.id
-            );
 
-            if (!product) return null;
+            const product =
+                products.find(
+                    product =>
+                        product.id ===
+                        item.id
+                );
+
+            if (!product)
+                return null;
 
             return {
+
                 ...product,
-                quantity: item.quantity,
-                subtotal: product.price * item.quantity
+
+                quantity:
+                    item.quantity,
+
+                subtotal:
+                    product.price *
+                    item.quantity
             };
         })
         .filter(Boolean);
 }
 
 function cartTotal() {
+
     return cartDetailedItems()
         .reduce(
-            (total, item) => total + item.subtotal,
+            (total, item) =>
+                total +
+                item.subtotal,
             0
         );
 }
 
 function cartCount() {
+
     return state.cart.reduce(
-        (total, item) => total + item.quantity,
+        (total, item) =>
+            total +
+            item.quantity,
         0
     );
 }
 
 function updateCartUI() {
-    const count = $("#cartCount");
-    const total = $("#cartTotal");
-    const items = $("#cartItems");
+
+    const count =
+        $("#cartCount");
+
+    const total =
+        $("#cartTotal");
+
+    const items =
+        $("#cartItems");
 
     if (count) {
-        count.textContent = cartCount();
+
+        count.textContent =
+            cartCount();
     }
 
     if (total) {
-        total.textContent = money(cartTotal());
+
+        total.textContent =
+            money(
+                cartTotal()
+            );
     }
 
     if (!items) return;
 
-    const detailed = cartDetailedItems();
+    const detailed =
+        cartDetailedItems();
 
     if (!detailed.length) {
+
         items.innerHTML = `
+
             <div class="empty-cart">
-                <h3>Your cart is empty</h3>
-                <p>Add something from the collection.</p>
+
+                <h3>
+                    Your cart is empty
+                </h3>
+
+                <p>
+                    Add something from
+                    the collection.
+                </p>
+
             </div>
         `;
 
         return;
     }
 
-    items.innerHTML = detailed
-        .map(item => `
-            <div class="cart-item">
+    items.innerHTML =
+        detailed
+            .map(
+                item => `
 
-                <div class="cart-item-image">
-                    <img
-                        src="${escapeHTML(item.image)}"
-                        alt="${escapeHTML(item.name)}"
-                        onerror="this.style.display='none'"
-                    >
-                </div>
+                    <div class="cart-item">
 
-                <div class="cart-item-info">
+                        <div class="cart-item-image">
 
-                    <h4>${escapeHTML(item.name)}</h4>
+                            <img
+                                src="${escapeHTML(
+                                    item.image
+                                )}"
+                                alt="${escapeHTML(
+                                    item.name
+                                )}"
+                                onerror="
+                                    this.style.display='none'
+                                "
+                            >
 
-                    <span>${money(item.price)}</span>
+                        </div>
 
-                    <div class="cart-item-controls">
+                        <div class="cart-item-info">
 
-                        <button
-                            type="button"
-                            data-cart-minus="${item.id}"
-                        >
-                            −
-                        </button>
+                            <h4>
+                                ${escapeHTML(
+                                    item.name
+                                )}
+                            </h4>
 
-                        <strong>${item.quantity}</strong>
+                            <span>
+                                ${money(
+                                    item.price
+                                )}
+                            </span>
 
-                        <button
-                            type="button"
-                            data-cart-plus="${item.id}"
-                        >
-                            +
-                        </button>
+                            <div class="cart-item-controls">
 
-                        <button
-                            type="button"
-                            class="cart-remove"
-                            data-cart-remove="${item.id}"
-                        >
-                            Remove
-                        </button>
+                                <button
+                                    type="button"
+                                    data-cart-minus="${item.id}"
+                                >
+                                    −
+                                </button>
+
+                                <strong>
+                                    ${item.quantity}
+                                </strong>
+
+                                <button
+                                    type="button"
+                                    data-cart-plus="${item.id}"
+                                >
+                                    +
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="cart-remove"
+                                    data-cart-remove="${item.id}"
+                                >
+                                    Remove
+                                </button>
+
+                            </div>
+
+                        </div>
 
                     </div>
+                `
+            )
+            .join("");
 
-                </div>
+    $$(
+        "[data-cart-minus]",
+        items
+    ).forEach(button => {
 
-            </div>
-        `)
-        .join("");
+        button.addEventListener(
+            "click",
+            () => {
 
-    $$("[data-cart-minus]", items).forEach(button => {
-        button.addEventListener("click", () => {
-            const item = state.cart.find(
-                cartItem =>
-                    cartItem.id === button.dataset.cartMinus
-            );
+                const item =
+                    state.cart.find(
+                        cartItem =>
+                            cartItem.id ===
+                            button.dataset
+                                .cartMinus
+                    );
 
-            if (!item) return;
+                if (!item) return;
 
-            updateCartQuantity(
-                item.id,
-                item.quantity - 1
-            );
-        });
+                updateCartQuantity(
+                    item.id,
+                    item.quantity - 1
+                );
+            }
+        );
     });
 
-    $$("[data-cart-plus]", items).forEach(button => {
-        button.addEventListener("click", () => {
-            const item = state.cart.find(
-                cartItem =>
-                    cartItem.id === button.dataset.cartPlus
-            );
+    $$(
+        "[data-cart-plus]",
+        items
+    ).forEach(button => {
 
-            if (!item) return;
+        button.addEventListener(
+            "click",
+            () => {
 
-            updateCartQuantity(
-                item.id,
-                item.quantity + 1
-            );
-        });
+                const item =
+                    state.cart.find(
+                        cartItem =>
+                            cartItem.id ===
+                            button.dataset
+                                .cartPlus
+                    );
+
+                if (!item) return;
+
+                updateCartQuantity(
+                    item.id,
+                    item.quantity + 1
+                );
+            }
+        );
     });
 
-    $$("[data-cart-remove]", items).forEach(button => {
-        button.addEventListener("click", () => {
-            removeFromCart(button.dataset.cartRemove);
-        });
+    $$(
+        "[data-cart-remove]",
+        items
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                removeFromCart(
+                    button.dataset
+                        .cartRemove
+                );
+            }
+        );
     });
 }
 
@@ -1370,67 +2563,126 @@ function updateCartUI() {
    ========================================================= */
 
 function openCartDrawer() {
-    const drawer = $("#cartDrawer");
-    const overlay = $("#cartOverlay");
+
+    const drawer =
+        $("#cartDrawer");
+
+    const overlay =
+        $("#cartOverlay");
 
     if (drawer) {
-        drawer.classList.add("active", "open");
+
+        drawer.classList.add(
+            "active",
+            "open"
+        );
     }
 
     if (overlay) {
-        overlay.classList.add("active", "open");
+
+        overlay.classList.add(
+            "active",
+            "open"
+        );
     }
 
-    document.body.classList.add("cart-open");
+    document.body.classList.add(
+        "cart-open"
+    );
 }
 
 function closeCartDrawer() {
-    const drawer = $("#cartDrawer");
-    const overlay = $("#cartOverlay");
+
+    const drawer =
+        $("#cartDrawer");
+
+    const overlay =
+        $("#cartOverlay");
 
     if (drawer) {
-        drawer.classList.remove("active", "open");
+
+        drawer.classList.remove(
+            "active",
+            "open"
+        );
     }
 
     if (overlay) {
-        overlay.classList.remove("active", "open");
+
+        overlay.classList.remove(
+            "active",
+            "open"
+        );
     }
 
-    document.body.classList.remove("cart-open");
+    document.body.classList.remove(
+        "cart-open"
+    );
 }
 
 function initCart() {
-    const button = $("#cartButton");
-    const close = $("#cartClose");
-    const overlay = $("#cartOverlay");
-    const checkout = $("#checkoutButton");
+
+    const button =
+        $("#cartButton");
+
+    const close =
+        $("#cartClose");
+
+    const overlay =
+        $("#cartOverlay");
+
+    const checkout =
+        $("#checkoutButton");
 
     if (button) {
-        button.addEventListener("click", event => {
-            event.preventDefault();
-            openCartDrawer();
-        });
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                openCartDrawer();
+            }
+        );
     }
 
     if (close) {
-        close.addEventListener("click", closeCartDrawer);
+
+        close.addEventListener(
+            "click",
+            closeCartDrawer
+        );
     }
 
     if (overlay) {
-        overlay.addEventListener("click", closeCartDrawer);
+
+        overlay.addEventListener(
+            "click",
+            closeCartDrawer
+        );
     }
 
     if (checkout) {
-        checkout.addEventListener("click", () => {
-            if (!state.cart.length) {
-                showToast("Your cart is empty");
-                return;
-            }
 
-            showToast(
-                "Checkout connection will be added next."
-            );
-        });
+        checkout.addEventListener(
+            "click",
+            () => {
+
+                if (!state.cart.length) {
+
+                    showToast(
+                        "Your cart is empty"
+                    );
+
+                    return;
+                }
+
+                showToast(
+                    "Checkout connection will be added next."
+                );
+            }
+        );
     }
 
     updateCartUI();
@@ -1441,52 +2693,95 @@ function initCart() {
    ========================================================= */
 
 function initEquityCalculator() {
-    const amountInput = $("#investmentAmount");
-    const percentageInput = $("#equityPercentage");
-    const button = $("#calculateEquity");
-    const result = $("#calculatorResult");
 
-    if (!button || !result) return;
+    const amountInput =
+        $("#investmentAmount");
 
-    button.addEventListener("click", () => {
-        const investment =
-            Number(amountInput?.value) || 0;
+    const percentageInput =
+        $("#equityPercentage");
 
-        let percentage =
-            Number(percentageInput?.value) || 0;
+    const button =
+        $("#calculateEquity");
 
-        if (investment > 0 && percentage <= 0) {
-            percentage =
-                (investment / CONFIG.totalEquity) * 100;
+    const result =
+        $("#calculatorResult");
+
+    if (
+        !button ||
+        !result
+    ) {
+        return;
+    }
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const investment =
+                Number(
+                    amountInput?.value
+                ) || 0;
+
+            let percentage =
+                Number(
+                    percentageInput?.value
+                ) || 0;
+
+            if (
+                investment > 0 &&
+                percentage <= 0
+            ) {
+
+                percentage =
+                    (
+                        investment /
+                        CONFIG.totalEquity
+                    ) *
+                    100;
+            }
+
+            if (
+                percentage > 100
+            ) {
+                percentage = 100;
+            }
+
+            const impliedValue =
+                (
+                    percentage /
+                    100
+                ) *
+                CONFIG.totalEquity;
+
+            result.innerHTML = `
+
+                <div
+                    class="calculator-result-content"
+                >
+
+                    <strong>
+                        ${percentage.toFixed(
+                            2
+                        )}% Equity
+                    </strong>
+
+                    <span>
+                        Estimated equity value:
+                        ${money(
+                            impliedValue
+                        )}
+                    </span>
+
+                </div>
+            `;
+
+            if (percentageInput) {
+
+                percentageInput.value =
+                    percentage.toFixed(2);
+            }
         }
-
-        if (percentage > 100) {
-            percentage = 100;
-        }
-
-        const impliedValue =
-            (percentage / 100) * CONFIG.totalEquity;
-
-        result.innerHTML = `
-            <div class="calculator-result-content">
-
-                <strong>
-                    ${percentage.toFixed(2)}% Equity
-                </strong>
-
-                <span>
-                    Estimated equity value:
-                    ${money(impliedValue)}
-                </span>
-
-            </div>
-        `;
-
-        if (percentageInput) {
-            percentageInput.value =
-                percentage.toFixed(2);
-        }
-    });
+    );
 }
 
 /* =========================================================
@@ -1494,18 +2789,29 @@ function initEquityCalculator() {
    ========================================================= */
 
 function initAnnouncement() {
-    const close = $("#announcementClose");
+
+    const close =
+        $("#announcementClose");
 
     if (!close) return;
 
-    close.addEventListener("click", () => {
-        const announcement =
-            close.closest(".announcement");
+    close.addEventListener(
+        "click",
+        () => {
 
-        if (announcement) {
-            announcement.classList.add("hidden");
+            const announcement =
+                close.closest(
+                    ".announcement"
+                );
+
+            if (announcement) {
+
+                announcement.classList.add(
+                    "hidden"
+                );
+            }
         }
-    });
+    );
 }
 
 /* =========================================================
@@ -1513,33 +2819,63 @@ function initAnnouncement() {
    ========================================================= */
 
 function createToast() {
-    if ($("#areaBoyzToast")) return;
 
-    const toast = document.createElement("div");
+    if (
+        $("#areaBoyzToast")
+    ) {
+        return;
+    }
 
-    toast.id = "areaBoyzToast";
-    toast.className = "area-boyz-toast";
+    const toast =
+        document.createElement(
+            "div"
+        );
 
-    document.body.appendChild(toast);
+    toast.id =
+        "areaBoyzToast";
+
+    toast.className =
+        "area-boyz-toast";
+
+    document.body.appendChild(
+        toast
+    );
 }
 
-let toastTimer = null;
+let toastTimer =
+    null;
 
 function showToast(message) {
+
     createToast();
 
-    const toast = $("#areaBoyzToast");
+    const toast =
+        $("#areaBoyzToast");
 
     if (!toast) return;
 
-    toast.textContent = message;
-    toast.classList.add("active");
+    toast.textContent =
+        message;
 
-    clearTimeout(toastTimer);
+    toast.classList.add(
+        "active"
+    );
 
-    toastTimer = setTimeout(() => {
-        toast.classList.remove("active");
-    }, 2600);
+    clearTimeout(
+        toastTimer
+    );
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "active"
+                );
+
+            },
+            2600
+        );
 }
 
 /* =========================================================
@@ -1547,55 +2883,86 @@ function showToast(message) {
    ========================================================= */
 
 function initHeroSlideshow() {
-    const slides = $$(".hero-slide");
-    const dots = $$(".hero-dot");
 
-    if (!slides.length) return;
+    const slides =
+        $$(".hero-slide");
 
-    let currentSlide = 0;
-    let timer = null;
+    const dots =
+        $$(".hero-dot");
+
+    if (!slides.length)
+        return;
+
+    let currentSlide =
+        0;
+
+    let timer =
+        null;
 
     function showSlide(index) {
-        slides.forEach((slide, i) => {
-            slide.classList.toggle(
-                "active",
-                i === index
-            );
-        });
 
-        dots.forEach((dot, i) => {
-            dot.classList.toggle(
-                "active",
-                i === index
-            );
-        });
+        slides.forEach(
+            (slide, i) => {
 
-        currentSlide = index;
+                slide.classList.toggle(
+                    "active",
+                    i === index
+                );
+            }
+        );
+
+        dots.forEach(
+            (dot, i) => {
+
+                dot.classList.toggle(
+                    "active",
+                    i === index
+                );
+            }
+        );
+
+        currentSlide =
+            index;
     }
 
     function nextSlide() {
+
         showSlide(
-            (currentSlide + 1) % slides.length
+            (
+                currentSlide + 1
+            ) %
+            slides.length
         );
     }
 
     function restartTimer() {
+
         clearInterval(timer);
 
-        timer = setInterval(
-            nextSlide,
-            5000
-        );
+        timer =
+            setInterval(
+                nextSlide,
+                5000
+            );
     }
 
-    dots.forEach((dot, index) => {
-        dot.addEventListener("click", () => {
-            showSlide(index);
-            restartTimer();
-        });
-    });
+    dots.forEach(
+        (dot, index) => {
+
+            dot.addEventListener(
+                "click",
+                () => {
+
+                    showSlide(index);
+
+                    restartTimer();
+                }
+            );
+        }
+    );
 
     showSlide(0);
+
     restartTimer();
 }
 
@@ -1604,11 +2971,15 @@ function initHeroSlideshow() {
    ========================================================= */
 
 function updateYear() {
-    const year = $("#currentYear");
+
+    const year =
+        $("#currentYear");
 
     if (year) {
+
         year.textContent =
-            new Date().getFullYear();
+            new Date()
+                .getFullYear();
     }
 }
 
@@ -1617,24 +2988,36 @@ function updateYear() {
    ========================================================= */
 
 function initKeyboard() {
-    document.addEventListener("keydown", event => {
 
-        if (event.key === "Escape") {
-            closeMobileMenu();
-            closeSearch();
-            closeCartDrawer();
-            closeProductModal();
-        }
+    document.addEventListener(
+        "keydown",
+        event => {
 
-        if (
-            event.key === "/" &&
-            document.activeElement?.tagName !== "INPUT" &&
-            document.activeElement?.tagName !== "TEXTAREA"
-        ) {
-            event.preventDefault();
-            openSearch();
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                closeMobileMenu();
+                closeSearch();
+                closeCartDrawer();
+                closeProductModal();
+            }
+
+            if (
+                event.key === "/" &&
+                document.activeElement
+                    ?.tagName !== "INPUT" &&
+                document.activeElement
+                    ?.tagName !== "TEXTAREA"
+            ) {
+
+                event.preventDefault();
+
+                openSearch();
+            }
         }
-    });
+    );
 }
 
 /* =========================================================
@@ -1642,13 +3025,23 @@ function initKeyboard() {
    ========================================================= */
 
 function injectSafetyCSS() {
-    if ($("#areaBoyzRuntimeCSS")) return;
 
-    const style = document.createElement("style");
+    if (
+        $("#areaBoyzRuntimeCSS")
+    ) {
+        return;
+    }
 
-    style.id = "areaBoyzRuntimeCSS";
+    const style =
+        document.createElement(
+            "style"
+        );
+
+    style.id =
+        "areaBoyzRuntimeCSS";
 
     style.textContent = `
+
         [data-page-section][hidden] {
             display: none !important;
         }
@@ -1658,125 +3051,202 @@ function injectSafetyCSS() {
         }
 
         .product-image-placeholder {
+
             display: none;
+
             width: 100%;
             height: 100%;
             min-height: 220px;
+
             align-items: center;
             justify-content: center;
+
             flex-direction: column;
+
             gap: 8px;
+
             background: #111;
+
             color: #f5c400;
+
             text-align: center;
         }
 
         .product-image-placeholder span {
+
             font-weight: 800;
+
             letter-spacing: .12em;
         }
 
         .product-image-placeholder small {
+
             opacity: .65;
         }
 
         .search-panel.active,
         .search-panel.open {
+
             display: block;
         }
 
         .cart-drawer.active,
         .cart-drawer.open {
+
             visibility: visible;
-            transform: translateX(0);
+
+            transform:
+                translateX(0);
         }
 
         .cart-overlay.active,
         .cart-overlay.open {
+
             opacity: 1;
+
             visibility: visible;
         }
 
         .product-modal {
+
             position: fixed;
+
             inset: 0;
+
             z-index: 9999;
+
             display: none;
         }
 
         .product-modal.active,
         .product-modal.open {
+
             display: block;
         }
 
         .product-modal-backdrop {
+
             position: absolute;
+
             inset: 0;
-            background: rgba(0,0,0,.78);
+
+            background:
+                rgba(0,0,0,.78);
         }
 
         .product-modal-dialog {
+
             position: relative;
+
             z-index: 2;
-            width: min(1100px, 94vw);
+
+            width:
+                min(1100px, 94vw);
+
             max-height: 92vh;
+
             overflow: auto;
+
             margin: 4vh auto;
+
             background: #fff;
+
             color: #111;
+
             border-radius: 18px;
+
             padding: 28px;
         }
 
         .product-modal-close {
+
             position: absolute;
+
             right: 15px;
+
             top: 12px;
+
             z-index: 5;
+
             width: 42px;
+
             height: 42px;
+
             border: 0;
+
             border-radius: 50%;
+
             background: #111;
+
             color: #fff;
+
             font-size: 28px;
+
             cursor: pointer;
         }
 
         .product-detail {
+
             display: grid;
-            grid-template-columns: 1.1fr .9fr;
+
+            grid-template-columns:
+                1.1fr .9fr;
+
             gap: 35px;
+
             padding-top: 15px;
         }
 
         .gallery-main {
+
             position: relative;
+
             min-height: 420px;
+
             background: #f4f4f4;
+
             border-radius: 14px;
+
             overflow: hidden;
         }
 
         .gallery-main img {
+
             width: 100%;
+
             height: 100%;
+
             min-height: 420px;
+
             object-fit: cover;
+
             display: block;
         }
 
         .gallery-arrow {
+
             position: absolute;
+
             top: 50%;
-            transform: translateY(-50%);
+
+            transform:
+                translateY(-50%);
+
             width: 44px;
+
             height: 44px;
+
             border: 0;
+
             border-radius: 50%;
-            background: rgba(0,0,0,.7);
+
+            background:
+                rgba(0,0,0,.7);
+
             color: #fff;
+
             cursor: pointer;
+
             font-size: 20px;
         }
 
@@ -1789,126 +3259,202 @@ function injectSafetyCSS() {
         }
 
         .gallery-thumbnails {
+
             display: flex;
+
             gap: 8px;
+
             margin-top: 10px;
+
             overflow-x: auto;
         }
 
         .gallery-thumb {
+
             width: 72px;
+
             height: 72px;
+
             padding: 0;
-            border: 2px solid transparent;
+
+            border:
+                2px solid transparent;
+
             background: #eee;
+
             border-radius: 8px;
+
             overflow: hidden;
+
             cursor: pointer;
-            flex: 0 0 auto;
+
+            flex:
+                0 0 auto;
         }
 
         .gallery-thumb.active {
-            border-color: #f5c400;
+
+            border-color:
+                #f5c400;
         }
 
         .gallery-thumb img {
+
             width: 100%;
+
             height: 100%;
+
             object-fit: cover;
         }
 
         .product-detail-info {
-            padding: 25px 10px;
+
+            padding:
+                25px 10px;
         }
 
         .product-detail-info h2 {
-            font-size: clamp(28px, 4vw, 48px);
-            margin: 8px 0 15px;
+
+            font-size:
+                clamp(28px, 4vw, 48px);
+
+            margin:
+                8px 0 15px;
         }
 
         .product-detail-price {
+
             font-size: 25px;
+
             font-weight: 800;
+
             margin-bottom: 20px;
         }
 
         .product-description {
+
             line-height: 1.7;
+
             opacity: .75;
         }
 
         .product-specs {
+
             display: grid;
+
             gap: 14px;
+
             margin: 25px 0;
         }
 
         .product-specs div {
+
             display: grid;
+
             gap: 4px;
+
             padding-bottom: 12px;
-            border-bottom: 1px solid #ddd;
+
+            border-bottom:
+                1px solid #ddd;
         }
 
         .product-specs span {
+
             opacity: .7;
         }
 
         .area-boyz-toast {
+
             position: fixed;
+
             right: 20px;
+
             bottom: 20px;
+
             z-index: 10000;
-            max-width: min(360px, calc(100vw - 40px));
-            padding: 14px 18px;
+
+            max-width:
+                min(360px,
+                calc(100vw - 40px));
+
+            padding:
+                14px 18px;
+
             border-radius: 10px;
+
             background: #111;
+
             color: #fff;
-            border-left: 4px solid #f5c400;
-            transform: translateY(120px);
+
+            border-left:
+                4px solid #f5c400;
+
+            transform:
+                translateY(120px);
+
             opacity: 0;
-            transition: .3s ease;
+
+            transition:
+                .3s ease;
+
             pointer-events: none;
         }
 
         .area-boyz-toast.active {
-            transform: translateY(0);
+
+            transform:
+                translateY(0);
+
             opacity: 1;
         }
 
         .empty-products,
         .empty-cart,
         .product-loading {
-            padding: 50px 20px;
+
+            padding:
+                50px 20px;
+
             text-align: center;
         }
 
         body.modal-open,
         body.cart-open,
         body.menu-open {
+
             overflow: hidden;
         }
 
         @media (max-width: 800px) {
+
             .product-detail {
+
                 grid-template-columns: 1fr;
+
                 gap: 10px;
             }
 
             .gallery-main,
             .gallery-main img {
+
                 min-height: 320px;
             }
 
             .product-modal-dialog {
+
                 width: 96vw;
+
                 margin: 2vh auto;
+
                 padding: 18px;
             }
         }
     `;
 
-    document.head.appendChild(style);
+    document.head.appendChild(
+        style
+    );
 }
 
 /* =========================================================
@@ -1916,22 +3462,46 @@ function injectSafetyCSS() {
    ========================================================= */
 
 function initPreloader() {
-    const preloader = $("#preloader");
+
+    const preloader =
+        $("#preloader");
 
     if (!preloader) return;
 
-    setTimeout(() => {
-        preloader.classList.add("loaded");
+    setTimeout(
+        () => {
 
-        setTimeout(() => {
-            preloader.style.display = "none";
-        }, 700);
-    }, CONFIG.preloaderDuration);
+            preloader.classList.add(
+                "loaded"
+            );
 
-    setTimeout(() => {
-        preloader.classList.add("loaded");
-        preloader.style.display = "none";
-    }, 5000);
+            setTimeout(
+                () => {
+
+                    preloader.style.display =
+                        "none";
+
+                },
+                700
+            );
+
+        },
+        CONFIG.preloaderDuration
+    );
+
+    setTimeout(
+        () => {
+
+            preloader.classList.add(
+                "loaded"
+            );
+
+            preloader.style.display =
+                "none";
+
+        },
+        5000
+    );
 }
 
 /* =========================================================
@@ -1939,17 +3509,29 @@ function initPreloader() {
    ========================================================= */
 
 function initImageFallbacks() {
-    document.addEventListener("error", event => {
-        const image = event.target;
 
-        if (
-            image &&
-            image.tagName === "IMG" &&
-            image.classList.contains("product-image")
-        ) {
-            image.style.display = "none";
-        }
-    }, true);
+    document.addEventListener(
+        "error",
+        event => {
+
+            const image =
+                event.target;
+
+            if (
+                image &&
+                image.tagName === "IMG" &&
+                image.classList.contains(
+                    "product-image"
+                )
+            ) {
+
+                image.style.display =
+                    "none";
+            }
+
+        },
+        true
+    );
 }
 
 /* =========================================================
@@ -1959,6 +3541,7 @@ function initImageFallbacks() {
 function initApp() {
 
     try {
+
         injectSafetyCSS();
 
         initPreloader();
@@ -1991,15 +3574,43 @@ function initApp() {
 
         renderShop();
 
+        renderCollectionSummary();
+
         updateCartUI();
 
         updateYear();
 
         console.log(
-            `Area Boyz Enterprise — App 6.1 loaded successfully. ${products.length} products ready.`
+            `Area Boyz Enterprise — App 7.0 loaded successfully. ${products.length} products ready.`
+        );
+
+        console.log(
+            "Collections:",
+            {
+                streetwear:
+                    collectionCount(
+                        "streetwear"
+                    ),
+
+                handmade:
+                    collectionCount(
+                        "handmade"
+                    ),
+
+                footwear:
+                    collectionCount(
+                        "footwear"
+                    ),
+
+                accessories:
+                    collectionCount(
+                        "accessories"
+                    )
+            }
         );
 
     } catch (error) {
+
         console.error(
             "Area Boyz App initialization error:",
             error
@@ -2012,12 +3623,16 @@ function initApp() {
    ========================================================= */
 
 if (
-    document.readyState === "loading"
+    document.readyState ===
+    "loading"
 ) {
+
     document.addEventListener(
         "DOMContentLoaded",
         initApp
     );
+
 } else {
+
     initApp();
-    }
+     }
