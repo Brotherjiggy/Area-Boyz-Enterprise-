@@ -3,62 +3,815 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
   <meta name="description" content="Area Boyz Enterprise — Styles that fit your life.">
   <meta name="theme-color" content="#ffd400">
+
   <title>Area Boyz Enterprise | Styles That Fit Your Life</title>
+
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <div id="preloader" class="preloader" aria-hidden="true"><div><b>AB</b><strong>AREA BOYZ</strong><span>ENTERPRISE</span></div></div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <header class="header" id="top">
-    <div class="announcement">AREA BOYZ ENTERPRISE <span>— Styles that fit your life.</span></div>
-    <div class="nav wrap">
-      <a class="brand" href="#home" aria-label="Area Boyz Enterprise home"><b>AB</b><span><strong>AREA BOYZ</strong><small>ENTERPRISE</small></span></a>
-      <nav id="desktopNav" aria-label="Primary navigation">
-        <a href="#home">Home</a><a href="#shop">Shop</a><a href="#collections">Collections</a><a href="#equity">Equity</a><a href="#story">Our Story</a><a href="#contact">Contact</a>
-      </nav>
-      <div class="actions"><button id="searchBtn" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button><button id="cartBtn" aria-label="Open cart"><i class="fa-solid fa-bag-shopping"></i><em id="cartCount">0</em></button><button id="menuBtn" class="menu" aria-label="Open menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader" class="preloader">
+    <div class="loader-mark">
+      <b>AB</b>
+      <strong>AREA BOYZ</strong>
+      <span>ENTERPRISE</span>
     </div>
-    <div id="searchPanel" class="search-panel"><div class="wrap"><input id="searchInput" type="search" placeholder="Search products, categories or colours…" autocomplete="off"><button id="searchClose" aria-label="Close search"><i class="fa-solid fa-xmark"></i></button></div></div>
-    <div id="mobileNav" class="mobile-nav"><a href="#home">Home</a><a href="#shop">Shop</a><a href="#collections">Collections</a><a href="#equity">Equity</a><a href="#story">Our Story</a><a href="#contact">Contact</a></div>
+  </div>
+
+  <!-- TOAST -->
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+  </div>
+
+
+  <!-- HEADER -->
+  <header class="header" id="top">
+
+    <div class="announcement">
+      AREA BOYZ ENTERPRISE
+      <span>— Styles that fit your life.</span>
+    </div>
+
+    <div class="nav wrap">
+
+      <a
+        class="brand"
+        href="#home"
+        aria-label="Area Boyz Enterprise home">
+
+        <b>AB</b>
+
+        <span>
+          <strong>AREA BOYZ</strong>
+          <small>ENTERPRISE</small>
+        </span>
+
+      </a>
+
+
+      <nav
+        class="desktop-nav"
+        aria-label="Primary navigation">
+
+        <a href="#home">Home</a>
+        <a href="#shop">Shop</a>
+        <a href="#collections">Collections</a>
+        <a href="#equity">Equity</a>
+        <a href="#story">Our Story</a>
+        <a href="#contact">Contact</a>
+
+      </nav>
+
+
+      <div class="actions">
+
+        <button
+          id="searchBtn"
+          aria-label="Search">
+
+          <i class="fa-solid fa-magnifying-glass"></i>
+
+        </button>
+
+
+        <button
+          id="cartBtn"
+          aria-label="Open cart">
+
+          <i class="fa-solid fa-bag-shopping"></i>
+
+          <em id="cartCount">0</em>
+
+        </button>
+
+
+        <button
+          id="menuBtn"
+          class="menu"
+          aria-label="Open menu"
+          aria-expanded="false">
+
+          <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+    <div
+      id="searchPanel"
+      class="search-panel">
+
+      <div class="wrap search-inner">
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search products, categories or collections…"
+          autocomplete="off">
+
+        <button
+          id="searchClose"
+          aria-label="Close search">
+
+          <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- MOBILE NAV -->
+    <div
+      id="mobileNav"
+      class="mobile-nav">
+
+      <a href="#home">Home</a>
+      <a href="#shop">Shop</a>
+      <a href="#collections">Collections</a>
+      <a href="#equity">Equity</a>
+      <a href="#story">Our Story</a>
+      <a href="#contact">Contact</a>
+
+    </div>
+
   </header>
 
+
+
   <main>
-    <section id="home" class="hero wrap">
-      <div class="hero-copy"><p class="eyebrow">AREA BOYZ ENTERPRISE</p><h1>Styles that fit <span>your life.</span></h1><p>Streetwear, handmade pieces, footwear and accessories selected from the actual products in our catalogue.</p><div class="hero-actions"><a class="btn dark" href="#shop">Shop the catalogue</a><a class="btn light" href="#collections">Explore collections</a></div></div>
-      <div class="hero-art"><img src="images/catalog/IMG-20260909-WA0154.jpg" alt="Pink graphic jacket from the Area Boyz catalogue" loading="eager"><div class="hero-badge"><strong>VISUAL CATALOGUE</strong><span>Descriptions match what is shown.</span></div></div>
+
+    <!-- HERO -->
+    <section
+      id="home"
+      class="hero wrap">
+
+      <div class="hero-copy">
+
+        <p class="eyebrow">
+          AREA BOYZ ENTERPRISE
+        </p>
+
+        <h1>
+          Styles that fit
+          <span>your life.</span>
+        </h1>
+
+        <p class="hero-text">
+          Streetwear, handmade pieces, footwear and accessories.
+          Every product card is tied directly to its numbered
+          product image.
+        </p>
+
+        <div class="hero-actions">
+
+          <a
+            class="btn dark"
+            href="#shop">
+
+            Shop the catalogue
+
+          </a>
+
+          <a
+            class="btn light"
+            href="#collections">
+
+            Explore collections
+
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <!-- HERO SLIDESHOW -->
+      <div class="hero-art">
+
+        <div
+          id="heroSlides"
+          class="hero-slides">
+        </div>
+
+
+        <button
+          class="hero-control prev"
+          data-hero-prev
+          aria-label="Previous slide">
+
+          <i class="fa-solid fa-chevron-left"></i>
+
+        </button>
+
+
+        <button
+          class="hero-control next"
+          data-hero-next
+          aria-label="Next slide">
+
+          <i class="fa-solid fa-chevron-right"></i>
+
+        </button>
+
+
+        <div
+          id="heroDots"
+          class="hero-dots">
+        </div>
+
+
+        <div class="hero-badge">
+
+          <strong>AREA BOYZ</strong>
+
+          <span>
+            6-image visual slideshow
+          </span>
+
+        </div>
+
+      </div>
+
     </section>
 
-    <section class="trust wrap"><div><b>VISUAL FIRST</b><span>Product copy follows the photograph.</span></div><div><b>SECURE CHECKOUT</b><span>Flutterwave hosted payment flow.</span></div><div><b>RESPONSIVE</b><span>Built for phone, tablet and desktop.</span></div></section>
 
-    <section id="shop" class="section wrap">
-      <div class="section-head"><div><p class="eyebrow">THE CATALOGUE</p><h2>Shop the pieces</h2></div><button id="clearFilters" class="text-btn">Clear filters</button></div>
-      <div class="shop-tools"><div id="filters" class="filters"></div><select id="sort" aria-label="Sort products"><option value="featured">Featured</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option><option value="name">Name</option></select></div>
-      <div id="resultsMeta" class="results-meta"></div>
-      <div id="productGrid" class="product-grid"></div>
-      <div id="emptyState" class="empty hidden"><i class="fa-solid fa-shirt"></i><h3>No products found</h3><p>Try another search or collection.</p></div>
+
+    <!-- TRUST -->
+    <section class="trust wrap">
+
+      <div>
+
+        <b>109 PRODUCTS</b>
+
+        <span>
+          product-001 through product-109
+        </span>
+
+      </div>
+
+
+      <div>
+
+        <b>VISUAL FIRST</b>
+
+        <span>
+          Product image and product number stay linked
+        </span>
+
+      </div>
+
+
+      <div>
+
+        <b>SECURE CHECKOUT</b>
+
+        <span>
+          Flutterwave server-side payment flow
+        </span>
+
+      </div>
+
     </section>
 
-    <section id="collections" class="section alt"><div class="wrap"><div class="section-head"><div><p class="eyebrow">COLLECTIONS</p><h2>Find your lane</h2></div></div><div class="collection-grid"><button data-collection="streetwear"><strong>Streetwear</strong><span>Graphic tees, hoodies, jackets and everyday layers.</span></button><button data-collection="handmade"><strong>Handmade</strong><span>Knitted, crafted and visibly artisanal pieces.</span></button><button data-collection="footwear"><strong>Footwear</strong><span>Sneakers, shoes, slides and statement pairs.</span></button><button data-collection="accessories"><strong>Accessories</strong><span>Headwear, bags, belts and finishing pieces.</span></button></div></div></section>
 
-    <section id="equity" class="section wrap"><div class="equity-card"><div><p class="eyebrow">AREA BOYZ EQUITY</p><h2>Built beyond the storefront.</h2><p>The current public equity target shown on the site is <strong>$758,000</strong>. The investment controls will be moved into the admin dashboard later.</p></div><div class="equity-number">$758K</div></div></section>
 
-    <section id="story" class="section alt"><div class="wrap story"><div><p class="eyebrow">OUR STORY</p><h2>Clothes with character.</h2><p>Area Boyz Enterprise brings together streetwear energy, handmade craft and expressive fashion. The catalogue is deliberately visual: customers should see the same product the description talks about.</p><a class="btn dark" href="#shop">Browse products</a></div><div class="story-note"><i class="fa-solid fa-eye"></i><strong>What you see is what we describe.</strong><span>No filename-based product naming.</span></div></div></section>
+    <!-- SHOP -->
+    <section
+      id="shop"
+      class="section wrap">
 
-    <section id="contact" class="section wrap"><div class="contact-card"><div><p class="eyebrow">CONTACT</p><h2>Need help with an order?</h2><p>For now, use the contact details configured for your store. The admin dashboard will later centralize customer messages and orders.</p></div><a class="btn dark" href="mailto:areaboyzenterprise@gmail.com">Email Area Boyz</a></div></section>
+      <div class="section-head">
+
+        <div>
+
+          <p class="eyebrow">
+            THE CATALOGUE
+          </p>
+
+          <h2>
+            Shop the pieces
+          </h2>
+
+        </div>
+
+
+        <button
+          id="clearFilters"
+          class="text-btn">
+
+          Clear filters
+
+        </button>
+
+      </div>
+
+
+      <div class="shop-tools">
+
+        <div
+          id="filters"
+          class="filters">
+        </div>
+
+
+        <select
+          id="sort"
+          aria-label="Sort products">
+
+          <option value="featured">
+            Featured
+          </option>
+
+          <option value="low">
+            Price: low to high
+          </option>
+
+          <option value="high">
+            Price: high to low
+          </option>
+
+          <option value="name">
+            Name
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div
+        id="resultsMeta"
+        class="results-meta">
+      </div>
+
+
+      <div
+        id="productGrid"
+        class="product-grid">
+      </div>
+
+
+      <div
+        id="emptyState"
+        class="empty hidden">
+
+        <i class="fa-solid fa-shirt"></i>
+
+        <h3>
+          No products found
+        </h3>
+
+        <p>
+          Try another search or collection.
+        </p>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- COLLECTIONS -->
+    <section
+      id="collections"
+      class="section alt">
+
+      <div class="wrap">
+
+        <div class="section-head">
+
+          <div>
+
+            <p class="eyebrow">
+              COLLECTIONS
+            </p>
+
+            <h2>
+              Find your lane
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="collection-grid">
+
+          <button
+            data-collection="streetwear">
+
+            <div class="collection-art art-1">
+              <i class="fa-solid fa-shirt"></i>
+            </div>
+
+            <strong>
+              Streetwear
+            </strong>
+
+            <span>
+              Graphic tees, hoodies, jackets and everyday layers.
+            </span>
+
+          </button>
+
+
+          <button
+            data-collection="handmade">
+
+            <div class="collection-art art-2">
+              <i class="fa-solid fa-scissors"></i>
+            </div>
+
+            <strong>
+              Handmade
+            </strong>
+
+            <span>
+              Knitted, crafted and visibly artisanal pieces.
+            </span>
+
+          </button>
+
+
+          <button
+            data-collection="footwear">
+
+            <div class="collection-art art-3">
+              <i class="fa-solid fa-shoe-prints"></i>
+            </div>
+
+            <strong>
+              Footwear
+            </strong>
+
+            <span>
+              Sneakers, shoes, slides and statement pairs.
+            </span>
+
+          </button>
+
+
+          <button
+            data-collection="accessories">
+
+            <div class="collection-art art-4">
+              <i class="fa-solid fa-hat-cowboy"></i>
+            </div>
+
+            <strong>
+              Accessories
+            </strong>
+
+            <span>
+              Headwear, bags and finishing pieces.
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- EQUITY -->
+    <section
+      id="equity"
+      class="section wrap">
+
+      <div class="equity-card">
+
+        <div>
+
+          <p class="eyebrow">
+            AREA BOYZ EQUITY
+          </p>
+
+          <h2>
+            Built beyond the storefront.
+          </h2>
+
+          <p>
+            The current public equity target displayed
+            on the website is
+            <strong>$758,000</strong>.
+          </p>
+
+        </div>
+
+
+        <div class="equity-number">
+          $758K
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- STORY -->
+    <section
+      id="story"
+      class="section alt">
+
+      <div class="wrap story">
+
+        <div>
+
+          <p class="eyebrow">
+            OUR STORY
+          </p>
+
+          <h2>
+            Clothes with character.
+          </h2>
+
+          <p>
+            Area Boyz Enterprise brings together streetwear
+            energy, handmade craft and expressive fashion.
+            The catalogue is built around the actual numbered
+            product photographs in the store.
+          </p>
+
+          <a
+            class="btn dark"
+            href="#shop">
+
+            Browse products
+
+          </a>
+
+        </div>
+
+
+        <div class="story-note">
+
+          <i class="fa-solid fa-images"></i>
+
+          <strong>
+            One image. One product number.
+          </strong>
+
+          <span>
+            Hero images are separated from product images.
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- CONTACT -->
+    <section
+      id="contact"
+      class="section wrap">
+
+      <div class="contact-card">
+
+        <div>
+
+          <p class="eyebrow">
+            CONTACT
+          </p>
+
+          <h2>
+            Need help with an order?
+          </h2>
+
+          <p>
+            For customer support, contact Area Boyz Enterprise directly.
+          </p>
+
+        </div>
+
+
+        <a
+          class="btn dark"
+          href="mailto:areaboyzenterprise@gmail.com">
+
+          Email Area Boyz
+
+        </a>
+
+      </div>
+
+    </section>
+
   </main>
 
-  <footer><div class="wrap footer-grid"><div><a class="brand" href="#top"><b>AB</b><span><strong>AREA BOYZ</strong><small>ENTERPRISE</small></span></a><p>Styles that fit your life.</p></div><div><strong>SHOP</strong><a href="#shop">All products</a><a href="#collections">Collections</a></div><div><strong>COMPANY</strong><a href="#story">Our story</a><a href="#equity">Equity</a><a href="#contact">Contact</a></div></div><div class="wrap footer-bottom"><span>© <span id="year"></span> Area Boyz Enterprise</span><span>Secure payment powered by Flutterwave when checkout is configured.</span></div></footer>
 
-  <div id="productModal" class="modal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><article class="modal-card"><button class="modal-close" data-close-modal aria-label="Close product"><i class="fa-solid fa-xmark"></i></button><div id="modalContent"></div></article></div>
 
-  <aside id="cartDrawer" class="drawer" aria-hidden="true"><div class="drawer-head"><h2>Your bag</h2><button id="cartClose" aria-label="Close cart"><i class="fa-solid fa-xmark"></i></button></div><div id="cartItems" class="cart-items"></div><div class="cart-footer"><div><span>Subtotal</span><strong id="cartTotal">$0.00</strong></div><button id="checkoutBtn" class="btn dark full">Checkout with Flutterwave</button><small id="checkoutNote">Your payment is created and verified server-side.</small></div></aside>
-  <div id="drawerBackdrop" class="drawer-backdrop"></div>
+  <!-- FOOTER -->
+  <footer>
 
-  <script src="js/app.js" defer></script>
+    <div class="wrap footer-grid">
+
+      <div>
+
+        <a
+          class="brand"
+          href="#top">
+
+          <b>AB</b>
+
+          <span>
+            <strong>AREA BOYZ</strong>
+            <small>ENTERPRISE</small>
+          </span>
+
+        </a>
+
+        <p>
+          Styles that fit your life.
+        </p>
+
+      </div>
+
+
+      <div>
+
+        <strong>SHOP</strong>
+
+        <a href="#shop">
+          All products
+        </a>
+
+        <a href="#collections">
+          Collections
+        </a>
+
+      </div>
+
+
+      <div>
+
+        <strong>COMPANY</strong>
+
+        <a href="#story">
+          Our story
+        </a>
+
+        <a href="#equity">
+          Equity
+        </a>
+
+        <a href="#contact">
+          Contact
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div class="wrap footer-bottom">
+
+      <span>
+        © <span id="year"></span>
+        Area Boyz Enterprise
+      </span>
+
+      <span>
+        Secure payment powered by Flutterwave when checkout is configured.
+      </span>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- PRODUCT MODAL -->
+  <div
+    id="productModal"
+    class="modal"
+    aria-hidden="true">
+
+    <div
+      class="modal-backdrop"
+      data-close-modal>
+    </div>
+
+
+    <article class="modal-card">
+
+      <button
+        class="modal-close"
+        data-close-modal
+        aria-label="Close product">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+
+      <div id="modalContent"></div>
+
+    </article>
+
+  </div>
+
+
+
+  <!-- CART -->
+  <aside
+    id="cartDrawer"
+    class="drawer"
+    aria-hidden="true">
+
+    <div class="drawer-head">
+
+      <h2>
+        Your bag
+      </h2>
+
+      <button
+        id="cartClose"
+        aria-label="Close cart">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div
+      id="cartItems"
+      class="cart-items">
+    </div>
+
+
+    <div class="cart-footer">
+
+      <div>
+
+        <span>
+          Subtotal
+        </span>
+
+        <strong id="cartTotal">
+          $0.00
+        </strong>
+
+      </div>
+
+
+      <button
+        id="checkoutBtn"
+        class="btn dark full">
+
+        Checkout with Flutterwave
+
+      </button>
+
+
+      <small>
+        Your payment is created and verified server-side.
+      </small>
+
+    </div>
+
+  </aside>
+
+
+  <div
+    id="drawerBackdrop"
+    class="drawer-backdrop">
+  </div>
+
+
+  <script
+    src="js/app.js"
+    defer>
+  </script>
+
 </body>
 </html>
