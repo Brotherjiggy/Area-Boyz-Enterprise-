@@ -1,1 +1,136 @@
+/* =========================================================
+   AREA BOYZ SHOP PAGE
+   Catalogue UI
+   ========================================================= */
 
+.shop-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: 18px;
+  border: 1px solid var(--page-line);
+  border-radius: 20px;
+  background: var(--page-white);
+}
+
+.shop-tools .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.shop-tools select,
+#sort {
+  min-width: 190px;
+  min-height: 48px;
+  padding: 0 42px 0 16px;
+  border: 1px solid var(--page-line);
+  border-radius: 999px;
+  background: var(--page-white);
+  color: var(--page-black);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.shop-tools select:focus,
+#sort:focus {
+  outline: none;
+  border-color: var(--page-black);
+  box-shadow: 0 0 0 3px rgba(255, 212, 0, 0.35);
+}
+
+.results-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  margin-bottom: 22px;
+  color: var(--page-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.results-meta:empty {
+  display: none;
+}
+
+.product-grid {
+  width: 100%;
+}
+
+.product-grid img {
+  display: block;
+  width: 100%;
+}
+
+.empty {
+  padding: 70px 25px;
+  text-align: center;
+  border: 1px dashed var(--page-line);
+  border-radius: var(--page-radius);
+  background: var(--page-paper);
+}
+
+.empty.hidden {
+  display: none;
+}
+
+.empty i {
+  display: block;
+  margin-bottom: 18px;
+  font-size: 3rem;
+}
+
+.empty h3 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+}
+
+.empty p {
+  margin: 0 0 24px;
+  color: var(--page-muted);
+}
+
+@media (max-width: 760px) {
+
+  .shop-tools {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .shop-tools .filters {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  .shop-tools select,
+  #sort {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .results-meta {
+    font-size: 0.82rem;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .shop-tools {
+    border-radius: 16px;
+  }
+
+  .shop-tools .filters {
+    gap: 8px;
+  }
+
+}
