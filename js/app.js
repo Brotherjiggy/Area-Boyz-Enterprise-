@@ -112,171 +112,118 @@ const HEROES = [
 
    Products 081-109 are automatically included.
    ========================================================= */
-
-const META = [
-
-  ["Blue Spiked Low-Top Sneaker","footwear","footwear",165],
-
-  ["Brown Pointed Leather Shoe","footwear","footwear",190],
-
-  ["Light Blue Hooded Shell Jacket","outerwear","streetwear",180],
-
-  ["White Cropped Puffer Jacket","outerwear","streetwear",155],
-
-  ["Spider-Man Graphic T-Shirt","shirts","streetwear",55],
-
-  ["Red Spider Graphic Hoodie","hoodies","streetwear",120],
-
-  ["White Polka-Dot Shirt with Pink Trousers","sets","streetwear",110],
-
-  ["Black Leather Zip Jacket","outerwear","streetwear",210],
-
-  ["Patchwork Multicolour Jacket","outerwear","handmade",240],
-
-  ["Red and Black Racing Jacket","outerwear","streetwear",220],
-
-  ["Brown High-Collar Patch Jacket","outerwear","streetwear",235],
-
-  ["White Graphic Pullover Hoodie","hoodies","streetwear",125],
-
-  ["Blue Quilted Cropped Jacket","outerwear","streetwear",150],
-
-  ["Brown Oversized Goggles","accessories","accessories",90],
-
-  ["Pink and Cream Hand-Knitted Piece","handmade","handmade",85],
-
-  ["Denim Face-Cover Hood","accessories","accessories",75],
-
-  ["Pink Ribbed Beanie","headwear","accessories",45],
-
-  ["Black Hooded Graphic Jacket","hoodies","streetwear",145],
-
-  ["Black Leopard Graphic T-Shirt","shirts","streetwear",60],
-
-  ["Black Logo Bucket Hat","headwear","accessories",45],
-
-  ["Camouflage Baseball Caps","headwear","accessories",40],
-
-  ["Long Mesh Knit Top","shirts","handmade",95],
-
-  ["Sheer Open-Knit Top","shirts","handmade",90],
-
-  ["Wave Sole Running Sneaker","footwear","footwear",170],
-
-  ["Brown Knit Zip Beanie","headwear","accessories",42],
-
-  ["Olive Bomber Jacket","outerwear","streetwear",150],
-
-  ["Brown Suiting Street Look","sets","streetwear",260],
-
-  ["Blue Shearling-Style Jacket","outerwear","streetwear",190],
-
-  ["Grey Shearling-Style Jacket","outerwear","streetwear",195],
-
-  ["Graphic Bucket Hat","headwear","accessories",50],
-
-  ["Green Graphic Face Cover","accessories","accessories",65],
-
-  ["Cream and Blue Knit Textile","handmade","handmade",80],
-
-  ["Dark Printed Bomber Jacket","outerwear","streetwear",210],
-
-  ["Comic Face Long-Sleeve Shirt","shirts","streetwear",100],
-
-  ["Printed Baseball Cap","headwear","accessories",48],
-
-  ["Brown Embroidered Bomber","outerwear","streetwear",180],
-
-  ["Wide-Leg Blue Denim","denim","streetwear",120],
-
-  ["Monogram Flip-Flop Slides","footwear","footwear",65],
-
-  ["Blue and White Rugby Shirt","shirts","streetwear",95],
-
-  ["Colour-Block Track Jacket","outerwear","streetwear",145],
-
-  ["Brown Embroidered Work Jacket","outerwear","handmade",215],
-
-  ["Pink Cartoon Graphic Jacket","outerwear","streetwear",185],
-
-  ["Black Graphic Denim Jacket","outerwear","streetwear",175],
-
-  ["Blue Utility Denim Trousers","denim","streetwear",125],
-
-  ["Green Painted Face Cap","headwear","accessories",50],
-
-  ["Comic Graphic Shirt","shirts","streetwear",105],
-
-  ["Leopard Print Bomber","outerwear","streetwear",190],
-
-  ["Red Cropped Bomber with Fur Collar","outerwear","streetwear",175],
-
-  ["Oversized Brown Cap","headwear","accessories",55],
-
-  ["Floral Black Bomber","outerwear","streetwear",175],
-
-  ["Black Graphic Tee with Eye Artwork","shirts","streetwear",60],
-
-  ["Red Distressed Graphic Trousers","bottoms","streetwear",115],
-
-  ["Black and White Air Graphic Jacket","outerwear","streetwear",200],
-
-  ["Blue Denim Cargo Shorts","denim","streetwear",95],
-
-  ["White Platform Sneaker","footwear","footwear",180],
-
-  ["Brown Lug-Sole Shoe","footwear","footwear",185],
-
-  ["Blue Low-Top Sneaker Pair","footwear","footwear",155],
-
-  ["Black-and-White Platform Boots","footwear","footwear",210],
-
-  ["Blue and Brown Leather Sneaker","footwear","footwear",195],
-
-  ["Printed Floral Shirt","shirts","streetwear",95],
-
-  ["Embroidered Beige Utility Jacket","outerwear","handmade",205],
-
-  ["White Graphic Cartoon Tee","shirts","streetwear",55],
-
-  ["Yellow Statement Text Tee","shirts","streetwear",58],
-
-  ["Patchwork Camo Windbreaker","outerwear","streetwear",170],
-
-  ["Purple Hooded Jacket","outerwear","streetwear",145],
-
-  ["Blue Graphic Camo Jacket","outerwear","streetwear",180],
-
-  ["Cream and Brown Knit Layer","handmade","handmade",90],
-
-  ["Distressed Zip-Up Hoodie","hoodies","streetwear",135],
-
-  ["Red Patchwork Cargo Trousers","bottoms","streetwear",125],
-
-  ["Grey Embellished Knit Top","shirts","handmade",130],
-
-  ["Long Embellished Scarf","accessories","accessories",80],
-
-  ["Grey Distressed Knit Top","shirts","handmade",120],
-
-  ["Tan Fringe Hat","headwear","handmade",75],
-
-  ["Patchwork Tattered Cape","outerwear","handmade",190],
-
-  ["Blue Ribbed Beanie","headwear","accessories",42],
-
-  ["White Kanye West Graphic Tee","shirts","streetwear",60],
-
-  ["Red Graphic Stripe Tee","shirts","streetwear",60],
-
-  ["White Graphic Air Tee","shirts","streetwear",58],
-
-  ["Black Eye Graphic Tee","shirts","streetwear",60],
-
-  ["Red and Black Styled Set","sets","streetwear",240]
-
-];
-
+const VISUAL_PRODUCT_DATA = {
+  "001": ["Black tailored long-coat look","outerwear","A black floor-length tailored outer layer shown on a model, with a structured silhouette and a dramatic elongated hem."],
+  "002": ["Yellow graphic slogan T-shirt","shirts","Yellow short-sleeve T-shirt with a bold black printed slogan across the chest."],
+  "003": ["Blue lightweight logo jacket","outerwear","Blue lightweight zip-front jacket with a small contrasting chest mark and a relaxed everyday shape."],
+  "004": ["Pink cartoon graphic jacket","outerwear","Bright pink jacket covered with colorful cartoon-style graphics and large front artwork."],
+  "005": ["White cartoon graphic T-shirt","shirts","White T-shirt featuring a colorful cartoon-style character graphic and printed text across the front."],
+  "006": ["White illustrated graphic T-shirt","shirts","White T-shirt with a large illustrated character graphic printed across the front."],
+  "007": ["Blue-and-white athletic sneaker","footwear","Low-top sneaker with a white upper, blue detailing and a chunky cushioned sole."],
+  "008": ["Black-and-white high-top footwear","footwear","Black-and-white high-top footwear with wrapped contrasting straps and a chunky sole."],
+  "009": ["Sheer mesh tank top","shirts","Sleeveless sheer mesh top with an open textured pattern and a fitted, elongated silhouette."],
+  "010": ["Black streetwear jacket with red sneakers","outerwear","Black hooded streetwear jacket shown with bright red sneakers; the garment has a relaxed, layered silhouette."],
+  "011": ["Black hooded utility jacket","outerwear","Black hooded jacket with a technical, panelled construction and relaxed outerwear proportions."],
+  "012": ["White layered formal outfit","sets","White long coat and coordinated layered trousers shown as a complete formal outfit."],
+  "013": ["Brown long tailored coat","outerwear","Long brown tailored coat with a clean front and elongated formal silhouette."],
+  "014": ["Brown long-sleeve relaxed outfit","sets","Monochrome brown long-sleeve top and matching trousers styled as a coordinated relaxed outfit."],
+  "015": ["Mixed streetwear outfit collage","sets","A collage of layered streetwear pieces including graphic outerwear, hoodies and dark bottoms."],
+  "016": ["Neutral cap collection","headwear","Selection of neutral-toned caps in several shapes and shades, displayed as a small headwear collection."],
+  "017": ["Plaid wrap skirt outfit","sets","Model wearing a light top with a long red-and-brown plaid wrap-style skirt."],
+  "018": ["Blue denim detail piece","denim","Close-up of blue denim with a contrasting stitched decorative motif near the pocket area."],
+  "019": ["Distressed neutral graphic top","shirts","Neutral-toned top with a worn, distressed finish and large printed numerals/graphics."],
+  "020": ["Brown relaxed two-piece outfit","sets","Brown coordinated outfit consisting of a relaxed top and matching wide-leg trousers."],
+  "021": ["Blue embellished long dress","sets","Long blue dress with prominent decorative embellishment and a flowing silhouette."],
+  "022": ["Layered tailored clothing display","sets","A coordinated display of layered tailored garments in neutral and muted tones."],
+  "023": ["Teal fitted long-sleeve top","shirts","Teal long-sleeve top with a close, streamlined silhouette and high neckline."],
+  "024": ["Gray relaxed trousers and bag","bottoms","Gray wide-leg trousers paired with a dark handbag, presented as a polished casual look."],
+  "025": ["Black leather fashion look","outerwear","Black leather-focused outfit shown on a model, with a fitted jacket and layered dark styling."],
+  "026": ["Multicolor illustrated bomber jacket","outerwear","Colorful bomber-style jacket covered in bold illustrated graphics and contrasting artwork."],
+  "027": ["Red graphic distressed trousers","bottoms","Red trousers featuring printed graphics, distressed details and a relaxed streetwear cut."],
+  "028": ["Black structured mini bag","bags","Compact black structured bag with a short handle and rectangular silhouette."],
+  "029": ["Mustard cropped polo shirt","shirts","Mustard-yellow cropped short-sleeve shirt with a pointed collar and small embroidered chest detail."],
+  "030": ["Black tailored long coat","outerwear","Black tailored coat with a long, flowing silhouette and sharp formal proportions."],
+  "031": ["Blue denim vest","denim","Sleeveless blue denim vest with a simple V-neck front and fitted arm openings."],
+  "032": ["Fringe detail long-sleeve top","shirts","Light gray long-sleeve top with hanging fringe or tassel-like detailing throughout the front."],
+  "033": ["Cream layered knit look","sets","Cream and tan layered knit styling with a soft oversized wrap-like upper layer."],
+  "034": ["Pale blue patterned puffer jacket","outerwear","Light blue padded jacket with an all-over decorative pattern and high collar."],
+
+  "036": ["Decorative beaded neck accessory","accessories","Long decorative neck piece with beads, metallic-looking accents and layered ornamentation."],
+  "037": ["White cropped jacket","outerwear","White cropped jacket with a high collar, gathered cuffs and a compact structured silhouette."],
+  "038": ["Gray compact shoulder bag","bags","Small gray shoulder or crossbody bag with a rounded rectangular body and dark strap details."],
+  "039": ["Spider graphic T-shirt","shirts","White T-shirt with a large red-and-blue superhero-style spider graphic across the front."],
+  "040": ["White casual top and blue jeans outfit","sets","Casual outfit combining a white long-sleeve top with relaxed blue jeans."],
+  "041": ["Blue patterned slide sandals","footwear","Open slide sandals with blue decorative straps and a flat everyday sole."],
+
+  "043": ["Multicolor knitted beanie","headwear","Chunky knitted beanie with alternating blue, cream and neutral textured bands."],
+  "044": ["Printed cap worn outdoors","headwear","Patterned baseball-style cap shown worn, featuring a multicolor illustrated print."],
+  "045": ["Olive padded jacket","outerwear","Olive green padded jacket with a high collar and warm-looking quilted construction."],
+  "046": ["Black floral bomber jacket","outerwear","Black bomber-style jacket decorated with large pink and red floral graphics."],
+  "047": ["Red cropped jacket with multicolor styling","outerwear","Bright red cropped jacket styled with contrasting multicolor neck and scarf-like details."],
+  "048": ["Green illustrated bucket hat","headwear","Green bucket hat covered with black-and-white illustrated graphics."],
+  "049": ["Black graphic beanie","headwear","Black knit beanie featuring a small contrasting graphic emblem on the front."],
+  "050": ["Black-and-purple graphic hoodie","hoodies","Dark hooded jacket or hoodie with purple accents and a red graphic printed on the chest."],
+  "051": ["Heavy black utility footwear","footwear","Chunky black footwear with rugged soles and multiple straps or hardware details."],
+  "052": ["Black graphic sweatshirt","shirts","Black long-sleeve sweatshirt with a small centered printed graphic across the chest."],
+  "053": ["Black sculptural accessory","accessories","Black rounded sculptural accessory displayed in close-up, with a hard textured surface."],
+
+  "055": ["Pink-and-blue hooded jacket","outerwear","Color-block hooded jacket combining a bright pink hood with blue textured body panels."],
+  "056": ["Dark blue cropped jacket","outerwear","Dark blue cropped jacket with contrasting trim and a clean zip-front construction."],
+  "057": ["Burgundy graphic varsity jacket","outerwear","Burgundy varsity-style jacket with cream sleeves, graphic lettering and decorative patches."],
+  "058": ["Olive hooded jacket","outerwear","Olive green hooded jacket with a compact cropped shape and utility-inspired styling."],
+  "059": ["Brown leather tote bag","bags","Brown leather-look tote with two handles and a simple open-top rectangular silhouette."],
+  "060": ["Mustard cropped polo jacket","outerwear","Mustard cropped collared jacket with a small embroidered chest detail and short boxy cut."],
+  "061": ["Black padded utility jacket","outerwear","Black padded jacket with multiple utility pockets and a high protective collar."],
+  "062": ["Brown rugged boots","footwear","Pair of brown rugged lace-up boots with substantial soles and a worn outdoor character."],
+  "063": ["Red low-top sneakers","footwear","Red low-top sneakers with contrasting white detailing and a casual athletic silhouette."],
+  "064": ["Black leather backpack","bags","Compact black leather-look backpack with a rounded top and front pocket."],
+  "065": ["Color-block hooded jacket","outerwear","Relaxed hooded jacket combining muted lavender, tan and olive panels with a layered color-block design."],
+  "066": ["Cream sculptural footwear detail","footwear","Close-up of light neutral footwear with sculptural layered construction and rounded forms."],
+  "067": ["Colorful outerwear collection","outerwear","Display of several colorful outerwear pieces in different graphic and utility styles."],
+  "068": ["Black-and-denim layered streetwear","sets","Dark streetwear look combining a black upper layer with blue denim bottoms and chain-like details."],
+  "069": ["Red-and-black varsity jacket","outerwear","Red-and-black varsity-style jacket with contrasting lettering and athletic-inspired paneling."],
+  "070": ["Black textured statement jacket","outerwear","Black statement jacket with a heavily textured, sculptural surface and voluminous silhouette."],
+  "071": ["Multicolor patchwork hooded jacket","outerwear","Patchwork-style hooded jacket covered in colorful illustrated fabric sections."],
+  "072": ["Black padded gloves","accessories","Pair of black padded gloves with a quilted or segmented construction."],
+  "073": ["Vintage leather jacket rack","outerwear","Several vintage-style leather jackets displayed together, showing dark worn finishes and varied cuts."],
+  "074": ["Orange-and-white graphic sneakers","footwear","Low-top sneakers with orange and white contrast panels and a sporty sole."],
+  "075": ["Red high-top sneakers","footwear","Red high-top sneakers with white laces and contrasting trim."],
+  "076": ["Black-white-red high-top sneaker","footwear","High-top sneaker combining black, white and red panels with a chunky athletic sole."],
+  "077": ["Blue leather jacket","outerwear","Blue-gray leather-style jacket with a front zip, chest pockets and a classic biker-inspired cut."],
+  "078": ["Blue ribbed knit top","shirts","Blue ribbed long-sleeve knit top with a simple fitted silhouette."],
+  "079": ["Tan western graphic jacket","outerwear","Tan jacket with a large western-style graphic across the back and a structured collar."],
+  "080": ["Patchwork striped jacket","outerwear","Jacket assembled from horizontal strips of contrasting fabrics and muted colors."],
+
+  "081": ["Abstract printed fitted top","shirts","Fitted long-sleeve top with a large abstract portrait-style print in dark neutral tones."],
+  "082": ["Tan graphic western jacket","outerwear","Tan western-inspired jacket with large illustrated artwork and decorative chest details."],
+  "083": ["Colorful illustrated jacket","outerwear","Bright multicolor jacket covered with dense abstract and illustrated graphics."],
+  "084": ["Mixed shirt and jacket collection","sets","A mixed clothing display featuring a light jacket, red plaid shirt and neutral knit pieces."],
+  "085": ["Tan zip-up graphic jacket","outerwear","Tan jacket with a high collar, zip front and bold graphic detailing around the chest and shoulders."],
+  "086": ["Gray graphic hooded sweatshirt","hoodies","Gray hooded sweatshirt with large collegiate-style lettering and numerals across the front."],
+  "087": ["Black embossed card wallet","accessories","Compact black leather-look card wallet with embossed detailing and multiple card slots."],
+  "088": ["Black graphic jacket","outerwear","Black jacket with a large contrasting graphic panel and structured zip-front construction."],
+  "089": ["Black knit beanie","headwear","Simple black knit beanie with a small decorative emblem on the front."],
+  "090": ["White relaxed outfit","sets","White short-sleeve top and matching relaxed trousers styled as a clean monochrome outfit."],
+  "091": ["Plain white T-shirt","shirts","Clean white short-sleeve T-shirt with a minimal front and no visible large graphic."],
+  "092": ["White utility trousers","bottoms","White wide-leg trousers with visible pocket and panel details for a utility-inspired look."],
+  "093": ["Colorful graphic slides","footwear","Open slide sandals with colorful printed straps and a flat casual sole."],
+  "094": ["Black padded gloves","accessories","Pair of black padded gloves with segmented construction and a rugged appearance."],
+  "095": ["Light blue patterned cap","headwear","Light blue cap featuring an all-over newspaper-style printed pattern."],
+  "096": ["Blue hooded leather-style jacket","outerwear","Blue jacket with a bright pink hood, front zip and compact hooded silhouette."],
+  "097": ["Burgundy graphic varsity jacket","outerwear","Burgundy varsity-style jacket with cream sleeves, bold front artwork and decorative trim."],
+  "098": ["Blue hooded leather-style jacket","outerwear","Blue jacket with a bright pink hood and front zip, shown as a clean product view."],
+  "099": ["Vintage dark leather jacket","outerwear","Dark vintage-style leather jacket with a worn finish, broad shoulders and classic utility details."],
+  "100": ["Black padded gloves","accessories","Pair of black padded gloves with a quilted texture and protective-looking construction."],
+  "101": ["White patterned shirt with pink trousers","sets","White button-front shirt with small dark patterning paired with loose pink trousers."],
+  "102": ["Brown rugged leather boot","footwear","Brown rugged boot with a thick treaded sole and raised ankle construction."],
+  "103": ["Sneaker display collage","footwear","Collage showing several sneaker styles and colorways, including red, blue, black and white pairs."],
+  "104": ["Mixed sneaker display","footwear","Display of multiple sneaker silhouettes and colorways arranged together as a footwear selection."],
+  "105": ["Red-and-black travel outfit","sets","Person wearing a coordinated red-and-black outfit with a matching bag in a retail setting."],
+  "106": ["Brown leather jacket detail","outerwear","Close-up of a brown leather-style jacket showing the collar, zipper and interior label area."],
+  "107": ["Khaki utility trouser detail","bottoms","Close-up of khaki utility trousers showing pocket construction and contrasting yellow detail."],
+  "108": ["White-and-blue running sneaker","footwear","White athletic sneaker with pale blue accents and a lightweight rounded sole."],
+  "109": ["Brown leather dress shoe","footwear","Brown leather-style lace-up dress shoe with a pointed toe and decorative stitched detailing."]
+};
 
 /* =========================================================
    CATEGORY FILTERS
@@ -298,32 +245,42 @@ const CATEGORIES = [
    ========================================================= */
 
 const PRODUCTS = Array.from(
-
   { length: PRODUCT_TOTAL },
-
   (_, index) => {
 
     const number = index + 1;
-
     const padded = String(number).padStart(3, "0");
 
-    const meta = META[index];
+    const visual = VISUAL_PRODUCT_DATA[padded];
 
     const name =
-      meta?.[0] ||
+      visual?.[0] ||
       `Area Boyz Product ${padded}`;
 
     const category =
-      meta?.[1] ||
+      visual?.[1] ||
       "streetwear";
 
-    const collection =
-      meta?.[2] ||
-      "streetwear";
+    const description =
+      visual?.[2] ||
+      `${name}. View the product photograph for the exact visible design, colour and construction.`;
 
-    const price =
-      meta?.[3] ??
-      100;
+    let collection = "streetwear";
+
+    if (category === "footwear") {
+      collection = "footwear";
+    }
+
+    if (
+      [
+        "bags",
+        "headwear",
+        "accessories",
+        "jewelry"
+      ].includes(category)
+    ) {
+      collection = "accessories";
+    }
 
     return {
 
@@ -337,12 +294,26 @@ const PRODUCTS = Array.from(
 
       collection,
 
-      price,
+      /*
+       * Prices are kept separate from visual identification.
+       * We are NOT guessing a product's price from its photograph.
+       */
+      price:
+        category === "footwear" ? 165 :
+        category === "outerwear" ? 180 :
+        category === "hoodies" ? 125 :
+        category === "sets" ? 160 :
+        category === "bags" ? 90 :
+        category === "headwear" ? 50 :
+        category === "accessories" ? 65 :
+        category === "bottoms" ||
+        category === "denim" ? 120 :
+        70,
 
-      image: `product-${padded}.jpg`,
+      image:
+        `product-${padded}.jpg`,
 
-      description:
-        `${name}. View the product photograph for the exact visible design, colour and construction.`,
+      description,
 
       details: [
 
@@ -350,7 +321,9 @@ const PRODUCTS = Array.from(
 
         `Category: ${category}`,
 
-        `Collection: ${collection}`
+        `Collection: ${collection}`,
+
+        "Product identity and description are based on the visible catalogue photograph."
 
       ]
 
