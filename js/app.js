@@ -1,171 +1,2385 @@
 "use strict";
 
-/* ===================== STORE CONFIG ===================== */
-const CONFIG={
-  currency:"USD",
-  storageKey:"areaBoyzCartV2",
-  // Put ONLY your Supabase project URL here. Never put the Flutterwave secret key here.
-  supabaseUrl:"",
-  paymentFunction:"create-payment",
-  shopName:"Area Boyz Enterprise",
-  logoUrl:""
+
+/* =========================================================
+   AREA BOYZ ENTERPRISE
+   IMAGE + STORE SYSTEM
+   =========================================================
+
+   REQUIRED IMAGE STRUCTURE:
+
+   images/
+   ├── hero/
+   │   ├── hero-1.jpg
+   │   ├── hero-2.jpg
+   │   ├── hero-3.jpg
+   │   ├── hero-4.jpg
+   │   ├── hero-5.jpg
+   │   └── hero-6.jpg
+   │
+   ├── products/
+   │   ├── product-001.jpg
+   │   ├── product-002.jpg
+   │   ├── ...
+   │   └── product-109.jpg
+   │
+   ├── categories/
+   │
+   └── collections/
+   ========================================================= */
+
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const CONFIG = {
+
+  currency: "USD",
+
+  storageKey: "areaBoyzCartV3",
+
+  /*
+    Put your Supabase project URL here after
+    your Edge Functions are deployed.
+
+    Example:
+
+    supabaseUrl:
+    "https://xxxxxxxx.supabase.co"
+  */
+
+  supabaseUrl: "",
+
+  paymentFunction: "create-payment",
+
+  verifyFunction: "verify-payment",
+
+  shopName: "Area Boyz Enterprise"
+
 };
 
-/* ===================== VISUAL CATALOGUE =====================
-   Names/descriptions are based on the photographs, not filenames.
-   Prices are the current storefront working prices and can be moved
-   into Supabase when the admin dashboard is built.
-*/
-const PRODUCTS=[
-{id:"ab-001",name:"Blue Spiked Low-Top Sneaker",category:"footwear",collection:"footwear",price:165,image:"IMG-20260909-WA0091.jpg",description:"Low-top sneaker with a blue-and-white upper and prominent blue spike-like sole detailing visible around the sidewall.",details:["Visible colour: blue, white","Type: sneaker","Feature: textured/spiked side detail"]},
-{id:"ab-002",name:"Brown Pointed Leather Shoe",category:"footwear",collection:"footwear",price:190,image:"IMG-20260909-WA0102.jpg",description:"Brown pointed shoe with a polished leather-looking finish, raised stitched details and a dressier silhouette.",details:["Visible colour: brown","Type: pointed shoe","Finish: polished leather-looking surface"]},
-{id:"ab-003",name:"Light Blue Hooded Shell Jacket",category:"outerwear",collection:"streetwear",price:180,image:"IMG-20260908-WA0069.jpg",description:"Light blue and cream hooded jacket with a contrasting darker lower section and a layered, technical-looking construction.",details:["Visible colours: light blue, cream, dark grey","Type: hooded jacket","Construction: colour-blocked panels"]},
-{id:"ab-004",name:"White Cropped Puffer Jacket",category:"outerwear",collection:"streetwear",price:155,image:"IMG-20260908-WA0070.jpg",description:"Short white padded jacket with a high collar and gathered detailing at the waist and cuffs.",details:["Visible colour: white","Type: cropped puffer jacket","Detail: gathered cuffs and waist"]},
-{id:"ab-005",name:"Spider-Man Graphic T-Shirt",category:"shirts",collection:"streetwear",price:55,image:"IMG-20260908-WA0073.jpg",description:"Light grey graphic T-shirt featuring a large Spider-Man print across the front.",details:["Visible colour: light grey","Type: graphic T-shirt","Graphic: Spider-Man artwork"]},
-{id:"ab-006",name:"Red Spider Graphic Hoodie",category:"hoodies",collection:"streetwear",price:120,image:"IMG-20260908-WA0074.jpg",description:"Red hooded sweatshirt with a large dark spider graphic and contrasting graphic details across the front and sleeves.",details:["Visible colour: red","Type: hoodie","Graphic: spider motif"]},
-{id:"ab-007",name:"White Polka-Dot Shirt with Pink Trousers",category:"sets",collection:"streetwear",price:110,image:"IMG-20260908-WA0084.jpg",description:"A styled outfit pairing a white long-sleeve shirt covered in small dark dots with relaxed pink trousers.",details:["Visible colours: white, pink","Type: coordinated outfit","Pattern: small dot print"]},
-{id:"ab-008",name:"Black Leather Zip Jacket",category:"outerwear",collection:"streetwear",price:210,image:"IMG-20260909-WA0092.jpg",description:"Black leather-looking jacket with a front zip, collar and visible pocket construction.",details:["Visible colour: black","Type: leather-style jacket","Feature: front zip and pockets"]},
-{id:"ab-009",name:"Patchwork Multicolour Jacket",category:"outerwear",collection:"handmade",price:240,image:"IMG-20260909-WA0094.jpg",description:"Multicolour jacket assembled from contrasting patterned and solid fabric panels, giving it a distinctly patchwork appearance.",details:["Visible colours: multicolour","Type: patchwork jacket","Feature: mixed fabric panels"]},
-{id:"ab-010",name:"Red and Black Racing Jacket",category:"outerwear",collection:"streetwear",price:220,image:"IMG-20260909-WA0107.jpg",description:"Red racing-style jacket with black panels and multiple visible motorsport-style badges and patches.",details:["Visible colours: red, black","Type: racing jacket","Feature: multiple patches"]},
-{id:"ab-011",name:"Brown High-Collar Patch Jacket",category:"outerwear",collection:"streetwear",price:235,image:"IMG-20260909-WA0108.jpg",description:"Brown jacket with a wide ribbed high collar and large decorative graphic artwork across the front.",details:["Visible colour: brown","Type: high-collar jacket","Feature: large front artwork"]},
-{id:"ab-012",name:"White Graphic Pullover Hoodie",category:"hoodies",collection:"streetwear",price:125,image:"IMG-20260909-WA0109.jpg",description:"White hooded pullover with large dark lettering and graphic treatment across the chest.",details:["Visible colour: white","Type: hoodie","Graphic: large chest lettering"]},
-{id:"ab-013",name:"Blue Quilted Cropped Jacket",category:"outerwear",collection:"streetwear",price:150,image:"IMG-20260909-WA0111.jpg",description:"Blue quilted jacket with a bright pink hood and a compact cropped shape.",details:["Visible colours: blue, pink","Type: quilted jacket","Feature: contrasting hood"]},
-{id:"ab-014",name:"Brown Oversized Goggles",category:"accessories",collection:"accessories",price:90,image:"IMG-20260909-WA0112.jpg",description:"Large brown protective-style goggles with a wide frame and strap-like side construction.",details:["Visible colour: brown","Type: eyewear","Shape: oversized frame"]},
-{id:"ab-015",name:"Pink and Cream Hand-Knitted Piece",category:"handmade",collection:"handmade",price:85,image:"IMG-20260909-WA0115.jpg",description:"Pink and cream hand-knitted textile piece with a chunky stitched texture and concentric colour sections.",details:["Visible colours: pink, cream","Type: knitted piece","Texture: chunky knit"]},
-{id:"ab-016",name:"Denim Face-Cover Hood",category:"accessories",collection:"accessories",price:75,image:"IMG-20260909-WA0116.jpg",description:"Blue denim-style face covering with layered construction around the head and neck.",details:["Visible colour: denim blue","Type: face covering","Construction: layered fabric"]},
-{id:"ab-017",name:"Pink Ribbed Beanie",category:"headwear",collection:"accessories",price:45,image:"IMG-20260909-WA0118.jpg",description:"Soft-looking pink ribbed knit beanie with a folded construction and visible vertical texture.",details:["Visible colour: pink","Type: beanie","Texture: ribbed knit"]},
-{id:"ab-018",name:"Black Hooded Graphic Jacket",category:"hoodies",collection:"streetwear",price:145,image:"IMG-20260909-WA0120.jpg",description:"Black hooded outer layer with a purple-red graphic running down the front and contrasting purple detailing.",details:["Visible colours: black, purple, red","Type: hooded jacket","Graphic: vertical front print"]},
-{id:"ab-019",name:"Black Leopard Graphic T-Shirt",category:"shirts",collection:"streetwear",price:60,image:"IMG-20260909-WA0121.jpg",description:"Black T-shirt with a large tan leopard-style graphic dominating the front.",details:["Visible colour: black","Type: graphic T-shirt","Graphic: leopard motif"]},
-{id:"ab-020",name:"Black Logo Bucket Hat",category:"headwear",collection:"accessories",price:45,image:"IMG-20260909-WA0122.jpg",description:"Black bucket hat with a small white front mark and a compact everyday silhouette.",details:["Visible colour: black","Type: bucket hat","Detail: small front logo"]},
-{id:"ab-021",name:"Camouflage Baseball Caps",category:"headwear",collection:"accessories",price:40,image:"IMG-20260909-WA0123.jpg",description:"Set of dark camouflage-pattern baseball caps shown together with curved brims and printed front areas.",details:["Visible colour: camouflage tones","Type: baseball caps","Pattern: camouflage"]},
-{id:"ab-022",name:"Long Mesh Knit Top",category:"shirts",collection:"handmade",price:95,image:"IMG-20260909-WA0124.jpg",description:"Long sleeveless open-knit top with a narrow, elongated silhouette and visible mesh texture.",details:["Visible colour: cream/white","Type: knit top","Texture: open mesh knit"]},
-{id:"ab-023",name:"Sheer Open-Knit Top",category:"shirts",collection:"handmade",price:90,image:"IMG-20260909-WA0125.jpg",description:"Sheer cream sleeveless top with a close repeating knit pattern and an open, lightweight appearance.",details:["Visible colour: cream","Type: knit top","Texture: sheer/open knit"]},
-{id:"ab-024",name:"Wave Sole Running Sneaker",category:"footwear",collection:"footwear",price:170,image:"IMG-20260909-WA0126.jpg",description:"Silver and white running-style sneaker with a sculpted wavy sole and layered upper.",details:["Visible colours: silver, white","Type: running sneaker","Feature: sculpted sole"]},
-{id:"ab-025",name:"Brown Knit Zip Beanie",category:"headwear",collection:"accessories",price:42,image:"IMG-20260909-WA0127.jpg",description:"Brown ribbed knit beanie with a small contrasting zipper detail near the side.",details:["Visible colour: brown","Type: beanie","Detail: side zip"]},
-{id:"ab-026",name:"Olive Bomber Jacket",category:"outerwear",collection:"streetwear",price:150,image:"IMG-20260909-WA0128.jpg",description:"Olive green bomber jacket with a black ribbed collar, cuffs and waistband.",details:["Visible colour: olive green","Type: bomber jacket","Detail: black ribbed trims"]},
-{id:"ab-027",name:"Brown Suiting Street Look",category:"sets",collection:"streetwear",price:260,image:"IMG-20260909-WA0129.jpg",description:"Styled look combining a brown jacket with a dark high-neck top and wide dark trousers.",details:["Visible colours: brown, black","Type: coordinated look","Silhouette: relaxed trousers"]},
-{id:"ab-028",name:"Blue Shearling-Style Jacket",category:"outerwear",collection:"streetwear",price:190,image:"IMG-20260909-WA0130.jpg",description:"Blue jacket with a cream shearling-style collar, colourful centre details and a dark lower section.",details:["Visible colours: blue, cream","Type: jacket","Feature: contrast collar"]},
-{id:"ab-029",name:"Grey Shearling-Style Jacket",category:"outerwear",collection:"streetwear",price:195,image:"IMG-20260909-WA0131.jpg",description:"Grey and black jacket with a cream shearling-style collar and a bright pink central layer visible underneath.",details:["Visible colours: grey, black, cream","Type: jacket","Feature: contrast collar"]},
-{id:"ab-030",name:"Graphic Bucket Hat",category:"headwear",collection:"accessories",price:50,image:"IMG-20260909-WA0132.jpg",description:"Bucket hat covered in colourful illustrated graphics and collage-like artwork.",details:["Visible colours: multicolour","Type: bucket hat","Pattern: illustrated graphics"]},
-{id:"ab-031",name:"Green Graphic Face Cover",category:"accessories",collection:"accessories",price:65,image:"IMG-20260909-WA0133.jpg",description:"Green face covering with repeated black-and-white graphic faces and a layered textile construction.",details:["Visible colour: green","Type: face covering","Graphic: repeated faces"]},
-{id:"ab-032",name:"Cream and Blue Knit Textile",category:"handmade",collection:"handmade",price:80,image:"IMG-20260909-WA0138.jpg",description:"Long cream, blue and pink hand-knitted textile with thick horizontal bands and a chunky tactile surface.",details:["Visible colours: cream, blue, pink","Type: knitted textile","Texture: chunky bands"]},
-{id:"ab-033",name:"Dark Printed Bomber Jacket",category:"outerwear",collection:"streetwear",price:210,image:"IMG-20260909-WA0143.jpg",description:"Dark brown and black jacket with a glossy, printed surface and decorative artwork across the front.",details:["Visible colours: brown, black","Type: bomber-style jacket","Surface: printed/glossy"]},
-{id:"ab-034",name:"Comic Face Long-Sleeve Shirt",category:"shirts",collection:"streetwear",price:100,image:"IMG-20260909-WA0145.jpg",description:"Long-sleeve shirt featuring repeated large comic-style face graphics in black, white and red.",details:["Visible colours: black, white, red","Type: long-sleeve shirt","Graphic: comic faces"]},
-{id:"ab-035",name:"Printed Baseball Cap",category:"headwear",collection:"accessories",price:48,image:"IMG-20260909-WA0146.jpg",description:"Light cap with a newspaper-style all-over print and curved brim.",details:["Visible colours: cream, black","Type: baseball cap","Pattern: text/newsprint"]},
-{id:"ab-036",name:"Brown Embroidered Bomber",category:"outerwear",collection:"streetwear",price:180,image:"IMG-20260909-WA0147.jpg",description:"Brown bomber-style jacket with small embroidered or stitched motifs and a dark ribbed waistband.",details:["Visible colour: brown","Type: bomber jacket","Detail: embroidery/stitched motifs"]},
-{id:"ab-037",name:"Wide-Leg Blue Denim",category:"denim",collection:"streetwear",price:120,image:"IMG-20260909-WA0148.jpg",description:"Dark blue wide-leg denim trousers with large front and side pocket detailing.",details:["Visible colour: dark blue","Type: wide-leg denim","Feature: utility pockets"]},
-{id:"ab-038",name:"Monogram Flip-Flop Slides",category:"footwear",collection:"footwear",price:65,image:"IMG-20260909-WA0150.jpg",description:"Dark flip-flop style slides with a repeating monogram-like pattern across the straps and footbed.",details:["Visible colour: dark grey","Type: slides","Pattern: monogram-style print"]},
-{id:"ab-039",name:"Blue and White Rugby Shirt",category:"shirts",collection:"streetwear",price:95,image:"IMG-20260909-WA0151.jpg",description:"Blue, white and green striped rugby-style shirt with a broad collar and large number detail.",details:["Visible colours: blue, white, green","Type: rugby shirt","Feature: striped panels"]},
-{id:"ab-040",name:"Colour-Block Track Jacket",category:"outerwear",collection:"streetwear",price:145,image:"IMG-20260909-WA0152.jpg",description:"Colour-block track jacket with a green centre, pink sleeves and a hooded upper section.",details:["Visible colours: green, pink","Type: track jacket","Feature: colour blocking"]},
-{id:"ab-041",name:"Brown Embroidered Work Jacket",category:"outerwear",collection:"handmade",price:215,image:"IMG-20260909-WA0153.jpg",description:"Brown jacket with visible stitched animal-like motifs and decorative repairs or embroidery across the front.",details:["Visible colour: brown","Type: work jacket","Detail: visible embroidery/patching"]},
-{id:"ab-042",name:"Pink Cartoon Graphic Jacket",category:"outerwear",collection:"streetwear",price:185,image:"IMG-20260909-WA0154.jpg",description:"Bright pink jacket featuring large cartoon graphics and bold green lettering across the front.",details:["Visible colour: pink","Type: graphic jacket","Graphic: cartoon artwork"]},
-{id:"ab-043",name:"Black Graphic Denim Jacket",category:"outerwear",collection:"streetwear",price:175,image:"IMG-20260909-WA0155.jpg",description:"Black denim-style jacket with large red and white graphic artwork across the back.",details:["Visible colour: black","Type: denim-style jacket","Graphic: large back print"]},
-{id:"ab-044",name:"Blue Utility Denim Trousers",category:"denim",collection:"streetwear",price:125,image:"IMG-20260909-WA0156.jpg",description:"Blue denim trousers with oversized stitched pockets and visible panel construction.",details:["Visible colour: blue","Type: denim trousers","Feature: large utility pockets"]},
-{id:"ab-045",name:"Green Painted Face Cap",category:"headwear",collection:"accessories",price:50,image:"IMG-20260909-WA0157.jpg",description:"Green cap featuring a painted or printed face illustration with contrasting pale details.",details:["Visible colour: green","Type: cap","Graphic: illustrated face"]},
-{id:"ab-046",name:"Comic Graphic Shirt",category:"shirts",collection:"streetwear",price:105,image:"IMG-20260909-WA0158.jpg",description:"Black-and-white long-sleeve shirt displaying repeated bold comic-style face artwork.",details:["Visible colours: black, white","Type: graphic shirt","Graphic: comic-style faces"]},
-{id:"ab-047",name:"Leopard Print Bomber",category:"outerwear",collection:"streetwear",price:190,image:"IMG-20260909-WA0159.jpg",description:"Bomber jacket with a prominent leopard-print back panel and contrasting olive sleeves.",details:["Visible colours: leopard print, olive","Type: bomber jacket","Pattern: leopard print"]},
-{id:"ab-048",name:"Red Cropped Bomber with Fur Collar",category:"outerwear",collection:"streetwear",price:175,image:"IMG-20260909-WA0160.jpg",description:"Red cropped bomber jacket with a plush-looking collar and layered dark-and-green neck details.",details:["Visible colour: red","Type: cropped bomber","Feature: fur-style collar"]},
-{id:"ab-049",name:"Oversized Brown Cap",category:"headwear",collection:"accessories",price:55,image:"IMG-20260909-WA0161.jpg",description:"Brown oversized cap with a curved brim and extended side coverage.",details:["Visible colour: brown","Type: cap","Shape: oversized"]},
-{id:"ab-050",name:"Floral Black Bomber",category:"outerwear",collection:"streetwear",price:175,image:"IMG-20260909-WA0162.jpg",description:"Black bomber jacket decorated with large pink and red floral graphics across the front and sleeves.",details:["Visible colour: black","Type: bomber jacket","Graphic: floral print"]},
-{id:"ab-051",name:"Black Graphic Tee with Eye Artwork",category:"shirts",collection:"streetwear",price:60,image:"IMG-20260909-WA0223.jpg",description:"Black T-shirt with a large pair of eye graphics dominating the front.",details:["Visible colour: black","Type: graphic T-shirt","Graphic: eye artwork"]},
-{id:"ab-052",name:"Red Distressed Graphic Trousers",category:"bottoms",collection:"streetwear",price:115,image:"IMG-20260909-WA0219.jpg",description:"Red trousers with distressed details, patch graphics and a visibly worn streetwear treatment.",details:["Visible colour: red","Type: trousers","Feature: distressed graphics"]},
-{id:"ab-053",name:"Black and White Air Graphic Jacket",category:"outerwear",collection:"streetwear",price:200,image:"IMG-20260909-WA0221.jpg",description:"Black-and-white jacket with a large light-coloured AIR graphic across the chest and contrasting sleeves.",details:["Visible colours: black, white","Type: jacket","Graphic: AIR chest print"]},
-{id:"ab-054",name:"Blue Denim Cargo Shorts",category:"denim",collection:"streetwear",price:95,image:"IMG-20260909-WA0226.jpg",description:"Blue denim shorts with large cargo-style side pockets and visible stitched panel details.",details:["Visible colour: blue","Type: denim shorts","Feature: cargo pockets"]},
-{id:"ab-055",name:"White Platform Sneaker",category:"footwear",collection:"footwear",price:180,image:"bd5a5f074742a6cdfc531bc08cfd7389.png",description:"White athletic sneaker with pale blue linework and a chunky sculpted sole.",details:["Visible colours: white, pale blue","Type: sneaker","Feature: chunky sole"]},
-{id:"ab-056",name:"Brown Lug-Sole Shoe",category:"footwear",collection:"footwear",price:185,image:"d095d57b5b2567da0bfd946a16eb8a42.png",description:"Brown shoe with a rugged lugged sole, rounded toe and darker upper detailing.",details:["Visible colour: brown","Type: lug-sole shoe","Feature: rugged sole"]},
-{id:"ab-057",name:"Blue Low-Top Sneaker Pair",category:"footwear",collection:"footwear",price:155,image:"he-4.jpg",description:"Pair of blue low-top sneakers with white midsoles and a clean athletic profile.",details:["Visible colours: blue, white","Type: low-top sneaker","Feature: white midsole"]},
-{id:"ab-058",name:"Black-and-White Platform Boots",category:"footwear",collection:"footwear",price:210,image:"hero-4.jpg",description:"Black and white tall platform footwear with contrasting wrapped bands and a bold graphic silhouette.",details:["Visible colours: black, white","Type: platform boots","Feature: tall wrapped upper"]},
-{id:"ab-059",name:"Blue and Brown Leather Sneaker",category:"footwear",collection:"footwear",price:195,image:"88adbfdd49fa2a8a630351983f71b449.png",description:"Brown-and-blue low-top sneaker with layered panels and a white sole.",details:["Visible colours: brown, blue, white","Type: sneaker","Construction: layered panels"]},
-{id:"ab-060",name:"Printed Floral Shirt",category:"shirts",collection:"streetwear",price:95,image:"IMG-20260909-WA0184.jpg",description:"Shirt with a multicolour graphic pattern across a dark base and a collared silhouette.",details:["Visible colours: multicolour","Type: shirt","Pattern: graphic print"]},
-{id:"ab-061",name:"Embroidered Beige Utility Jacket",category:"outerwear",collection:"handmade",price:205,image:"IMG-20260909-WA0185.jpg",description:"Beige utility-style jacket decorated with dark embroidered motifs on the sleeves and chest.",details:["Visible colour: beige","Type: utility jacket","Detail: dark embroidery"]},
-{id:"ab-062",name:"White Graphic Cartoon Tee",category:"shirts",collection:"streetwear",price:55,image:"IMG-20260909-WA0204.jpg",description:"White T-shirt with a small colourful cartoon character graphic on the chest.",details:["Visible colour: white","Type: graphic T-shirt","Graphic: cartoon character"]},
-{id:"ab-063",name:"Yellow Statement Text Tee",category:"shirts",collection:"streetwear",price:58,image:"IMG-20260909-WA0211.jpg",description:"Yellow T-shirt carrying a large black statement phrase across the front.",details:["Visible colour: yellow","Type: graphic T-shirt","Graphic: large text"]},
-{id:"ab-064",name:"Patchwork Camo Windbreaker",category:"outerwear",collection:"streetwear",price:170,image:"IMG-20260909-WA0213.jpg",description:"Lightweight jacket with a colourful camouflage-inspired patchwork print and zip front.",details:["Visible colours: multicolour","Type: windbreaker","Pattern: camouflage-inspired print"]},
-{id:"ab-065",name:"Purple Hooded Jacket",category:"outerwear",collection:"streetwear",price:145,image:"IMG-20260909-WA0214.jpg",description:"Purple lightweight hooded jacket with a simple zip-front construction and loose fit.",details:["Visible colour: purple","Type: hooded jacket","Construction: zip front"]},
-{id:"ab-066",name:"Blue Graphic Camo Jacket",category:"outerwear",collection:"streetwear",price:180,image:"IMG-20260909-WA0215.jpg",description:"Blue jacket covered in bold graphic camouflage-style shapes with contrasting dark and pale panels.",details:["Visible colours: blue, black, pale tones","Type: graphic jacket","Pattern: camouflage-inspired"]},
-{id:"ab-067",name:"Cream and Brown Knit Layer",category:"handmade",collection:"handmade",price:90,image:"IMG-20260909-WA0217.jpg",description:"Cream knit layer worn over a brown textured garment, showing a soft oversized scarf-like front construction.",details:["Visible colours: cream, brown","Type: knit layer","Texture: soft knit"]},
-{id:"ab-068",name:"Distressed Zip-Up Hoodie",category:"hoodies",collection:"streetwear",price:135,image:"IMG-20260909-WA0218.jpg",description:"Grey zip-up hoodie with a distressed washed finish and oversized dark zipper pull.",details:["Visible colour: grey","Type: zip hoodie","Finish: distressed/washed"]},
-{id:"ab-069",name:"Red Patchwork Cargo Trousers",category:"bottoms",collection:"streetwear",price:125,image:"IMG-20260909-WA0225.jpg",description:"Loose red and tan cargo trousers with contrasting patches, large pockets and a visibly utilitarian cut.",details:["Visible colours: red, tan","Type: cargo trousers","Feature: large utility pockets"]},
-{id:"ab-070",name:"Grey Embellished Knit Top",category:"shirts",collection:"handmade",price:130,image:"IMG-20260909-WA0195.jpg",description:"Grey top displayed with decorative sparkling or studded elements arranged around the chest and sleeves.",details:["Visible colour: grey","Type: embellished top","Detail: decorative studs/ornament"]},
-{id:"ab-071",name:"Long Embellished Scarf",category:"accessories",collection:"accessories",price:80,image:"IMG-20260909-WA0196.jpg",description:"Long narrow accessory decorated with layered beads, metallic details and colourful ornamentation.",details:["Visible colours: blue, gold, multicolour","Type: embellished accessory","Detail: beads and ornaments"]},
-{id:"ab-072",name:"Grey Distressed Knit Top",category:"shirts",collection:"handmade",price:120,image:"IMG-20260909-WA0198.jpg",description:"Grey knit top with distressed/open sections and dangling textured details along the edges.",details:["Visible colour: grey","Type: distressed knit top","Feature: open sections"]},
-{id:"ab-073",name:"Tan Fringe Hat",category:"headwear",collection:"handmade",price:75,image:"IMG-20260909-WA0202.jpg",description:"Tan handmade-looking hat with uneven fringe and a rough, intentionally distressed surface.",details:["Visible colour: tan","Type: handmade-style hat","Feature: fringe/distressing"]},
-{id:"ab-074",name:"Patchwork Tattered Cape",category:"outerwear",collection:"handmade",price:190,image:"IMG-20260909-WA0206.jpg",description:"Dark garment made from layered and distressed fabric pieces with long hanging strips and an intentionally rough finish.",details:["Visible colours: dark grey, blue, cream","Type: patchwork outer layer","Feature: hanging fabric strips"]},
-{id:"ab-075",name:"Blue Ribbed Beanie",category:"headwear",collection:"accessories",price:42,image:"IMG-20260909-WA0209.jpg",description:"Simple blue ribbed knit beanie with a close-fitting shape.",details:["Visible colour: blue","Type: beanie","Texture: ribbed knit"]},
-{id:"ab-076",name:"White Kanye West Graphic Tee",category:"shirts",collection:"streetwear",price:60,image:"IMG-20260909-WA0210.jpg",description:"White T-shirt with colourful Kanye West text and a cartoon-style bear graphic near the lower front.",details:["Visible colour: white","Type: graphic T-shirt","Graphic: text and cartoon bear"]},
-{id:"ab-077",name:"Red Graphic Stripe Tee",category:"shirts",collection:"streetwear",price:60,image:"IMG-20260909-WA0220.jpg",description:"White T-shirt with a bold red-and-black graphic and prominent printed lettering across the front.",details:["Visible colours: white, red, black","Type: graphic T-shirt","Graphic: bold front print"]},
-{id:"ab-078",name:"White Graphic Air Tee",category:"shirts",collection:"streetwear",price:58,image:"IMG-20260909-WA0222.jpg",description:"White T-shirt with a large black-and-blue AIR-themed graphic on the chest.",details:["Visible colour: white","Type: graphic T-shirt","Graphic: AIR artwork"]},
-{id:"ab-079",name:"Black Eye Graphic Tee",category:"shirts",collection:"streetwear",price:60,image:"IMG-20260909-WA0223.jpg",description:"Black T-shirt featuring a large realistic-looking eye graphic across the front.",details:["Visible colour: black","Type: graphic T-shirt","Graphic: eye artwork"]},
-{id:"ab-080",name:"Red and Black Styled Set",category:"sets",collection:"streetwear",price:240,image:"Screenshot_20260728-131350_Snapchat.jpg",description:"Styled red-and-black outfit with coordinated top and trousers, shown with a matching dark bag.",details:["Visible colours: red, black","Type: coordinated outfit","Styling: matching set"]}
+
+/* =========================================================
+   IMAGE PATHS
+   ========================================================= */
+
+const PATHS = {
+
+  hero: "images/hero/",
+
+  products: "images/products/",
+
+  categories: "images/categories/",
+
+  collections: "images/collections/"
+
+};
+
+
+const PRODUCT_TOTAL = 109;
+
+
+/* =========================================================
+   HERO IMAGES
+   ========================================================= */
+
+const HEROES = [
+
+  "hero-1.jpg",
+  "hero-2.jpg",
+  "hero-3.jpg",
+  "hero-4.jpg",
+  "hero-5.jpg",
+  "hero-6.jpg"
+
 ];
 
-const $=(s,p=document)=>p.querySelector(s), $$=(s,p=document)=>[...p.querySelectorAll(s)];
-const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:CONFIG.currency,maximumFractionDigits:2}).format(Number(n)||0);
-const escapeHTML=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-const imagePath=name=>`images/catalog/${encodeURIComponent(name)}`;
-let state={collection:"all",query:"",sort:"featured",cart:loadCart(),selectedImage:null};
 
-function loadCart(){try{const x=JSON.parse(localStorage.getItem(CONFIG.storageKey)||"[]");return Array.isArray(x)?x:[]}catch{return[]}}
-function saveCart(){localStorage.setItem(CONFIG.storageKey,JSON.stringify(state.cart));updateCartUI()}
-function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove("show"),2600)}
-function product(id){return PRODUCTS.find(p=>p.id===id)}
-function filtered(){let list=PRODUCTS.filter(p=>state.collection==="all"||p.collection===state.collection);if(state.query){const q=state.query.toLowerCase();list=list.filter(p=>`${p.name} ${p.category} ${p.collection} ${p.description}`.toLowerCase().includes(q))}if(state.sort==="low")list.sort((a,b)=>a.price-b.price);if(state.sort==="high")list.sort((a,b)=>b.price-a.price);if(state.sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name));return list}
-function renderFilters(){const cats=["all","streetwear","handmade","footwear","accessories"];$("#filters").innerHTML=cats.map(c=>`<button class="filter ${state.collection===c?"active":""}" data-filter="${c}">${c[0].toUpperCase()+c.slice(1)}</button>`).join("")}
-function renderProducts(){const list=filtered();$("#resultsMeta").textContent=`${list.length} product${list.length===1?"":"s"} shown`;$("#productGrid").innerHTML=list.map(p=>`<article class="product"><button class="product-media" data-open="${p.id}" aria-label="View ${escapeHTML(p.name)}"><img src="${imagePath(p.image)}" alt="${escapeHTML(p.name)}" loading="lazy"><span class="product-tag">${escapeHTML(p.category)}</span></button><div class="product-body"><h3>${escapeHTML(p.name)}</h3><p>${escapeHTML(p.description)}</p><div class="product-row"><span class="price">${money(p.price)}</span><button class="mini-btn" data-add="${p.id}">Add</button></div></div></article>`).join("");$("#emptyState").classList.toggle("hidden",list.length>0)}
-function openModal(id){const p=product(id);if(!p)return;$("#modalContent").innerHTML=`<div class="modal-product"><div><div class="modal-product-main"><img id="modalImage" src="${imagePath(p.image)}" alt="${escapeHTML(p.name)}"></div><div class="thumbs"><button class="active"><img src="${imagePath(p.image)}" alt=""></button></div></div><div class="modal-info"><p class="eyebrow">${escapeHTML(p.collection.toUpperCase())}</p><h2>${escapeHTML(p.name)}</h2><div class="price">${money(p.price)}</div><p class="desc">${escapeHTML(p.description)}</p><ul class="detail-list">${p.details.map(x=>`<li><span>${escapeHTML(x.split(":")[0])}</span><strong>${escapeHTML(x.includes(":")?x.split(":").slice(1).join(":").trim():x)}</strong></li>`).join("")}</ul><button class="btn dark full" data-add="${p.id}">Add to bag</button><p class="notice">The description is intentionally limited to details visible in the supplied photograph. No filename-based claims are used.</p></div></div>`;$("#productModal").classList.add("open");$("#productModal").setAttribute("aria-hidden","false");document.body.classList.add("lock")}
-function closeModal(){$("#productModal").classList.remove("open");$("#productModal").setAttribute("aria-hidden","true");document.body.classList.remove("lock")}
-function add(id){const p=product(id);if(!p)return;const line=state.cart.find(x=>x.id===id);if(line)line.qty++;else state.cart.push({id,qty:1});saveCart();toast(`${p.name} added to your bag.`)}
-function change(id,delta){const x=state.cart.find(i=>i.id===id);if(!x)return;x.qty+=delta;if(x.qty<=0)state.cart=state.cart.filter(i=>i.id!==id);saveCart();renderCart()}
-function subtotal(){return state.cart.reduce((s,x)=>s+(product(x.id)?.price||0)*x.qty,0)}
-function renderCart(){const wrap=$("#cartItems");if(!state.cart.length){wrap.innerHTML=`<div class="empty"><i class="fa-solid fa-bag-shopping"></i><h3>Your bag is empty</h3><p>Add something from the catalogue.</p></div>`;$("#cartTotal").textContent=money(0);return}wrap.innerHTML=state.cart.map(x=>{const p=product(x.id);return `<div class="cart-line"><img src="${imagePath(p.image)}" alt="${escapeHTML(p.name)}"><div><h4>${escapeHTML(p.name)}</h4><small>${money(p.price)} each</small><div class="qty"><button data-qty="${p.id}" data-delta="-1">גˆ’</button><strong>${x.qty}</strong><button data-qty="${p.id}" data-delta="1">+</button></div><button class="remove" data-remove="${p.id}">Remove</button></div><strong>${money(p.price*x.qty)}</strong></div>`}).join("");$("#cartTotal").textContent=money(subtotal())}
-function updateCartUI(){$("#cartCount").textContent=state.cart.reduce((s,x)=>s+x.qty,0);renderCart()}
-function openCart(){$("#cartDrawer").classList.add("open");$("#drawerBackdrop").classList.add("show");$("#cartDrawer").setAttribute("aria-hidden","false");document.body.classList.add("lock")}
-function closeCart(){$("#cartDrawer").classList.remove("open");$("#drawerBackdrop").classList.remove("show");$("#cartDrawer").setAttribute("aria-hidden","true");document.body.classList.remove("lock")}
-function checkoutForm(){if(!state.cart.length){toast("Your bag is empty.");return}const total=money(subtotal());$("#cartItems").innerHTML=`<form class="checkout-form" id="checkoutForm"><h3>Checkout</h3><div class="notice">Order total: <strong>${total}</strong></div><label>Full name<input name="name" required autocomplete="name"></label><label>Email<input name="email" type="email" required autocomplete="email"></label><label>Phone<input name="phone" required autocomplete="tel"></label><button class="btn dark full" type="submit">Continue to Flutterwave</button><div id="checkoutError" class="error"></div><button type="button" class="text-btn" id="backToCart">ג† Back to bag</button></form>`;$("#checkoutForm").addEventListener("submit",startPayment);$("#backToCart").addEventListener("click",renderCart)}
-async function startPayment(e){e.preventDefault();const form=new FormData(e.currentTarget);const customer={name:String(form.get("name")).trim(),email:String(form.get("email")).trim(),phone:String(form.get("phone")).trim()};const error=$("#checkoutError");if(!customer.name||!customer.email||!customer.phone){error.textContent="Please complete all fields.";return}if(!CONFIG.supabaseUrl){error.textContent="Checkout is not connected yet. Add your Supabase project URL in js/app.js after the Edge Function is deployed.";return}const button=e.currentTarget.querySelector("button[type=submit]");button.disabled=true;button.textContent="Creating secure checkoutג€¦";try{const response=await fetch(`${CONFIG.supabaseUrl.replace(/\/$/,"")}/functions/v1/${CONFIG.paymentFunction}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({customer,items:state.cart.map(x=>({id:x.id,qty:x.qty})),redirect_url:`${location.origin}${location.pathname}`})});const data=await response.json().catch(()=>({}));if(!response.ok||!data.link)throw new Error(data.error||"Unable to create the payment link.");localStorage.setItem("areaBoyzPendingTx",data.tx_ref||"");location.href=data.link}catch(err){error.textContent=err.message||"Unable to start checkout.";button.disabled=false;button.textContent="Continue to Flutterwave"}}
-async function handlePaymentReturn(){
-  const q=new URLSearchParams(location.search);
-  const status=q.get("status");
-  const transactionId=q.get("transaction_id");
-  const txRef=q.get("tx_ref")||localStorage.getItem("areaBoyzPendingTx")||"";
-  if(!status && !transactionId)return;
+/* =========================================================
+   PRODUCT INFORMATION
+   =========================================================
 
-  if(status==="cancelled"){
-    toast("Payment was cancelled. Your bag is still here.");
-  }else if(status==="failed"){
-    toast("Payment was not completed. Your bag is still here.");
-  }else if(status==="successful" && transactionId && txRef){
-    if(!CONFIG.supabaseUrl){
-      toast("Payment returned, but verification is not connected yet.");
-    }else{
-      toast("Verifying your paymentג€¦");
-      try{
-        const response=await fetch(`${CONFIG.supabaseUrl.replace(/\/$/,"")}/functions/v1/verify-payment`,{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({transaction_id:transactionId,tx_ref:txRef})
-        });
-        const data=await response.json().catch(()=>({}));
-        if(!response.ok || !data.verified){
-          throw new Error(data.error||"Payment verification failed. Your bag has been kept safe.");
-        }
-        state.cart=[];
-        saveCart();
-        localStorage.removeItem("areaBoyzPendingTx");
-        localStorage.setItem("areaBoyzLastTx",txRef);
-        toast("Payment verified successfully. Thank you for your order!");
-      }catch(err){
-        toast(err.message||"We could not verify the payment yet.");
-      }
-    }
+   The first 80 products preserve the previous catalogue
+   names/categories/prices.
+
+   They now use:
+
+   product-001.jpg
+   product-002.jpg
+   ...
+   product-080.jpg
+
+   Products 081-109 are automatically included.
+   ========================================================= */
+
+const META = [
+
+  ["Blue Spiked Low-Top Sneaker","footwear","footwear",165],
+
+  ["Brown Pointed Leather Shoe","footwear","footwear",190],
+
+  ["Light Blue Hooded Shell Jacket","outerwear","streetwear",180],
+
+  ["White Cropped Puffer Jacket","outerwear","streetwear",155],
+
+  ["Spider-Man Graphic T-Shirt","shirts","streetwear",55],
+
+  ["Red Spider Graphic Hoodie","hoodies","streetwear",120],
+
+  ["White Polka-Dot Shirt with Pink Trousers","sets","streetwear",110],
+
+  ["Black Leather Zip Jacket","outerwear","streetwear",210],
+
+  ["Patchwork Multicolour Jacket","outerwear","handmade",240],
+
+  ["Red and Black Racing Jacket","outerwear","streetwear",220],
+
+  ["Brown High-Collar Patch Jacket","outerwear","streetwear",235],
+
+  ["White Graphic Pullover Hoodie","hoodies","streetwear",125],
+
+  ["Blue Quilted Cropped Jacket","outerwear","streetwear",150],
+
+  ["Brown Oversized Goggles","accessories","accessories",90],
+
+  ["Pink and Cream Hand-Knitted Piece","handmade","handmade",85],
+
+  ["Denim Face-Cover Hood","accessories","accessories",75],
+
+  ["Pink Ribbed Beanie","headwear","accessories",45],
+
+  ["Black Hooded Graphic Jacket","hoodies","streetwear",145],
+
+  ["Black Leopard Graphic T-Shirt","shirts","streetwear",60],
+
+  ["Black Logo Bucket Hat","headwear","accessories",45],
+
+  ["Camouflage Baseball Caps","headwear","accessories",40],
+
+  ["Long Mesh Knit Top","shirts","handmade",95],
+
+  ["Sheer Open-Knit Top","shirts","handmade",90],
+
+  ["Wave Sole Running Sneaker","footwear","footwear",170],
+
+  ["Brown Knit Zip Beanie","headwear","accessories",42],
+
+  ["Olive Bomber Jacket","outerwear","streetwear",150],
+
+  ["Brown Suiting Street Look","sets","streetwear",260],
+
+  ["Blue Shearling-Style Jacket","outerwear","streetwear",190],
+
+  ["Grey Shearling-Style Jacket","outerwear","streetwear",195],
+
+  ["Graphic Bucket Hat","headwear","accessories",50],
+
+  ["Green Graphic Face Cover","accessories","accessories",65],
+
+  ["Cream and Blue Knit Textile","handmade","handmade",80],
+
+  ["Dark Printed Bomber Jacket","outerwear","streetwear",210],
+
+  ["Comic Face Long-Sleeve Shirt","shirts","streetwear",100],
+
+  ["Printed Baseball Cap","headwear","accessories",48],
+
+  ["Brown Embroidered Bomber","outerwear","streetwear",180],
+
+  ["Wide-Leg Blue Denim","denim","streetwear",120],
+
+  ["Monogram Flip-Flop Slides","footwear","footwear",65],
+
+  ["Blue and White Rugby Shirt","shirts","streetwear",95],
+
+  ["Colour-Block Track Jacket","outerwear","streetwear",145],
+
+  ["Brown Embroidered Work Jacket","outerwear","handmade",215],
+
+  ["Pink Cartoon Graphic Jacket","outerwear","streetwear",185],
+
+  ["Black Graphic Denim Jacket","outerwear","streetwear",175],
+
+  ["Blue Utility Denim Trousers","denim","streetwear",125],
+
+  ["Green Painted Face Cap","headwear","accessories",50],
+
+  ["Comic Graphic Shirt","shirts","streetwear",105],
+
+  ["Leopard Print Bomber","outerwear","streetwear",190],
+
+  ["Red Cropped Bomber with Fur Collar","outerwear","streetwear",175],
+
+  ["Oversized Brown Cap","headwear","accessories",55],
+
+  ["Floral Black Bomber","outerwear","streetwear",175],
+
+  ["Black Graphic Tee with Eye Artwork","shirts","streetwear",60],
+
+  ["Red Distressed Graphic Trousers","bottoms","streetwear",115],
+
+  ["Black and White Air Graphic Jacket","outerwear","streetwear",200],
+
+  ["Blue Denim Cargo Shorts","denim","streetwear",95],
+
+  ["White Platform Sneaker","footwear","footwear",180],
+
+  ["Brown Lug-Sole Shoe","footwear","footwear",185],
+
+  ["Blue Low-Top Sneaker Pair","footwear","footwear",155],
+
+  ["Black-and-White Platform Boots","footwear","footwear",210],
+
+  ["Blue and Brown Leather Sneaker","footwear","footwear",195],
+
+  ["Printed Floral Shirt","shirts","streetwear",95],
+
+  ["Embroidered Beige Utility Jacket","outerwear","handmade",205],
+
+  ["White Graphic Cartoon Tee","shirts","streetwear",55],
+
+  ["Yellow Statement Text Tee","shirts","streetwear",58],
+
+  ["Patchwork Camo Windbreaker","outerwear","streetwear",170],
+
+  ["Purple Hooded Jacket","outerwear","streetwear",145],
+
+  ["Blue Graphic Camo Jacket","outerwear","streetwear",180],
+
+  ["Cream and Brown Knit Layer","handmade","handmade",90],
+
+  ["Distressed Zip-Up Hoodie","hoodies","streetwear",135],
+
+  ["Red Patchwork Cargo Trousers","bottoms","streetwear",125],
+
+  ["Grey Embellished Knit Top","shirts","handmade",130],
+
+  ["Long Embellished Scarf","accessories","accessories",80],
+
+  ["Grey Distressed Knit Top","shirts","handmade",120],
+
+  ["Tan Fringe Hat","headwear","handmade",75],
+
+  ["Patchwork Tattered Cape","outerwear","handmade",190],
+
+  ["Blue Ribbed Beanie","headwear","accessories",42],
+
+  ["White Kanye West Graphic Tee","shirts","streetwear",60],
+
+  ["Red Graphic Stripe Tee","shirts","streetwear",60],
+
+  ["White Graphic Air Tee","shirts","streetwear",58],
+
+  ["Black Eye Graphic Tee","shirts","streetwear",60],
+
+  ["Red and Black Styled Set","sets","streetwear",240]
+
+];
+
+
+/* =========================================================
+   CATEGORY FILTERS
+   ========================================================= */
+
+const CATEGORIES = [
+
+  "all",
+  "streetwear",
+  "handmade",
+  "footwear",
+  "accessories"
+
+];
+
+
+/* =========================================================
+   BUILD PRODUCTS
+   ========================================================= */
+
+const PRODUCTS = Array.from(
+
+  { length: PRODUCT_TOTAL },
+
+  (_, index) => {
+
+    const number = index + 1;
+
+    const padded = String(number).padStart(3, "0");
+
+    const meta = META[index];
+
+    const name =
+      meta?.[0] ||
+      `Area Boyz Product ${padded}`;
+
+    const category =
+      meta?.[1] ||
+      "streetwear";
+
+    const collection =
+      meta?.[2] ||
+      "streetwear";
+
+    const price =
+      meta?.[3] ??
+      100;
+
+    return {
+
+      id: `ab-${padded}`,
+
+      number,
+
+      name,
+
+      category,
+
+      collection,
+
+      price,
+
+      image: `product-${padded}.jpg`,
+
+      description:
+        `${name}. View the product photograph for the exact visible design, colour and construction.`,
+
+      details: [
+
+        `Catalogue image: product-${padded}.jpg`,
+
+        `Category: ${category}`,
+
+        `Collection: ${collection}`
+
+      ]
+
+    };
+
   }
 
-  history.replaceState({},document.title,location.pathname+location.hash);
+);
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+const state = {
+
+  collection: "all",
+
+  query: "",
+
+  sort: "featured",
+
+  cart: []
+
+};
+
+
+/* =========================================================
+   DOM HELPER
+   ========================================================= */
+
+const $ = selector =>
+  document.querySelector(selector);
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(value){
+
+  return String(value ?? "").replace(
+
+    /[&<>"']/g,
+
+    character => ({
+
+      "&":"&amp;",
+
+      "<":"&lt;",
+
+      ">":"&gt;",
+
+      "\"":"&quot;",
+
+      "'":"&#039;"
+
+    }[character])
+
+  );
+
 }
 
-function init(){setTimeout(()=>$("#preloader").classList.add("hide"),650);$("#year").textContent=new Date().getFullYear();renderFilters();renderProducts();updateCartUI();handlePaymentReturn();
-  document.addEventListener("click",e=>{const f=e.target.closest("[data-filter]");if(f){state.collection=f.dataset.filter;renderFilters();renderProducts();document.querySelector("#shop").scrollIntoView({behavior:"smooth"})}const a=e.target.closest("[data-add]");if(a){add(a.dataset.add);if($("#productModal").classList.contains("open"))closeModal()}const o=e.target.closest("[data-open]");if(o)openModal(o.dataset.open);const q=e.target.closest("[data-qty]");if(q)change(q.dataset.qty,Number(q.dataset.delta));const r=e.target.closest("[data-remove]");if(r)change(r.dataset.remove,-999);if(e.target.closest("[data-close-modal]"))closeModal();const c=e.target.closest("[data-collection]");if(c){state.collection=c.dataset.collection;renderFilters();renderProducts();location.hash="shop"} });
-  $("#sort").addEventListener("change",e=>{state.sort=e.target.value;renderProducts()});$("#clearFilters").addEventListener("click",()=>{state.collection="all";state.query="";$("#searchInput").value="";renderFilters();renderProducts()});$("#searchBtn").addEventListener("click",()=>{$("#searchPanel").classList.toggle("open");if($("#searchPanel").classList.contains("open"))$("#searchInput").focus()});$("#searchClose").addEventListener("click",()=>$("#searchPanel").classList.remove("open"));$("#searchInput").addEventListener("input",e=>{state.query=e.target.value.trim();renderProducts()});$("#cartBtn").addEventListener("click",openCart);$("#cartClose").addEventListener("click",closeCart);$("#drawerBackdrop").addEventListener("click",closeCart);$("#checkoutBtn").addEventListener("click",checkoutForm);$("#menuBtn").addEventListener("click",()=>{const open=$("#mobileNav").classList.toggle("open");$("#menuBtn").setAttribute("aria-expanded",String(open))});$("#mobileNav").addEventListener("click",e=>{if(e.target.matches("a"))$("#mobileNav").classList.remove("open")});
-  window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeCart()}});window.addEventListener("error",e=>{if(e.target?.tagName==="IMG")e.target.closest(".product-media,.modal-product-main,.cart-line")?.classList.add("image-error")},true);
+
+/* =========================================================
+   MONEY
+   ========================================================= */
+
+function money(number){
+
+  return new Intl.NumberFormat(
+
+    "en-US",
+
+    {
+
+      style:"currency",
+
+      currency:CONFIG.currency
+
+    }
+
+  ).format(Number(number) || 0);
+
 }
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+
+
+/* =========================================================
+   PRODUCT LOOKUP
+   ========================================================= */
+
+function product(id){
+
+  return PRODUCTS.find(
+    item => item.id === id
+  );
+
+}
+
+
+/* =========================================================
+   ASSET URL
+   ========================================================= */
+
+function asset(folder,file){
+
+  return new URL(
+
+    `${folder}${encodeURIComponent(file)}`,
+
+    document.baseURI
+
+  ).href;
+
+}
+
+
+/* =========================================================
+   PRODUCT IMAGE
+   ========================================================= */
+
+function productImage(file){
+
+  return asset(
+    PATHS.products,
+    file
+  );
+
+}
+
+
+/* =========================================================
+   HERO IMAGE
+   ========================================================= */
+
+function heroImage(file){
+
+  return asset(
+    PATHS.hero,
+    file
+  );
+
+}
+
+
+/* =========================================================
+   SAFE IMAGE
+   =========================================================
+
+   If an image cannot load, the user won't see a broken
+   image icon. A clean Area Boyz placeholder is shown.
+   ========================================================= */
+
+function safeImg(
+  src,
+  alt = "",
+  className = ""
+){
+
+  const fallback =
+    "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 800%22%3E%3Crect width=%22800%22 height=%22800%22 fill=%22%23f0eee8%22/%3E%3Ctext x=%22400%22 y=%22400%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-family=%22Arial%22 font-size=%2238%22 fill=%22%23111111%22%3EAREA BOYZ%3C/text%3E%3C/svg%3E";
+
+  return `
+
+    <img
+
+      class="${className}"
+
+      src="${src}"
+
+      alt="${escapeHTML(alt)}"
+
+      loading="lazy"
+
+      decoding="async"
+
+      onerror="this.onerror=null;this.classList.add('img-failed');this.src='${fallback}'"
+
+    >
+
+  `;
+
+}
+
+
+/* =========================================================
+   CART
+   ========================================================= */
+
+function loadCart(){
+
+  try{
+
+    const saved =
+      JSON.parse(
+        localStorage.getItem(CONFIG.storageKey) || "[]"
+      );
+
+    return saved.filter(
+
+      item =>
+        productSafe(item.id) &&
+        Number(item.qty) > 0
+
+    );
+
+  }catch{
+
+    return [];
+
+  }
+
+}
+
+
+function productSafe(id){
+
+  return (
+
+    /^ab-\d{3}$/.test(String(id)) &&
+
+    Number(id.slice(3)) >= 1 &&
+
+    Number(id.slice(3)) <= PRODUCT_TOTAL
+
+  );
+
+}
+
+
+function saveCart(){
+
+  localStorage.setItem(
+
+    CONFIG.storageKey,
+
+    JSON.stringify(state.cart)
+
+  );
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function toast(message){
+
+  const element = $("#toast");
+
+  if(!element) return;
+
+  element.textContent = message;
+
+  element.classList.add("show");
+
+  clearTimeout(toast.timer);
+
+  toast.timer = setTimeout(
+
+    () => element.classList.remove("show"),
+
+    3200
+
+  );
+
+}
+
+
+/* =========================================================
+   FILTER PRODUCTS
+   ========================================================= */
+
+function filtered(){
+
+  let list = PRODUCTS.filter(
+
+    item =>
+
+      state.collection === "all" ||
+
+      item.collection === state.collection ||
+
+      item.category === state.collection
+
+  );
+
+
+  if(state.query){
+
+    const query =
+      state.query.toLowerCase();
+
+    list = list.filter(
+
+      item =>
+
+        `${item.name} ${item.category} ${item.collection}`
+
+          .toLowerCase()
+
+          .includes(query)
+
+    );
+
+  }
+
+
+  if(state.sort === "low"){
+
+    list.sort(
+      (a,b) => a.price - b.price
+    );
+
+  }
+
+
+  if(state.sort === "high"){
+
+    list.sort(
+      (a,b) => b.price - a.price
+    );
+
+  }
+
+
+  if(state.sort === "name"){
+
+    list.sort(
+      (a,b) =>
+        a.name.localeCompare(b.name)
+    );
+
+  }
+
+
+  return list;
+
+}
+
+
+/* =========================================================
+   FILTER BUTTONS
+   ========================================================= */
+
+function renderFilters(){
+
+  const wrapper =
+    $("#filters");
+
+  if(!wrapper) return;
+
+  wrapper.innerHTML =
+    CATEGORIES.map(
+
+      category => `
+
+        <button
+
+          class="filter ${
+            state.collection === category
+              ? "active"
+              : ""
+          }"
+
+          data-filter="${category}"
+
+        >
+
+          ${
+            category.charAt(0).toUpperCase() +
+            category.slice(1)
+          }
+
+        </button>
+
+      `
+
+    ).join("");
+
+}
+
+
+/* =========================================================
+   PRODUCTS
+   ========================================================= */
+
+function renderProducts(){
+
+  const list = filtered();
+
+  $("#resultsMeta").textContent =
+
+    `${list.length} product${
+      list.length === 1 ? "" : "s"
+    } shown`;
+
+
+  $("#productGrid").innerHTML =
+
+    list.map(
+
+      item => `
+
+        <article class="product-card">
+
+          <button
+
+            class="product-media"
+
+            data-open="${item.id}"
+
+            aria-label="View ${escapeHTML(item.name)}"
+
+          >
+
+            ${safeImg(
+
+              productImage(item.image),
+
+              item.name
+
+            )}
+
+            <span>
+              ${escapeHTML(item.category)}
+            </span>
+
+          </button>
+
+
+          <div class="product-body">
+
+            <p class="product-number">
+
+              PRODUCT
+              ${String(item.number).padStart(3,"0")}
+
+            </p>
+
+
+            <h3>
+              ${escapeHTML(item.name)}
+            </h3>
+
+
+            <p>
+              ${escapeHTML(item.description)}
+            </p>
+
+
+            <div class="product-row">
+
+              <strong>
+                ${money(item.price)}
+              </strong>
+
+
+              <button
+
+                class="mini-btn"
+
+                data-add="${item.id}"
+
+              >
+
+                Add
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      `
+
+    ).join("");
+
+
+  $("#emptyState")
+    .classList
+    .toggle(
+      "hidden",
+      list.length > 0
+    );
+
+}
+
+
+/* =========================================================
+   HERO SLIDER
+   ========================================================= */
+
+let heroIndex = 0;
+
+let heroTimer;
+
+
+/* Render slides */
+
+function renderHero(){
+
+  const stage =
+    $("#heroSlides");
+
+  if(!stage) return;
+
+
+  stage.innerHTML =
+
+    HEROES.map(
+
+      (file,index) => `
+
+        <div
+
+          class="hero-slide ${
+            index === 0
+              ? "active"
+              : ""
+          }"
+
+          data-slide="${index}"
+
+        >
+
+          ${safeImg(
+
+            heroImage(file),
+
+            `Area Boyz hero ${index + 1}`
+
+          )}
+
+          <div class="hero-slide-shade"></div>
+
+        </div>
+
+      `
+
+    ).join("");
+
+
+  $("#heroDots").innerHTML =
+
+    HEROES.map(
+
+      (_,index) => `
+
+        <button
+
+          class="hero-dot ${
+            index === 0
+              ? "active"
+              : ""
+          }"
+
+          data-hero="${index}"
+
+          aria-label="Show hero ${index + 1}"
+
+        ></button>
+
+      `
+
+    ).join("");
+
+
+  startHero();
+
+}
+
+
+/* Change slide */
+
+function showHero(index){
+
+  const slides =
+    [...document.querySelectorAll(".hero-slide")];
+
+  const dots =
+    [...document.querySelectorAll(".hero-dot")];
+
+
+  if(!slides.length) return;
+
+
+  heroIndex =
+    (index + slides.length) %
+    slides.length;
+
+
+  slides.forEach(
+
+    (slide,number) => {
+
+      slide.classList.toggle(
+
+        "active",
+
+        number === heroIndex
+
+      );
+
+    }
+
+  );
+
+
+  dots.forEach(
+
+    (dot,number) => {
+
+      dot.classList.toggle(
+
+        "active",
+
+        number === heroIndex
+
+      );
+
+    }
+
+  );
+
+}
+
+
+/* Start automatic slideshow */
+
+function startHero(){
+
+  clearInterval(heroTimer);
+
+  heroTimer = setInterval(
+
+    () => showHero(heroIndex + 1),
+
+    5000
+
+  );
+
+}
+
+
+/* =========================================================
+   PRODUCT MODAL
+   ========================================================= */
+
+function openModal(id){
+
+  const item =
+    product(id);
+
+  if(!item) return;
+
+
+  $("#modalContent").innerHTML = `
+
+    <div class="modal-product">
+
+
+      <div class="modal-product-main">
+
+        ${safeImg(
+
+          productImage(item.image),
+
+          item.name
+
+        )}
+
+      </div>
+
+
+      <div class="modal-info">
+
+        <p class="eyebrow">
+
+          ${escapeHTML(
+            item.collection.toUpperCase()
+          )}
+
+        </p>
+
+
+        <p class="product-number">
+
+          PRODUCT
+          ${String(item.number).padStart(3,"0")}
+
+        </p>
+
+
+        <h2>
+          ${escapeHTML(item.name)}
+        </h2>
+
+
+        <div class="modal-price">
+
+          ${money(item.price)}
+
+        </div>
+
+
+        <p>
+          ${escapeHTML(item.description)}
+        </p>
+
+
+        <ul>
+
+          ${item.details.map(
+
+            detail => `
+
+              <li>
+                ${escapeHTML(detail)}
+              </li>
+
+            `
+
+          ).join("")}
+
+        </ul>
+
+
+        <button
+
+          class="btn dark full"
+
+          data-add="${item.id}"
+
+        >
+
+          Add to bag
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  $("#productModal")
+    .classList
+    .add("open");
+
+
+  $("#productModal")
+    .setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+
+  document.body.classList.add("lock");
+
+}
+
+
+function closeModal(){
+
+  $("#productModal")
+    .classList
+    .remove("open");
+
+
+  $("#productModal")
+    .setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+
+  document.body.classList.remove("lock");
+
+}
+
+
+/* =========================================================
+   ADD TO CART
+   ========================================================= */
+
+function add(id){
+
+  const item =
+    product(id);
+
+  if(!item) return;
+
+
+  const line =
+    state.cart.find(
+      entry => entry.id === id
+    );
+
+
+  if(line){
+
+    line.qty++;
+
+  }else{
+
+    state.cart.push({
+
+      id,
+
+      qty:1
+
+    });
+
+  }
+
+
+  saveCart();
+
+  renderCart();
+
+  toast(
+    `${item.name} added to your bag.`
+  );
+
+}
+
+
+/* =========================================================
+   CHANGE CART QUANTITY
+   ========================================================= */
+
+function change(id,delta){
+
+  const line =
+    state.cart.find(
+      entry => entry.id === id
+    );
+
+  if(!line) return;
+
+
+  line.qty += delta;
+
+
+  if(line.qty <= 0){
+
+    state.cart =
+      state.cart.filter(
+        entry => entry.id !== id
+      );
+
+  }
+
+
+  saveCart();
+
+  renderCart();
+
+}
+
+
+/* =========================================================
+   SUBTOTAL
+   ========================================================= */
+
+function subtotal(){
+
+  return state.cart.reduce(
+
+    (total,line) =>
+
+      total +
+
+      (
+        product(line.id)?.price || 0
+      ) *
+
+      line.qty,
+
+    0
+
+  );
+
+}
+
+
+/* =========================================================
+   RENDER CART
+   ========================================================= */
+
+function renderCart(){
+
+  const wrapper =
+    $("#cartItems");
+
+
+  if(!state.cart.length){
+
+    wrapper.innerHTML = `
+
+      <div class="empty">
+
+        <i class="fa-solid fa-bag-shopping"></i>
+
+        <h3>
+          Your bag is empty
+        </h3>
+
+        <p>
+          Add something from the catalogue.
+        </p>
+
+      </div>
+
+    `;
+
+
+    $("#cartTotal").textContent =
+      money(0);
+
+    $("#cartCount").textContent =
+      "0";
+
+    return;
+
+  }
+
+
+  wrapper.innerHTML =
+
+    state.cart.map(
+
+      line => {
+
+        const item =
+          product(line.id);
+
+
+        return `
+
+          <div class="cart-line">
+
+
+            ${safeImg(
+
+              productImage(item.image),
+
+              item.name
+
+            )}
+
+
+            <div class="cart-info">
+
+              <h4>
+                ${escapeHTML(item.name)}
+              </h4>
+
+
+              <small>
+                ${money(item.price)} each
+              </small>
+
+
+              <div class="qty">
+
+                <button
+
+                  data-qty="${item.id}"
+
+                  data-delta="-1"
+
+                >
+
+                  −
+
+                </button>
+
+
+                <b>
+                  ${line.qty}
+                </b>
+
+
+                <button
+
+                  data-qty="${item.id}"
+
+                  data-delta="1"
+
+                >
+
+                  +
+
+                </button>
+
+              </div>
+
+
+              <button
+
+                class="remove"
+
+                data-remove="${item.id}"
+
+              >
+
+                Remove
+
+              </button>
+
+            </div>
+
+
+            <strong>
+
+              ${money(
+                item.price * line.qty
+              )}
+
+            </strong>
+
+
+          </div>
+
+        `;
+
+      }
+
+    ).join("");
+
+
+  $("#cartTotal").textContent =
+    money(subtotal());
+
+
+  $("#cartCount").textContent =
+    state.cart.reduce(
+      (total,line) =>
+        total + line.qty,
+      0
+    );
+
+}
+
+
+/* =========================================================
+   CART OPEN/CLOSE
+   ========================================================= */
+
+function openCart(){
+
+  $("#cartDrawer")
+    .classList
+    .add("open");
+
+  $("#drawerBackdrop")
+    .classList
+    .add("show");
+
+  document.body.classList.add("lock");
+
+}
+
+
+function closeCart(){
+
+  $("#cartDrawer")
+    .classList
+    .remove("open");
+
+  $("#drawerBackdrop")
+    .classList
+    .remove("show");
+
+  document.body.classList.remove("lock");
+
+}
+
+
+/* =========================================================
+   CHECKOUT FORM
+   ========================================================= */
+
+function checkoutForm(){
+
+  if(!state.cart.length){
+
+    toast("Your bag is empty.");
+
+    return;
+
+  }
+
+
+  $("#cartItems").innerHTML = `
+
+    <form
+      class="checkout-form"
+      id="checkoutForm"
+    >
+
+      <h3>
+        Checkout
+      </h3>
+
+
+      <p class="notice">
+
+        Order total:
+
+        <strong>
+          ${money(subtotal())}
+        </strong>
+
+      </p>
+
+
+      <label>
+
+        Full name
+
+        <input
+          name="name"
+          required
+          autocomplete="name"
+        >
+
+      </label>
+
+
+      <label>
+
+        Email
+
+        <input
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+        >
+
+      </label>
+
+
+      <label>
+
+        Phone
+
+        <input
+          name="phone"
+          required
+          autocomplete="tel"
+        >
+
+      </label>
+
+
+      <button
+        class="btn dark full"
+        type="submit"
+      >
+
+        Continue to Flutterwave
+
+      </button>
+
+
+      <div
+        id="checkoutError"
+        class="error"
+        role="alert">
+      </div>
+
+
+      <button
+        type="button"
+        class="text-btn"
+        id="backToCart">
+
+        ← Back to bag
+
+      </button>
+
+    </form>
+
+  `;
+
+
+  $("#checkoutForm")
+    .addEventListener(
+      "submit",
+      startPayment
+    );
+
+
+  $("#backToCart")
+    .addEventListener(
+      "click",
+      renderCart
+    );
+
+}
+
+
+/* =========================================================
+   START FLUTTERWAVE PAYMENT
+   ========================================================= */
+
+async function startPayment(event){
+
+  event.preventDefault();
+
+
+  const form =
+    new FormData(
+      event.currentTarget
+    );
+
+
+  const customer = {
+
+    name:
+      String(
+        form.get("name") || ""
+      ).trim(),
+
+    email:
+      String(
+        form.get("email") || ""
+      ).trim(),
+
+    phone:
+      String(
+        form.get("phone") || ""
+      ).trim()
+
+  };
+
+
+  const error =
+    $("#checkoutError");
+
+
+  if(
+    !customer.name ||
+    !customer.email ||
+    !customer.phone
+  ){
+
+    error.textContent =
+      "Please complete all fields.";
+
+    return;
+
+  }
+
+
+  if(!CONFIG.supabaseUrl){
+
+    error.textContent =
+      "Checkout is not connected yet. Add your Supabase project URL in js/app.js.";
+
+    return;
+
+  }
+
+
+  const button =
+    event.currentTarget.querySelector(
+      'button[type="submit"]'
+    );
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Creating secure checkout…";
+
+
+  try{
+
+    const response =
+      await fetch(
+
+        `${CONFIG.supabaseUrl.replace(
+          /\/$/,
+          ""
+        )}/functions/v1/${CONFIG.paymentFunction}`,
+
+        {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            customer,
+
+            items:
+              state.cart.map(
+                line => ({
+                  id:line.id,
+                  qty:line.qty
+                })
+              ),
+
+            redirect_url:
+              location.href.split("?")[0]
+
+          })
+
+        }
+
+      );
+
+
+    const data =
+      await response
+        .json()
+        .catch(
+          () => ({})
+        );
+
+
+    if(
+      !response.ok ||
+      !data.link
+    ){
+
+      throw new Error(
+
+        data.error ||
+        "Unable to create the payment link."
+
+      );
+
+    }
+
+
+    localStorage.setItem(
+
+      "areaBoyzPendingTx",
+
+      data.tx_ref || ""
+
+    );
+
+
+    location.href =
+      data.link;
+
+
+  }catch(errorObject){
+
+    error.textContent =
+      errorObject.message ||
+      "Unable to start checkout.";
+
+
+    button.disabled = false;
+
+    button.textContent =
+      "Continue to Flutterwave";
+
+  }
+
+}
+
+
+/* =========================================================
+   PAYMENT RETURN
+   ========================================================= */
+
+async function handlePaymentReturn(){
+
+  const query =
+    new URLSearchParams(
+      location.search
+    );
+
+
+  const status =
+    query.get("status");
+
+
+  const transactionId =
+    query.get("transaction_id");
+
+
+  const txRef =
+    query.get("tx_ref") ||
+
+    localStorage.getItem(
+      "areaBoyzPendingTx"
+    ) ||
+
+    "";
+
+
+  if(
+    !status &&
+    !transactionId
+  ){
+
+    return;
+
+  }
+
+
+  if(status === "cancelled"){
+
+    toast(
+      "Payment was cancelled. Your bag is still here."
+    );
+
+  }
+
+
+  else if(status === "failed"){
+
+    toast(
+      "Payment was not completed. Your bag is still here."
+    );
+
+  }
+
+
+  else if(
+
+    status === "successful" &&
+
+    transactionId &&
+
+    txRef
+
+  ){
+
+    if(!CONFIG.supabaseUrl){
+
+      toast(
+        "Payment returned, but verification is not connected yet."
+      );
+
+    }
+
+    else{
+
+      toast(
+        "Verifying your payment…"
+      );
+
+
+      try{
+
+        const response =
+          await fetch(
+
+            `${CONFIG.supabaseUrl.replace(
+              /\/$/,
+              ""
+            )}/functions/v1/${CONFIG.verifyFunction}`,
+
+            {
+
+              method:"POST",
+
+              headers:{
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:JSON.stringify({
+
+                transaction_id:
+                  transactionId,
+
+                tx_ref:
+                  txRef
+
+              })
+
+            }
+
+          );
+
+
+        const data =
+          await response
+            .json()
+            .catch(
+              () => ({})
+            );
+
+
+        if(
+          !response.ok ||
+          !data.verified
+        ){
+
+          throw new Error(
+
+            data.error ||
+            "Payment verification failed. Your bag is safe."
+
+          );
+
+        }
+
+
+        state.cart = [];
+
+        saveCart();
+
+
+        localStorage.removeItem(
+          "areaBoyzPendingTx"
+        );
+
+
+        localStorage.setItem(
+          "areaBoyzLastTx",
+          txRef
+        );
+
+
+        toast(
+          "Payment verified successfully. Thank you for your order!"
+        );
+
+
+      }catch(errorObject){
+
+        toast(
+
+          errorObject.message ||
+          "We could not verify the payment yet."
+
+        );
+
+      }
+
+    }
+
+  }
+
+
+  history.replaceState(
+
+    {},
+
+    document.title,
+
+    location.pathname +
+    location.hash
+
+  );
+
+}
+
+
+/* =========================================================
+   EVENT BINDING
+   ========================================================= */
+
+function bind(){
+
+  document.addEventListener(
+
+    "click",
+
+    event => {
+
+      const filter =
+        event.target.closest(
+          "[data-filter]"
+        );
+
+
+      if(filter){
+
+        state.collection =
+          filter.dataset.filter;
+
+        renderFilters();
+
+        renderProducts();
+
+        document
+          .querySelector("#shop")
+          ?.scrollIntoView({
+            behavior:"smooth"
+          });
+
+      }
+
+
+      const addButton =
+        event.target.closest(
+          "[data-add]"
+        );
+
+
+      if(addButton){
+
+        add(
+          addButton.dataset.add
+        );
+
+
+        if(
+          $("#productModal")
+            .classList
+            .contains("open")
+        ){
+
+          closeModal();
+
+        }
+
+      }
+
+
+      const openButton =
+        event.target.closest(
+          "[data-open]"
+        );
+
+
+      if(openButton){
+
+        openModal(
+          openButton.dataset.open
+        );
+
+      }
+
+
+      const quantityButton =
+        event.target.closest(
+          "[data-qty]"
+        );
+
+
+      if(quantityButton){
+
+        change(
+
+          quantityButton.dataset.qty,
+
+          Number(
+            quantityButton.dataset.delta
+          )
+
+        );
+
+      }
+
+
+      const removeButton =
+        event.target.closest(
+          "[data-remove]"
+        );
+
+
+      if(removeButton){
+
+        change(
+          removeButton.dataset.remove,
+          -999
+        );
+
+      }
+
+
+      if(
+        event.target.closest(
+          "[data-close-modal]"
+        )
+      ){
+
+        closeModal();
+
+      }
+
+
+      const collection =
+        event.target.closest(
+          "[data-collection]"
+        );
+
+
+      if(collection){
+
+        state.collection =
+          collection.dataset.collection;
+
+        renderFilters();
+
+        renderProducts();
+
+        location.hash =
+          "shop";
+
+      }
+
+
+      const heroDot =
+        event.target.closest(
+          "[data-hero]"
+        );
+
+
+      if(heroDot){
+
+        showHero(
+          Number(
+            heroDot.dataset.hero
+          )
+        );
+
+        startHero();
+
+      }
+
+
+      const previous =
+        event.target.closest(
+          "[data-hero-prev]"
+        );
+
+
+      if(previous){
+
+        showHero(
+          heroIndex - 1
+        );
+
+        startHero();
+
+      }
+
+
+      const next =
+        event.target.closest(
+          "[data-hero-next]"
+        );
+
+
+      if(next){
+
+        showHero(
+          heroIndex + 1
+        );
+
+        startHero();
+
+      }
+
+    }
+
+  );
+
+
+  $("#sort")
+    .addEventListener(
+
+      "change",
+
+      event => {
+
+        state.sort =
+          event.target.value;
+
+        renderProducts();
+
+      }
+
+    );
+
+
+  $("#clearFilters")
+    .addEventListener(
+
+      "click",
+
+      () => {
+
+        state.collection =
+          "all";
+
+        state.query =
+          "";
+
+        $("#searchInput").value =
+          "";
+
+        renderFilters();
+
+        renderProducts();
+
+      }
+
+    );
+
+
+  $("#searchBtn")
+    .addEventListener(
+
+      "click",
+
+      () => {
+
+        $("#searchPanel")
+          .classList
+          .toggle("open");
+
+
+        if(
+          $("#searchPanel")
+            .classList
+            .contains("open")
+        ){
+
+          $("#searchInput").focus();
+
+        }
+
+      }
+
+    );
+
+
+  $("#searchClose")
+    .addEventListener(
+
+      "click",
+
+      () => {
+
+        $("#searchPanel")
+          .classList
+          .remove("open");
+
+      }
+
+    );
+
+
+  $("#searchInput")
+    .addEventListener(
+
+      "input",
+
+      event => {
+
+        state.query =
+          event.target.value.trim();
+
+        renderProducts();
+
+      }
+
+    );
+
+
+  $("#cartBtn")
+    .addEventListener(
+      "click",
+      openCart
+    );
+
+
+  $("#cartClose")
+    .addEventListener(
+      "click",
+      closeCart
+    );
+
+
+  $("#drawerBackdrop")
+    .addEventListener(
+      "click",
+      closeCart
+    );
+
+
+  $("#checkoutBtn")
+    .addEventListener(
+      "click",
+      checkoutForm
+    );
+
+
+  $("#menuBtn")
+    .addEventListener(
+
+      "click",
+
+      () => {
+
+        const open =
+          $("#mobileNav")
+            .classList
+            .toggle("open");
+
+
+        $("#menuBtn")
+          .setAttribute(
+            "aria-expanded",
+            String(open)
+          );
+
+      }
+
+    );
+
+
+  $("#mobileNav")
+    .addEventListener(
+
+      "click",
+
+      event => {
+
+        if(
+          event.target.matches("a")
+        ){
+
+          $("#mobileNav")
+            .classList
+            .remove("open");
+
+        }
+
+      }
+
+    );
+
+
+  window.addEventListener(
+
+    "keydown",
+
+    event => {
+
+      if(event.key === "Escape"){
+
+        closeModal();
+
+        closeCart();
+
+      }
+
+    }
+
+  );
+
+}
+
+
+/* =========================================================
+   INIT
+   ========================================================= */
+
+function init(){
+
+  state.cart =
+    loadCart();
+
+
+  $("#year").textContent =
+    new Date().getFullYear();
+
+
+  renderHero();
+
+  renderFilters();
+
+  renderProducts();
+
+  renderCart();
+
+  handlePaymentReturn();
+
+  bind();
+
+
+  setTimeout(
+
+    () => {
+
+      $("#preloader")
+        ?.classList
+        .add("hide");
+
+    },
+
+    450
+
+  );
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+if(
+  document.readyState === "loading"
+){
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    init
+  );
+
+}else{
+
+  init();
+
+      }
