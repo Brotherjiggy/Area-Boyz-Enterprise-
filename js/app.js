@@ -61,21 +61,31 @@ const CONFIG = {
 
 
 /* =========================================================
-   IMAGE PATHS
+   SITE PATHS
    ========================================================= */
+
+const SITE_ROOT =
+  new URL(
+    "../",
+    document.currentScript.src
+  ).href;
+
 
 const PATHS = {
 
-  hero: "images/hero/",
+  hero:
+    `${SITE_ROOT}images/hero/`,
 
-  products: "images/products/",
+  products:
+    `${SITE_ROOT}images/products/`,
 
-  categories: "images/categories/",
+  categories:
+    `${SITE_ROOT}images/categories/`,
 
-  collections: "images/collections/"
+  collections:
+    `${SITE_ROOT}images/collections/`
 
 };
-
 
 const PRODUCT_TOTAL = 109;
 
