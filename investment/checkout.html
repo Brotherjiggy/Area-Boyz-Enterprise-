@@ -1,32 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  />
-
-  <title>Equity Checkout | Area Boyz Enterprise</title>
+  >
 
   <meta
     name="description"
-    content="Review your proposed Area Boyz Enterprise equity investment."
-  />
+    content="Area Boyz Enterprise proposed equity investment checkout."
+  >
 
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/pages.css" />
-  <link rel="stylesheet" href="../css/equity.css" />
+  <title>Equity Checkout | Area Boyz Enterprise</title>
+
+  <!-- Existing site styles -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/equity.css">
 
   <style>
-    /* =========================================
-       CHECKOUT PAGE
-    ========================================= */
+
+    /* =====================================================
+       CHECKOUT PAGE FOUNDATION
+    ===================================================== */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7f7f5;
+      color: #111;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .checkout-header-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 76px;
+      z-index: 1000;
+
+      background: #111;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      display: flex;
+      align-items: center;
+    }
+
+    .checkout-header-inner {
+      width: min(1200px, calc(100% - 40px));
+      height: 100%;
+      margin: 0 auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+
+    /* Logo */
+
+    .checkout-logo {
+      display: inline-flex;
+      align-items: center;
+
+      color: #f5c400;
+
+      font-size: 1.15rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+
+      white-space: nowrap;
+    }
+
+    .checkout-logo span {
+      color: #fff;
+      margin-left: 5px;
+    }
+
+
+    /* Desktop navigation */
+
+    .checkout-nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 26px;
+    }
+
+    .checkout-nav a {
+      position: relative;
+
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+
+      padding: 28px 0;
+
+      transition:
+        color 0.2s ease;
+    }
+
+    .checkout-nav a:hover {
+      color: #f5c400;
+    }
+
+    .checkout-nav a.active {
+      color: #f5c400;
+    }
+
+    .checkout-nav a.active::after {
+      content: "";
+
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 18px;
+
+      height: 2px;
+
+      background: #f5c400;
+    }
+
+
+    /* Mobile menu button */
+
+    .checkout-menu-btn {
+      display: none;
+
+      width: 44px;
+      height: 44px;
+
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+
+      background: transparent;
+      color: #fff;
+
+      font-size: 1.2rem;
+
+      cursor: pointer;
+    }
+
+
+    /* =====================================================
+       MAIN
+    ===================================================== */
 
     .checkout-page {
       min-height: 100vh;
-      background: #f7f7f5;
-      padding: 120px 20px 80px;
+
+      padding:
+        125px
+        20px
+        80px;
     }
 
     .checkout-container {
@@ -34,51 +181,98 @@
       margin: 0 auto;
     }
 
-    .checkout-header {
-      text-align: center;
+
+    /* Heading */
+
+    .checkout-intro {
       max-width: 760px;
-      margin: 0 auto 45px;
+      margin: 0 auto 42px;
+
+      text-align: center;
     }
 
-    .checkout-header h1 {
-      margin-bottom: 12px;
+    .checkout-intro .eyebrow {
+      display: inline-block;
+
+      margin-bottom: 10px;
+
+      color: #9a7900;
+
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
 
-    .checkout-header p {
-      color: #666;
-      line-height: 1.7;
+    .checkout-intro h1 {
+      margin: 0 0 12px;
+
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.1;
+
+      font-weight: 900;
+    }
+
+    .checkout-intro p {
       margin: 0;
+
+      color: #666;
+
+      font-size: 1rem;
+      line-height: 1.7;
     }
+
+
+    /* =====================================================
+       CHECKOUT GRID
+    ===================================================== */
 
     .checkout-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+
+      grid-template-columns:
+        minmax(0, 1.4fr)
+        minmax(310px, 0.8fr);
+
       gap: 28px;
+
       align-items: start;
     }
 
+
+    /* Cards */
+
     .checkout-card {
       background: #fff;
+
       border: 1px solid #e5e5e5;
       border-radius: 18px;
+
       padding: 30px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+
+      box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.06);
     }
 
     .checkout-card h2 {
       margin: 0 0 8px;
-      font-size: 1.45rem;
+
+      font-size: 1.4rem;
+      font-weight: 900;
     }
 
-    .checkout-card-intro {
-      color: #707070;
+    .card-description {
       margin: 0 0 28px;
-      line-height: 1.6;
+
+      color: #707070;
+
+      line-height: 1.65;
     }
 
-    /* =========================================
+
+    /* =====================================================
        FORM
-    ========================================= */
+    ===================================================== */
 
     .form-group {
       margin-bottom: 22px;
@@ -86,88 +280,108 @@
 
     .form-group label {
       display: block;
+
       margin-bottom: 8px;
-      font-weight: 700;
+
       color: #111;
+
+      font-size: 0.92rem;
+      font-weight: 800;
     }
 
     .form-group small {
       display: block;
+
       margin-top: 8px;
+
       color: #777;
+
+      font-size: 0.82rem;
       line-height: 1.5;
     }
 
-    .form-group input {
+    .form-group input:not(.money-field) {
       width: 100%;
       min-height: 52px;
+
       padding: 14px 16px;
-      border: 1px solid #d8d8d8;
+
+      border: 1px solid #d6d6d6;
       border-radius: 10px;
+
       background: #fff;
       color: #111;
+
+      font-family: inherit;
       font-size: 1rem;
+
       outline: none;
-      box-sizing: border-box;
-      transition: border-color 0.2s ease,
+
+      transition:
+        border-color 0.2s ease,
         box-shadow 0.2s ease;
     }
 
-    .form-group input:focus {
+    .form-group input:not(.money-field):focus {
       border-color: #f5c400;
-      box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.15);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(245, 196, 0, 0.15);
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
 
-    /* =========================================
+    /* =====================================================
        MONEY INPUT
-    ========================================= */
+    ===================================================== */
 
     .money-input {
       position: relative;
-      display: flex;
-      align-items: center;
+
       width: 100%;
+      height: 56px;
     }
 
     .money-symbol {
       position: absolute;
+
       left: 17px;
       top: 50%;
+
       transform: translateY(-50%);
+
       z-index: 2;
 
-      font-size: 1.05rem;
-      font-weight: 800;
-      line-height: 1;
       color: #111;
+
+      font-size: 1.1rem;
+      font-weight: 900;
 
       pointer-events: none;
       user-select: none;
     }
 
-    .money-input input {
+    .money-field {
       width: 100%;
-      min-height: 56px;
+      height: 56px;
 
-      padding: 14px 18px 14px 42px;
+      padding:
+        14px
+        18px
+        14px
+        42px !important;
 
-      border: 1px solid #d8d8d8;
-      border-radius: 10px;
+      border: 1px solid #d6d6d6 !important;
+      border-radius: 10px !important;
 
-      background: #fff;
-      color: #111;
+      background: #fff !important;
+      color: #111 !important;
 
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-family: inherit;
+      font-size: 1.1rem !important;
+      font-weight: 800;
 
       outline: none;
-      box-sizing: border-box;
 
       appearance: textfield;
       -moz-appearance: textfield;
@@ -177,42 +391,54 @@
         box-shadow 0.2s ease;
     }
 
-    .money-input input::-webkit-outer-spin-button,
-    .money-input input::-webkit-inner-spin-button {
+    .money-field::-webkit-outer-spin-button,
+    .money-field::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
 
-    .money-input input:focus {
-      border-color: #f5c400;
-      box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.15);
+    .money-field:focus {
+      border-color: #f5c400 !important;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(245, 196, 0, 0.15);
     }
 
-    .money-input input::placeholder {
+    .money-field::placeholder {
       color: #999;
       font-weight: 600;
     }
 
-    /* =========================================
+
+    /* =====================================================
        QUICK AMOUNTS
-    ========================================= */
+    ===================================================== */
 
     .quick-amounts {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+
+      gap: 9px;
+
       margin-top: 12px;
     }
 
     .quick-amount {
-      border: 1px solid #d7d7d7;
+      padding: 9px 14px;
+
+      border: 1px solid #d5d5d5;
+      border-radius: 999px;
+
       background: #fff;
       color: #111;
-      border-radius: 999px;
-      padding: 9px 15px;
-      font-size: 0.9rem;
-      font-weight: 700;
+
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 800;
+
       cursor: pointer;
+
       transition:
         background 0.2s ease,
         border-color 0.2s ease,
@@ -222,43 +448,71 @@
     .quick-amount:hover {
       background: #f5c400;
       border-color: #f5c400;
+
       transform: translateY(-1px);
     }
 
-    /* =========================================
-       ACKNOWLEDGEMENT
-    ========================================= */
+
+    /* =====================================================
+       TWO COLUMN FORM
+    ===================================================== */
+
+    .form-row {
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 18px;
+    }
+
+
+    /* =====================================================
+       RISK ACKNOWLEDGEMENT
+    ===================================================== */
 
     .acknowledgement {
       display: flex;
+
       align-items: flex-start;
+
       gap: 12px;
+
       margin: 25px 0;
+
       padding: 16px;
-      border-radius: 12px;
-      background: #faf8eb;
+
+      background: #fffbea;
+
       border: 1px solid #eee3a6;
+      border-radius: 12px;
     }
 
     .acknowledgement input {
       width: 18px;
       height: 18px;
+
       min-width: 18px;
+
       margin-top: 2px;
+
       accent-color: #111;
     }
 
     .acknowledgement label {
       margin: 0;
+
       color: #444;
-      font-size: 0.92rem;
+
+      font-size: 0.88rem;
       line-height: 1.55;
+
       cursor: pointer;
     }
 
-    /* =========================================
+
+    /* =====================================================
        SUMMARY
-    ========================================= */
+    ===================================================== */
 
     .summary-card {
       position: sticky;
@@ -266,118 +520,243 @@
     }
 
     .summary-list {
-      margin: 25px 0 0;
+      margin-top: 24px;
     }
 
     .summary-row {
       display: flex;
+
       justify-content: space-between;
       align-items: flex-start;
-      gap: 20px;
-      padding: 15px 0;
-      border-bottom: 1px solid #ededed;
-    }
 
-    .summary-row:last-child {
-      border-bottom: 0;
+      gap: 20px;
+
+      padding: 15px 0;
+
+      border-bottom: 1px solid #ededed;
     }
 
     .summary-label {
       color: #707070;
-      font-size: 0.92rem;
+
+      font-size: 0.88rem;
+      line-height: 1.45;
     }
 
     .summary-value {
       color: #111;
-      font-weight: 800;
+
+      font-size: 0.95rem;
+      font-weight: 900;
+
       text-align: right;
+
+      white-space: nowrap;
     }
 
     .summary-total {
-      margin-top: 10px;
+      margin-top: 8px;
+
       padding-top: 20px;
+
       border-top: 2px solid #111;
+      border-bottom: 0;
     }
 
     .summary-total .summary-value {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
     }
+
+
+    /* Ownership information */
 
     .ownership-note {
       margin-top: 20px;
-      padding: 16px;
-      border-radius: 12px;
+
+      padding: 17px;
+
       background: #111;
+
+      border-radius: 12px;
+
       color: #fff;
     }
 
     .ownership-note strong {
       display: block;
+
+      margin-bottom: 6px;
+
       color: #f5c400;
-      margin-bottom: 5px;
+
+      font-size: 0.9rem;
     }
 
     .ownership-note p {
       margin: 0;
-      font-size: 0.88rem;
-      line-height: 1.55;
+
       color: #ddd;
+
+      font-size: 0.82rem;
+      line-height: 1.6;
     }
 
-    /* =========================================
-       BUTTON
-    ========================================= */
+
+    /* =====================================================
+       SUBMIT BUTTON
+    ===================================================== */
 
     .checkout-submit {
       width: 100%;
-      min-height: 54px;
+      min-height: 55px;
+
+      padding: 14px 20px;
+
       border: 0;
       border-radius: 10px;
+
       background: #f5c400;
       color: #111;
-      font-size: 1rem;
-      font-weight: 800;
+
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 900;
+
       cursor: pointer;
-      padding: 14px 20px;
+
       transition:
+        background 0.2s ease,
         transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+        box-shadow 0.2s ease;
     }
 
-    .checkout-submit:hover {
+    .checkout-submit:hover:not(:disabled) {
       background: #ffd21a;
+
       transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+      box-shadow:
+        0 8px 20px
+        rgba(0, 0, 0, 0.12);
     }
 
     .checkout-submit:disabled {
-      opacity: 0.55;
+      opacity: 0.5;
+
       cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
     }
 
-    /* =========================================
+
+    /* =====================================================
        FRONTEND NOTICE
-    ========================================= */
+    ===================================================== */
 
     .frontend-notice {
-      margin-top: 25px;
-      padding: 17px;
+      margin-top: 22px;
+
+      padding: 16px;
+
       border-left: 4px solid #f5c400;
-      background: #fafafa;
-      color: #666;
-      font-size: 0.88rem;
-      line-height: 1.6;
+
       border-radius: 0 10px 10px 0;
+
+      background: #fafafa;
+
+      color: #666;
+
+      font-size: 0.82rem;
+      line-height: 1.6;
     }
 
-    /* =========================================
-       MOBILE
-    ========================================= */
+    .frontend-notice strong {
+      color: #111;
+    }
+
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    .checkout-footer {
+      padding: 30px 20px;
+
+      background: #111;
+
+      color: #aaa;
+
+      text-align: center;
+    }
+
+    .checkout-footer p {
+      margin: 0;
+
+      font-size: 0.82rem;
+    }
+
+    .checkout-footer span {
+      color: #f5c400;
+    }
+
+
+    /* =====================================================
+       MOBILE NAV
+    ===================================================== */
 
     @media (max-width: 850px) {
+
+      .checkout-menu-btn {
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+      }
+
+      .checkout-nav {
+        position: absolute;
+
+        top: 76px;
+        left: 0;
+
+        width: 100%;
+
+        display: none;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 0;
+
+        padding: 10px 20px 18px;
+
+        background: #111;
+
+        border-top: 1px solid
+          rgba(255, 255, 255, 0.08);
+
+        box-shadow:
+          0 15px 30px
+          rgba(0, 0, 0, 0.2);
+      }
+
+      .checkout-nav.active {
+        display: flex;
+      }
+
+      .checkout-nav a {
+        padding: 15px 5px;
+
+        border-bottom: 1px solid
+          rgba(255, 255, 255, 0.08);
+      }
+
+      .checkout-nav a:last-child {
+        border-bottom: 0;
+      }
+
+      .checkout-nav a.active::after {
+        display: none;
+      }
+
       .checkout-grid {
         grid-template-columns: 1fr;
       }
@@ -387,108 +766,177 @@
       }
     }
 
+
+    /* =====================================================
+       SMALL MOBILE
+    ===================================================== */
+
     @media (max-width: 600px) {
+
+      .checkout-header-inner {
+        width: min(100% - 30px, 1200px);
+      }
+
+      .checkout-logo {
+        font-size: 1rem;
+      }
+
       .checkout-page {
-        padding: 100px 15px 60px;
+        padding:
+          110px
+          15px
+          60px;
+      }
+
+      .checkout-intro {
+        margin-bottom: 30px;
+      }
+
+      .checkout-intro h1 {
+        font-size: 2rem;
       }
 
       .checkout-card {
         padding: 22px;
+
         border-radius: 14px;
-      }
-
-      .checkout-header {
-        margin-bottom: 30px;
-      }
-
-      .checkout-header h1 {
-        font-size: 2rem;
       }
 
       .form-row {
         grid-template-columns: 1fr;
+
         gap: 0;
       }
 
-      .quick-amounts {
-        gap: 8px;
+      .quick-amount {
+        padding: 8px 12px;
       }
 
-      .quick-amount {
-        padding: 8px 13px;
+      .summary-row {
+        gap: 12px;
       }
     }
+
   </style>
 </head>
 
+
 <body>
 
-  <!-- =========================================
+
+  <!-- =====================================================
        HEADER
-  ========================================== -->
+  ====================================================== -->
 
-  <header class="site-header">
-    <div class="container">
+  <header class="checkout-header-bar">
 
-      <a href="../index.html" class="logo">
-        AREA BOYZ
+    <div class="checkout-header-inner">
+
+      <a
+        href="../index.html"
+        class="checkout-logo"
+      >
+        AREA <span>BOYZ</span>
       </a>
 
+
       <button
-        class="menu-btn"
-        id="menuBtn"
         type="button"
+        class="checkout-menu-btn"
+        id="menuBtn"
         aria-label="Open navigation"
         aria-expanded="false"
       >
-        <i class="fas fa-bars"></i>
+        ☰
       </button>
 
-      <nav class="main-nav" id="mobileNav">
-        <a href="../index.html">Home</a>
-        <a href="../pages/shop.html">Shop</a>
-        <a href="../pages/collections.html">Collections</a>
-        <a href="../pages/our-story.html">Our Story</a>
-        <a href="../pages/contact.html">Contact</a>
-        <a href="index.html" class="active">Equity</a>
+
+      <nav
+        class="checkout-nav"
+        id="mobileNav"
+      >
+
+        <a href="../index.html">
+          Home
+        </a>
+
+        <a href="../pages/shop.html">
+          Shop
+        </a>
+
+        <a href="../pages/collections.html">
+          Collections
+        </a>
+
+        <a href="../pages/our-story.html">
+          Our Story
+        </a>
+
+        <a href="../pages/contact.html">
+          Contact
+        </a>
+
+        <a
+          href="index.html"
+          class="active"
+        >
+          Equity
+        </a>
+
       </nav>
 
     </div>
+
   </header>
 
 
-  <!-- =========================================
-       CHECKOUT
-  ========================================== -->
+  <!-- =====================================================
+       MAIN CHECKOUT
+  ====================================================== -->
 
   <main class="checkout-page">
 
     <div class="checkout-container">
 
-      <div class="checkout-header">
-        <h1>Equity Investment</h1>
+
+      <!-- Intro -->
+
+      <section class="checkout-intro">
+
+        <span class="eyebrow">
+          Area Boyz Enterprise Equity
+        </span>
+
+        <h1>
+          Review Your Investment
+        </h1>
 
         <p>
-          Review your proposed investment details before continuing.
-          This page is currently a frontend-only investment flow and does
-          not process payments or issue securities.
+          Enter your proposed investment amount and review
+          the estimated shares and ownership before continuing.
         </p>
-      </div>
 
+      </section>
+
+
+      <!-- Grid -->
 
       <div class="checkout-grid">
 
-        <!-- =====================================
-             INVESTMENT FORM
-        ====================================== -->
+
+        <!-- =================================================
+             FORM CARD
+        ================================================== -->
 
         <section class="checkout-card">
 
-          <h2>Investment Details</h2>
+          <h2>
+            Investment Details
+          </h2>
 
-          <p class="checkout-card-intro">
-            Enter the amount you would like to propose for investment.
-            The figures below are based on the current proposed equity terms.
+          <p class="card-description">
+            Complete the information below to prepare your
+            proposed investment details.
           </p>
 
 
@@ -511,6 +959,7 @@
 
               <input
                 type="number"
+                class="money-field"
                 id="investmentAmount"
                 name="investmentAmount"
                 min="500"
@@ -520,7 +969,7 @@
                 inputmode="numeric"
                 autocomplete="off"
                 required
-              />
+              >
 
             </div>
 
@@ -531,10 +980,7 @@
 
             <!-- Quick Amounts -->
 
-            <div
-              class="quick-amounts"
-              aria-label="Quick investment amounts"
-            >
+            <div class="quick-amounts">
 
               <button
                 type="button"
@@ -581,7 +1027,7 @@
           </div>
 
 
-          <!-- Personal Information -->
+          <!-- Name / Email -->
 
           <div class="form-row">
 
@@ -598,7 +1044,7 @@
                 placeholder="Your full name"
                 autocomplete="name"
                 required
-              />
+              >
 
             </div>
 
@@ -616,7 +1062,7 @@
                 placeholder="you@example.com"
                 autocomplete="email"
                 required
-              />
+              >
 
             </div>
 
@@ -639,12 +1085,12 @@
               autocomplete="tel"
               inputmode="tel"
               required
-            />
+            >
 
           </div>
 
 
-          <!-- Risk Acknowledgement -->
+          <!-- Risk -->
 
           <div class="acknowledgement">
 
@@ -653,23 +1099,26 @@
               id="riskAcknowledgement"
               name="riskAcknowledgement"
               required
-            />
+            >
 
             <label for="riskAcknowledgement">
-              I understand that this is a proposed equity investment
-              opportunity and that investment involves risk, including
-              the possible loss of invested capital. I understand that
-              this frontend page does not constitute a completed
+
+              I understand that this is a proposed equity
+              investment opportunity and that investment
+              involves risk, including the possible loss of
+              invested capital. I understand that this
+              frontend page does not constitute a completed
               securities transaction.
+
             </label>
 
           </div>
 
 
-          <!-- Submit -->
+          <!-- Continue -->
 
           <button
-            type="submit"
+            type="button"
             class="checkout-submit"
             id="continueButton"
             disabled
@@ -678,25 +1127,37 @@
           </button>
 
 
+          <!-- Notice -->
+
           <div class="frontend-notice">
-            <strong>Frontend demonstration:</strong>
-            Your information is currently stored only temporarily in
-            this browser session. No payment is processed and no
-            investment is created at this stage.
+
+            <strong>
+              Frontend demonstration:
+            </strong>
+
+            Your information is currently stored only
+            temporarily in this browser session. No payment
+            is processed and no investment is created at
+            this stage.
+
           </div>
 
         </section>
 
 
-        <!-- =====================================
-             SUMMARY
-        ====================================== -->
+        <!-- =================================================
+             SUMMARY CARD
+        ================================================== -->
 
         <aside class="checkout-card summary-card">
 
-          <h2>Investment Summary</h2>
+          <h2>
+            Investment Summary
+          </h2>
+
 
           <div class="summary-list">
+
 
             <div class="summary-row">
 
@@ -759,7 +1220,9 @@
             </div>
 
 
-            <div class="summary-row summary-total">
+            <div
+              class="summary-row summary-total"
+            >
 
               <span class="summary-label">
                 Total Proposed Investment
@@ -784,9 +1247,10 @@
             </strong>
 
             <p>
-              Ownership is calculated using the proposed $1 share
-              price and 758,000 existing shares. These figures are
-              illustrative and subject to final documentation.
+              Ownership is calculated using the proposed
+              $1 share price and 758,000 existing shares.
+              These figures are illustrative and subject
+              to final documentation.
             </p>
 
           </div>
@@ -800,153 +1264,187 @@
   </main>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        FOOTER
-  ========================================== -->
+  ====================================================== -->
 
-  <footer class="site-footer">
+  <footer class="checkout-footer">
 
-    <div class="container">
-
-      <p>
-        &copy;
-        <span id="year"></span>
-        Area Boyz Enterprise. All rights reserved.
-      </p>
-
-    </div>
+    <p>
+      &copy;
+      <span id="year"></span>
+      Area Boyz Enterprise.
+      All rights reserved.
+    </p>
 
   </footer>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        JAVASCRIPT
-  ========================================== -->
+  ====================================================== -->
 
   <script>
-    /* =========================================
+
+    /* =====================================================
        INVESTMENT TERMS
-    ========================================= */
+    ===================================================== */
 
     const SHARE_PRICE = 1;
+
     const EXISTING_SHARES = 758000;
 
     const MINIMUM_INVESTMENT = 500;
+
     const MAXIMUM_INVESTMENT = 189500;
 
 
-    /* =========================================
+    /* =====================================================
        ELEMENTS
-    ========================================= */
+    ===================================================== */
 
     const investmentAmount =
-      document.getElementById("investmentAmount");
+      document.getElementById(
+        "investmentAmount"
+      );
 
     const investorName =
-      document.getElementById("investorName");
+      document.getElementById(
+        "investorName"
+      );
 
     const investorEmail =
-      document.getElementById("investorEmail");
+      document.getElementById(
+        "investorEmail"
+      );
 
     const investorPhone =
-      document.getElementById("investorPhone");
+      document.getElementById(
+        "investorPhone"
+      );
 
     const riskAcknowledgement =
-      document.getElementById("riskAcknowledgement");
+      document.getElementById(
+        "riskAcknowledgement"
+      );
 
     const continueButton =
-      document.getElementById("continueButton");
+      document.getElementById(
+        "continueButton"
+      );
 
     const summaryInvestment =
-      document.getElementById("summaryInvestment");
+      document.getElementById(
+        "summaryInvestment"
+      );
 
     const summaryShares =
-      document.getElementById("summaryShares");
+      document.getElementById(
+        "summaryShares"
+      );
 
     const summaryOwnership =
-      document.getElementById("summaryOwnership");
+      document.getElementById(
+        "summaryOwnership"
+      );
 
     const summaryTotal =
-      document.getElementById("summaryTotal");
+      document.getElementById(
+        "summaryTotal"
+      );
 
 
-    /* =========================================
+    /* =====================================================
        MONEY FORMAT
-    ========================================= */
+    ===================================================== */
 
     function formatMoney(amount) {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0
-      }).format(amount);
+
+      return new Intl.NumberFormat(
+        "en-US",
+        {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0
+        }
+      ).format(amount);
+
     }
 
 
-    /* =========================================
+    /* =====================================================
        UPDATE SUMMARY
-    ========================================= */
+    ===================================================== */
 
     function updateSummary() {
 
-      let amount =
+      const amount =
         Number(investmentAmount.value) || 0;
 
 
-      if (amount < 0) {
-        amount = 0;
-      }
-
-
       const shares =
-        Math.floor(amount / SHARE_PRICE);
+        Math.floor(
+          amount / SHARE_PRICE
+        );
 
 
       const ownership =
         EXISTING_SHARES > 0
-          ? (shares / EXISTING_SHARES) * 100
+          ? (
+              shares /
+              EXISTING_SHARES
+            ) * 100
           : 0;
 
 
       summaryInvestment.textContent =
         formatMoney(amount);
 
+
       summaryShares.textContent =
         shares.toLocaleString("en-US");
 
+
       summaryOwnership.textContent =
         ownership.toFixed(3) + "%";
+
 
       summaryTotal.textContent =
         formatMoney(amount);
 
 
       validateForm();
+
     }
 
 
-    /* =========================================
-       VALIDATE FORM
-    ========================================= */
+    /* =====================================================
+       VALIDATE
+    ===================================================== */
 
     function validateForm() {
 
       const amount =
         Number(investmentAmount.value) || 0;
 
-      const nameValid =
-        investorName.value.trim().length >= 2;
-
-      const emailValid =
-        investorEmail.validity.valid &&
-        investorEmail.value.trim() !== "";
-
-      const phoneValid =
-        investorPhone.value.trim().length >= 5;
 
       const amountValid =
         amount >= MINIMUM_INVESTMENT &&
         amount <= MAXIMUM_INVESTMENT;
+
+
+      const nameValid =
+        investorName.value.trim().length >= 2;
+
+
+      const emailValid =
+        investorEmail.value.trim() !== "" &&
+        investorEmail.validity.valid;
+
+
+      const phoneValid =
+        investorPhone.value.trim().length >= 5;
+
 
       const riskAccepted =
         riskAcknowledgement.checked;
@@ -960,57 +1458,64 @@
           phoneValid &&
           riskAccepted
         );
+
     }
 
 
-    /* =========================================
-       QUICK AMOUNT BUTTONS
-    ========================================= */
+    /* =====================================================
+       QUICK AMOUNTS
+    ===================================================== */
 
     document
-      .querySelectorAll(".quick-amount")
+      .querySelectorAll(
+        ".quick-amount"
+      )
       .forEach(button => {
 
-        button.addEventListener("click", () => {
+        button.addEventListener(
+          "click",
+          () => {
 
-          const amount =
-            button.dataset.amount;
+            investmentAmount.value =
+              button.dataset.amount;
 
-          investmentAmount.value =
-            amount;
+            updateSummary();
 
-          updateSummary();
+            investmentAmount.focus();
 
-          investmentAmount.focus();
-
-        });
+          }
+        );
 
       });
 
 
-    /* =========================================
-       FORM INPUT EVENTS
-    ========================================= */
+    /* =====================================================
+       INPUT EVENTS
+    ===================================================== */
 
     investmentAmount.addEventListener(
       "input",
       updateSummary
     );
 
+
     investorName.addEventListener(
       "input",
       validateForm
     );
+
 
     investorEmail.addEventListener(
       "input",
       validateForm
     );
 
+
     investorPhone.addEventListener(
       "input",
       validateForm
     );
+
 
     riskAcknowledgement.addEventListener(
       "change",
@@ -1018,27 +1523,38 @@
     );
 
 
-    /* =========================================
-       SUBMIT
-    ========================================= */
+    /* =====================================================
+       CONTINUE
+    ===================================================== */
 
     continueButton.addEventListener(
       "click",
-      function () {
+      () => {
 
-        if (continueButton.disabled) {
+        if (
+          continueButton.disabled
+        ) {
           return;
         }
 
 
         const amount =
-          Number(investmentAmount.value);
+          Number(
+            investmentAmount.value
+          );
+
 
         const shares =
-          Math.floor(amount / SHARE_PRICE);
+          Math.floor(
+            amount / SHARE_PRICE
+          );
+
 
         const ownership =
-          (shares / EXISTING_SHARES) * 100;
+          (
+            shares /
+            EXISTING_SHARES
+          ) * 100;
 
 
         const investmentData = {
@@ -1071,7 +1587,9 @@
 
         sessionStorage.setItem(
           "areaBoyzInvestment",
-          JSON.stringify(investmentData)
+          JSON.stringify(
+            investmentData
+          )
         );
 
 
@@ -1082,25 +1600,35 @@
     );
 
 
-    /* =========================================
+    /* =====================================================
        MOBILE NAVIGATION
-    ========================================= */
+    ===================================================== */
 
     const menuBtn =
-      document.getElementById("menuBtn");
+      document.getElementById(
+        "menuBtn"
+      );
 
     const mobileNav =
-      document.getElementById("mobileNav");
+      document.getElementById(
+        "mobileNav"
+      );
 
 
-    if (menuBtn && mobileNav) {
+    if (
+      menuBtn &&
+      mobileNav
+    ) {
 
       menuBtn.addEventListener(
         "click",
         () => {
 
           const isOpen =
-            mobileNav.classList.toggle("active");
+            mobileNav.classList.toggle(
+              "active"
+            );
+
 
           menuBtn.setAttribute(
             "aria-expanded",
@@ -1123,6 +1651,7 @@
                 "active"
               );
 
+
               menuBtn.setAttribute(
                 "aria-expanded",
                 "false"
@@ -1136,24 +1665,19 @@
     }
 
 
-    /* =========================================
-       CURRENT YEAR
-    ========================================= */
+    /* =====================================================
+       YEAR
+    ===================================================== */
 
-    const yearElement =
-      document.getElementById("year");
-
-    if (yearElement) {
-
-      yearElement.textContent =
-        new Date().getFullYear();
-
-    }
+    document.getElementById(
+      "year"
+    ).textContent =
+      new Date().getFullYear();
 
 
-    /* =========================================
+    /* =====================================================
        INITIALIZE
-    ========================================= */
+    ===================================================== */
 
     updateSummary();
 
