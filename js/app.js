@@ -1,483 +1,179 @@
 "use strict";
 
-
 /* =========================================================
    AREA BOYZ ENTERPRISE
    STORE ENGINE
    ========================================================= */
 
-
-/* =========================================================
-   SITE ROOT + IMAGE PATHS
-   ========================================================= */
-
-const SITE_ROOT =
-  new URL(
-    "../",
-    document.currentScript.src
-  ).href;
-
+const SITE_ROOT = new URL("../", document.currentScript.src).href;
 
 const PATHS = {
-
-  hero:
-    `${SITE_ROOT}images/hero/`,
-
-  products:
-    `${SITE_ROOT}images/products/`,
-
-  categories:
-    `${SITE_ROOT}images/categories/`,
-
-  collections:
-    `${SITE_ROOT}images/collections/`
-
+  hero: `${SITE_ROOT}images/hero/`,
+  products: `${SITE_ROOT}images/products/`,
+  categories: `${SITE_ROOT}images/categories/`,
+  collections: `${SITE_ROOT}images/collections/`
 };
 
-
-/* =========================================================
-   STORE SETTINGS
-   ========================================================= */
-
 const PRODUCT_TOTAL = 109;
+const DEFAULT_PRODUCT_PRICE = 450;
+const CURRENCY_SYMBOL = "$";
 
-const DEFAULT_PRODUCT_PRICE = 45000;
-
-const CURRENCY_SYMBOL = "₦";
-
-const CART_STORAGE_KEY =
-  "areaBoyzCart";
-
-const COLLECTION_STORAGE_KEY =
-  "areaBoyzCollection";
-
-
-/* =========================================================
-   COLLECTIONS
-   ========================================================= */
+const CART_STORAGE_KEY = "areaBoyzCart";
+const COLLECTION_STORAGE_KEY = "areaBoyzCollection";
 
 const CATEGORIES = [
-
   "all",
-
   "streetwear",
-
   "handmade",
-
   "footwear",
-
   "accessories"
-
 ];
 
 
 /* =========================================================
-   PRODUCT CATALOG OVERRIDES
+   PRODUCT NAMES
    ========================================================= */
 
-const PRODUCT_CATALOG_OVERRIDES = {
+const PRODUCT_NAMES = {
 
-  "001": {
-    name:
-      "Black Structured Tailored Long Coat",
-    collection:
-      "handmade"
-  },
-
-  "012": {
-    name:
-      "White Traditional Tailored Set",
-    collection:
-      "handmade"
-  },
-
-  "013": {
-    name:
-      "Brown Tailored Suit Set",
-    collection:
-      "handmade"
-  },
-
-  "014": {
-    name:
-      "Brown Traditional Two-Piece Set",
-    collection:
-      "handmade"
-  },
-
-  "017": {
-    name:
-      "Red & Brown Tailored Wrap Skirt Set",
-    collection:
-      "handmade"
-  },
-
-  "020": {
-    name:
-      "Brown Tailored Two-Piece Suit",
-    collection:
-      "handmade"
-  },
-
-  "021": {
-    name:
-      "Blue Embellished Tailored Dress",
-    collection:
-      "handmade"
-  },
-
-  "022": {
-    name:
-      "Layered Tailored Statement Pieces",
-    collection:
-      "handmade"
-  },
-
-  "030": {
-    name:
-      "Black Tailored Formal Suit",
-    collection:
-      "handmade"
-  },
-
-  "054": {
-    name:
-      "Black Formal Tailored Suit",
-    collection:
-      "handmade"
-  },
-
-  "080": {
-    name:
-      "Patchwork Striped Tailored Jacket",
-    collection:
-      "handmade"
-  },
-
-
-  /* CLEARLY IDENTIFIABLE BRANDS */
-
-  "005": {
-    name:
-      "Kanye West Graphic T-Shirt",
-    brand:
-      "Kanye West"
-  },
-
-  "086": {
-    name:
-      "Supreme Graphic Hoodie",
-    brand:
-      "Supreme"
-  },
-
-
-  /* DESCRIPTIVE NAMES */
-
-  "007": {
-    name:
-      "Blue & White Athletic Sneaker"
-  },
-
-  "008": {
-    name:
-      "Black & White Strap High-Top"
-  },
-
-  "016": {
-    name:
-      "Neutral Cap Collection"
-  },
-
-  "028": {
-    name:
-      "Black Structured Mini Bag"
-  },
-
-  "036": {
-    name:
-      "Decorative Beaded Neckpiece"
-  },
-
-  "038": {
-    name:
-      "Gray Structured Shoulder Bag"
-  },
-
-  "039": {
-    name:
-      "Spider Graphic T-Shirt"
-  },
-
-  "041": {
-    name:
-      "Blue Charm Clogs"
-  },
-
-  "043": {
-    name:
-      "Multicolor Knit Beanie"
-  },
-
-  "044": {
-    name:
-      "Printed Graphic Cap"
-  },
-
-  "048": {
-    name:
-      "Green Graphic Bucket Hat"
-  },
-
-  "049": {
-    name:
-      "Black Graphic Beanie"
-  },
-
-  "051": {
-    name:
-      "Heavy Black Utility Footwear"
-  },
-
-  "059": {
-    name:
-      "Brown Leather-Style Tote Bag"
-  },
-
-  "062": {
-    name:
-      "Brown Rugged Lace-Up Boots"
-  },
-
-  "063": {
-    name:
-      "Red Low-Top Sneakers"
-  },
-
-  "064": {
-    name:
-      "Black Leather-Style Backpack"
-  },
-
-  "066": {
-    name:
-      "Cream Sculptural Footwear"
-  },
-
-  "069": {
-    name:
-      "Red & Black Varsity Jacket"
-  },
-
-  "072": {
-    name:
-      "Black Padded Gloves"
-  },
-
-  "074": {
-    name:
-      "Orange & White Graphic Sneakers"
-  },
-
-  "075": {
-    name:
-      "Red High-Top Sneakers"
-  },
-
-  "076": {
-    name:
-      "Black White & Red High-Top"
-  },
-
-  "079": {
-    name:
-      "Tan Western Graphic Jacket"
-  },
-
-  "082": {
-    name:
-      "Tan Western Graphic Jacket"
-  },
-
-  "083": {
-    name:
-      "Multicolor Graphic Jacket"
-  },
-
-  "087": {
-    name:
-      "Black Embossed Card Wallet"
-  },
-
-  "089": {
-    name:
-      "Black Knit Beanie"
-  },
-
-  "092": {
-    name:
-      "White Utility Wide-Leg Trousers"
-  },
-
-  "093": {
-    name:
-      "Colorful Charm Clogs"
-  },
-
-  "095": {
-    name:
-      "Light Blue Patterned Cap"
-  },
-
-  "102": {
-    name:
-      "Brown Rugged Leather-Style Boot"
-  },
-
-  "103": {
-    name:
-      "Mixed Sneaker Selection"
-  },
-
-  "104": {
-    name:
-      "Mixed Sneaker Display"
-  },
-
-  "108": {
-    name:
-      "White & Blue Running Sneaker"
-  },
-
-  "109": {
-    name:
-      "Brown Leather Dress Shoe"
-  }
-
-};
-
-
-/* =========================================================
-   DEFAULT PRODUCT NAMES
-   ========================================================= */
-
-const DEFAULT_PRODUCT_NAMES = {
-
-  "001": "Area Boyz Statement Piece",
-  "002": "Urban Graphic Tee",
-  "003": "Classic Street Tee",
-  "004": "Everyday Graphic Tee",
+  "001": "Black Structured Tailored Long Coat",
+  "002": "Just Found Out Graphic Tee",
+  "003": "LO Windbreaker Shirt",
+  "004": "Pink Pop Cartoon Jacket",
   "005": "Kanye West Graphic T-Shirt",
-  "006": "Urban Casual Tee",
-  "007": "Blue & White Athletic Sneaker",
-  "008": "Black & White Strap High-Top",
-  "009": "Classic Streetwear Piece",
-  "010": "Urban Essential",
-  "011": "Modern Casual Piece",
+  "006": "Skater Bear Graphic Tee",
+
+  "007": "Aero Frost Runner",
+  "008": "Shadow Wrap High-Top",
+
+  "009": "Sheer Mesh Snake-Print Top",
+  "010": "Crimson Lace-Up Sneaker Pants",
+  "011": "Shadow Grid Hooded Jacket",
+
   "012": "White Traditional Tailored Set",
   "013": "Brown Tailored Suit Set",
   "014": "Brown Traditional Two-Piece Set",
-  "015": "Modern Streetwear Piece",
+
+  "015": "Mixed Layer Streetwear Set",
   "016": "Neutral Cap Collection",
+
   "017": "Red & Brown Tailored Wrap Skirt Set",
-  "018": "Urban Statement Piece",
-  "019": "Everyday Streetwear",
+  "018": "Silver Stitch Denim",
+  "019": "Vintage 99 Patch Denim",
+
   "020": "Brown Tailored Two-Piece Suit",
   "021": "Blue Embellished Tailored Dress",
   "022": "Layered Tailored Statement Pieces",
-  "023": "Urban Essential",
-  "024": "Graphic Streetwear Tee",
-  "025": "Modern Casual Wear",
-  "026": "Street Style Essential",
-  "027": "Urban Statement Wear",
+
+  "023": "Teal Curve-Tail Blazer",
+  "024": "Relaxed Gray Utility Trousers",
+  "025": "Black Draped Statement Set",
+  "026": "Abstract Camo Print Shirt",
+  "027": "Red Patchwork Utility Denim",
+
   "028": "Black Structured Mini Bag",
-  "029": "Modern Streetwear",
+  "029": "Golden Cropped Utility Shirt",
+
   "030": "Black Tailored Formal Suit",
-  "031": "Urban Graphic Piece",
-  "032": "Streetwear Essential",
-  "033": "Modern Casual Piece",
-  "034": "Urban Statement Piece",
-  "035": "Area Boyz Select Piece",
+  "031": "Indigo Utility Denim Vest",
+  "032": "Distressed Fringe Knit Top",
+  "033": "Cream Contrast Knit Cardigan",
+  "034": "Blue Studded Utility Tote",
+  "035": "Retro Racing Bomber Jacket",
+
   "036": "Decorative Beaded Neckpiece",
-  "037": "Urban Streetwear Piece",
+  "037": "Ivory Sculpted Hooded Jacket",
   "038": "Gray Structured Shoulder Bag",
   "039": "Spider Graphic T-Shirt",
-  "040": "Graphic Streetwear Piece",
-  "041": "Blue Charm Clogs",
-  "042": "Urban Accessory",
+  "040": "Flared White Street Denim",
+
+  "041": "Blue Mosaic Charm Clogs",
+  "042": "Vintage Varsity Letter Jacket",
   "043": "Multicolor Knit Beanie",
   "044": "Printed Graphic Cap",
-  "045": "Streetwear Accessory",
-  "046": "Urban Essential",
-  "047": "Graphic Streetwear",
+  "045": "Olive Flight Bomber Jacket",
+  "046": "Midnight Floral Bomber",
+  "047": "Crimson Racing Bomber",
   "048": "Green Graphic Bucket Hat",
   "049": "Black Graphic Beanie",
-  "050": "Urban Statement Piece",
-  "051": "Heavy Black Utility Footwear",
-  "052": "Streetwear Essential",
-  "053": "Urban Casual Piece",
+  "050": "Shadow Graphic Zip Hoodie",
+
+  "051": "Ironclad Utility Boots",
+  "052": "After Hours Graphic Long Sleeve",
+  "053": "Turtle Graphic Sweatshirt",
+
   "054": "Black Formal Tailored Suit",
-  "055": "Modern Streetwear",
-  "056": "Urban Essential",
-  "057": "Graphic Streetwear",
-  "058": "Casual Streetwear Piece",
+  "055": "Electric Blue Quilted Jacket",
+  "056": "Navy Military Collar Jacket",
+  "057": "Burgundy Racing Jacket",
+  "058": "Olive Puffer Hoodie",
+
   "059": "Brown Leather-Style Tote Bag",
-  "060": "Urban Accessory",
-  "061": "Streetwear Essential",
-  "062": "Brown Rugged Lace-Up Boots",
-  "063": "Red Low-Top Sneakers",
+  "060": "Golden Crop Utility Shirt",
+  "061": "Black Tactical Hooded Jacket",
+
+  "062": "Rugged Terrain Lace-Up Boots",
+  "063": "Spider Strike Clogs",
   "064": "Black Leather-Style Backpack",
-  "065": "Urban Streetwear",
-  "066": "Cream Sculptural Footwear",
-  "067": "Modern Casual Piece",
-  "068": "Urban Essential",
-  "069": "Red & Black Varsity Jacket",
-  "070": "Streetwear Essential",
-  "071": "Urban Accessory",
+  "065": "Stone Panel Puffer Jacket",
+
+  "066": "Silver Forge Utility Boots",
+  "067": "Archive Graphic Hoodie Set",
+  "068": "Distressed Statement Denim",
+  "069": "Redline Varsity Jacket",
+  "070": "Black Sculpted Puffer Jacket",
+
+  "071": "Area Boyz Utility Accessory",
   "072": "Black Padded Gloves",
-  "073": "Modern Streetwear",
-  "074": "Orange & White Graphic Sneakers",
-  "075": "Red High-Top Sneakers",
-  "076": "Black White & Red High-Top",
-  "077": "Urban Streetwear",
-  "078": "Modern Casual Piece",
-  "079": "Tan Western Graphic Jacket",
+  "073": "Vintage Leather Rider Jacket",
+
+  "074": "Frostbite Orange-White Slides",
+  "075": "Crimson Lace High-Tops",
+  "076": "Tri-Color Flight High-Tops",
+
+  "077": "Indigo Leather-Trim Jacket",
+  "078": "Blue Textured Knit Sweater",
+  "079": "Western Rider Graphic Jacket",
+
   "080": "Patchwork Striped Tailored Jacket",
-  "081": "Urban Statement Jacket",
-  "082": "Tan Western Graphic Jacket",
-  "083": "Multicolor Graphic Jacket",
-  "084": "Streetwear Essential",
-  "085": "Urban Graphic Piece",
+  "081": "Abstract Fur-Collar Statement Jacket",
+  "082": "Western Horseman Jacket",
+  "083": "Paint-Splatter Art Jacket",
+  "084": "Mixed Layer Casual Set",
+  "085": "Western Horseman Detail Jacket",
+
   "086": "Supreme Graphic Hoodie",
   "087": "Black Embossed Card Wallet",
-  "088": "Urban Accessory",
+  "088": "Black Patchwork Utility Hoodie",
   "089": "Black Knit Beanie",
-  "090": "Streetwear Essential",
-  "091": "Urban Casual Piece",
-  "092": "White Utility Wide-Leg Trousers",
-  "093": "Colorful Charm Clogs",
-  "094": "Urban Accessory",
-  "095": "Light Blue Patterned Cap",
-  "096": "Modern Streetwear",
-  "097": "Urban Essential",
-  "098": "Streetwear Statement Piece",
-  "099": "Modern Casual Wear",
-  "100": "Urban Essential",
-  "101": "Streetwear Footwear",
-  "102": "Brown Rugged Leather-Style Boot",
-  "103": "Mixed Sneaker Selection",
-  "104": "Mixed Sneaker Display",
-  "105": "Urban Footwear",
-  "106": "Streetwear Essential",
-  "107": "Modern Casual Piece",
-  "108": "White & Blue Running Sneaker",
-  "109": "Brown Leather Dress Shoe"
+  "090": "White Layered Street Set",
+  "091": "Clean White Essential Long Sleeve",
 
+  "092": "White Utility Wide-Leg Trousers",
+  "093": "Simpsons Graphic Slides",
+  "094": "Area Boyz Everyday Accessory",
+  "095": "Light Blue Patterned Cap",
+
+  "096": "Blue Hooded Rider Jacket",
+  "097": "Burgundy Varsity Zip Jacket",
+  "098": "Blue Moto Leather Jacket",
+  "099": "Vintage Distressed Leather Jacket",
+  "100": "Black Cropped Rider Jacket",
+
+  "101": "Polka Dot Shirt & Pink Trousers",
+  "102": "Cedar Ridge Leather Boot",
+  "103": "Sneaker Vault Selection",
+  "104": "Street Runner Sneaker Selection",
+  "105": "Red Stripe Tracksuit Set",
+  "106": "Brown Heritage Leather Jacket",
+  "107": "Utility Pocket Jacket",
+  "108": "Icewave Runner",
+  "109": "Heritage Leather Loafer"
 };
 
 
 /* =========================================================
-   CATEGORY OVERRIDES
+   PRODUCT CATEGORIES
    ========================================================= */
 
 const PRODUCT_CATEGORY_OVERRIDES = {
@@ -509,28 +205,21 @@ const PRODUCT_CATEGORY_OVERRIDES = {
   "049": "accessories",
   "059": "accessories",
   "064": "accessories",
+  "071": "accessories",
   "072": "accessories",
   "087": "accessories",
   "089": "accessories",
+  "094": "accessories",
   "095": "accessories",
 
-  "001": "handmade",
-  "012": "handmade",
-  "013": "handmade",
-  "014": "handmade",
-  "017": "handmade",
-  "020": "handmade",
-  "021": "handmade",
-  "022": "handmade",
-  "030": "handmade",
-  "054": "handmade",
-  "080": "handmade"
-
+  "101": "sets",
+  "105": "sets",
+  "107": "bottoms"
 };
 
 
 /* =========================================================
-   COLLECTION OVERRIDES
+   COLLECTIONS
    ========================================================= */
 
 const PRODUCT_COLLECTION_OVERRIDES = {
@@ -545,8 +234,41 @@ const PRODUCT_COLLECTION_OVERRIDES = {
   "022": "handmade",
   "030": "handmade",
   "054": "handmade",
-  "080": "handmade"
+  "080": "handmade",
 
+  "007": "footwear",
+  "008": "footwear",
+  "041": "footwear",
+  "051": "footwear",
+  "062": "footwear",
+  "063": "footwear",
+  "066": "footwear",
+  "074": "footwear",
+  "075": "footwear",
+  "076": "footwear",
+  "093": "footwear",
+  "102": "footwear",
+  "103": "footwear",
+  "104": "footwear",
+  "108": "footwear",
+  "109": "footwear",
+
+  "016": "accessories",
+  "028": "accessories",
+  "036": "accessories",
+  "038": "accessories",
+  "043": "accessories",
+  "044": "accessories",
+  "048": "accessories",
+  "049": "accessories",
+  "059": "accessories",
+  "064": "accessories",
+  "071": "accessories",
+  "072": "accessories",
+  "087": "accessories",
+  "089": "accessories",
+  "094": "accessories",
+  "095": "accessories"
 };
 
 
@@ -555,395 +277,224 @@ const PRODUCT_COLLECTION_OVERRIDES = {
    ========================================================= */
 
 const PRODUCT_BRAND_OVERRIDES = {
-
   "005": "Kanye West",
-
   "086": "Supreme"
-
 };
 
 
 /* =========================================================
-   EXISTING VISUAL PRODUCT DATA
+   PRODUCT PRICES — ALL USD
    ========================================================= */
 
-const VISUAL_PRODUCT_DATA = {
+const PRODUCT_PRICES = {
 
-  "001": { category: "men", price: 85000 },
-  "002": { category: "men", price: 42000 },
-  "003": { category: "men", price: 38000 },
-  "004": { category: "men", price: 45000 },
-  "005": { category: "men", price: 48000 },
-  "006": { category: "men", price: 40000 },
-  "007": { category: "footwear", price: 65000 },
-  "008": { category: "footwear", price: 72000 },
-  "009": { category: "men", price: 45000 },
-  "010": { category: "men", price: 42000 },
-  "011": { category: "men", price: 46000 },
-  "012": { category: "women", price: 78000 },
-  "013": { category: "men", price: 95000 },
-  "014": { category: "men", price: 88000 },
-  "015": { category: "men", price: 45000 },
-  "016": { category: "accessories", price: 25000 },
-  "017": { category: "women", price: 82000 },
-  "018": { category: "men", price: 45000 },
-  "019": { category: "men", price: 40000 },
-  "020": { category: "men", price: 92000 },
-  "021": { category: "women", price: 88000 },
-  "022": { category: "women", price: 90000 },
-  "023": { category: "men", price: 43000 },
-  "024": { category: "men", price: 44000 },
-  "025": { category: "men", price: 42000 },
-  "026": { category: "men", price: 40000 },
-  "027": { category: "men", price: 47000 },
-  "028": { category: "accessories", price: 55000 },
-  "029": { category: "men", price: 43000 },
-  "030": { category: "men", price: 98000 },
-  "031": { category: "men", price: 44000 },
-  "032": { category: "men", price: 42000 },
-  "033": { category: "men", price: 45000 },
-  "034": { category: "men", price: 48000 },
-  "035": { category: "men", price: 45000 },
-  "036": { category: "accessories", price: 30000 },
-  "037": { category: "men", price: 45000 },
-  "038": { category: "accessories", price: 58000 },
-  "039": { category: "men", price: 46000 },
-  "040": { category: "men", price: 43000 },
-  "041": { category: "footwear", price: 62000 },
-  "042": { category: "accessories", price: 28000 },
-  "043": { category: "accessories", price: 22000 },
-  "044": { category: "accessories", price: 24000 },
-  "045": { category: "accessories", price: 26000 },
-  "046": { category: "men", price: 42000 },
-  "047": { category: "men", price: 44000 },
-  "048": { category: "accessories", price: 28000 },
-  "049": { category: "accessories", price: 22000 },
-  "050": { category: "men", price: 45000 },
-  "051": { category: "footwear", price: 76000 },
-  "052": { category: "men", price: 43000 },
-  "053": { category: "men", price: 42000 },
-  "054": { category: "men", price: 98000 },
-  "055": { category: "men", price: 44000 },
-  "056": { category: "men", price: 42000 },
-  "057": { category: "men", price: 45000 },
-  "058": { category: "men", price: 42000 },
-  "059": { category: "accessories", price: 58000 },
-  "060": { category: "accessories", price: 26000 },
-  "061": { category: "men", price: 43000 },
-  "062": { category: "footwear", price: 78000 },
-  "063": { category: "footwear", price: 65000 },
-  "064": { category: "accessories", price: 52000 },
-  "065": { category: "men", price: 45000 },
-  "066": { category: "footwear", price: 68000 },
-  "067": { category: "men", price: 43000 },
-  "068": { category: "men", price: 42000 },
-  "069": { category: "men", price: 72000 },
-  "070": { category: "men", price: 44000 },
-  "071": { category: "accessories", price: 26000 },
-  "072": { category: "accessories", price: 22000 },
-  "073": { category: "men", price: 43000 },
-  "074": { category: "footwear", price: 65000 },
-  "075": { category: "footwear", price: 68000 },
-  "076": { category: "footwear", price: 72000 },
-  "077": { category: "men", price: 45000 },
-  "078": { category: "men", price: 43000 },
-  "079": { category: "men", price: 70000 },
-  "080": { category: "men", price: 76000 },
-  "081": { category: "men", price: 65000 },
-  "082": { category: "men", price: 70000 },
-  "083": { category: "men", price: 72000 },
-  "084": { category: "men", price: 44000 },
-  "085": { category: "men", price: 46000 },
-  "086": { category: "men", price: 68000 },
-  "087": { category: "accessories", price: 30000 },
-  "088": { category: "accessories", price: 26000 },
-  "089": { category: "accessories", price: 22000 },
-  "090": { category: "men", price: 44000 },
-  "091": { category: "men", price: 42000 },
-  "092": { category: "men", price: 55000 },
-  "093": { category: "footwear", price: 62000 },
-  "094": { category: "accessories", price: 26000 },
-  "095": { category: "accessories", price: 24000 },
-  "096": { category: "men", price: 43000 },
-  "097": { category: "men", price: 42000 },
-  "098": { category: "men", price: 46000 },
-  "099": { category: "men", price: 43000 },
-  "100": { category: "men", price: 45000 },
-  "101": { category: "footwear", price: 62000 },
-  "102": { category: "footwear", price: 78000 },
-  "103": { category: "footwear", price: 65000 },
-  "104": { category: "footwear", price: 65000 },
-  "105": { category: "footwear", price: 62000 },
-  "106": { category: "men", price: 43000 },
-  "107": { category: "men", price: 42000 },
-  "108": { category: "footwear", price: 65000 },
-  "109": { category: "footwear", price: 70000 }
-
+  "001": 850,
+  "002": 420,
+  "003": 380,
+  "004": 450,
+  "005": 480,
+  "006": 400,
+  "007": 650,
+  "008": 720,
+  "009": 450,
+  "010": 420,
+  "011": 460,
+  "012": 780,
+  "013": 950,
+  "014": 880,
+  "015": 450,
+  "016": 250,
+  "017": 820,
+  "018": 450,
+  "019": 400,
+  "020": 920,
+  "021": 880,
+  "022": 900,
+  "023": 430,
+  "024": 440,
+  "025": 420,
+  "026": 400,
+  "027": 470,
+  "028": 550,
+  "029": 430,
+  "030": 980,
+  "031": 440,
+  "032": 420,
+  "033": 450,
+  "034": 480,
+  "035": 450,
+  "036": 300,
+  "037": 450,
+  "038": 580,
+  "039": 460,
+  "040": 430,
+  "041": 620,
+  "042": 440,
+  "043": 220,
+  "044": 240,
+  "045": 440,
+  "046": 420,
+  "047": 450,
+  "048": 280,
+  "049": 220,
+  "050": 450,
+  "051": 760,
+  "052": 430,
+  "053": 420,
+  "054": 980,
+  "055": 440,
+  "056": 420,
+  "057": 450,
+  "058": 420,
+  "059": 580,
+  "060": 420,
+  "061": 450,
+  "062": 780,
+  "063": 650,
+  "064": 520,
+  "065": 450,
+  "066": 680,
+  "067": 430,
+  "068": 420,
+  "069": 720,
+  "070": 440,
+  "071": 260,
+  "072": 220,
+  "073": 430,
+  "074": 650,
+  "075": 680,
+  "076": 720,
+  "077": 450,
+  "078": 430,
+  "079": 700,
+  "080": 760,
+  "081": 650,
+  "082": 700,
+  "083": 720,
+  "084": 440,
+  "085": 460,
+  "086": 680,
+  "087": 300,
+  "088": 260,
+  "089": 220,
+  "090": 440,
+  "091": 420,
+  "092": 550,
+  "093": 620,
+  "094": 260,
+  "095": 240,
+  "096": 430,
+  "097": 420,
+  "098": 460,
+  "099": 430,
+  "100": 450,
+  "101": 620,
+  "102": 780,
+  "103": 650,
+  "104": 650,
+  "105": 620,
+  "106": 430,
+  "107": 420,
+  "108": 650,
+  "109": 700
 };
 
 
 /* =========================================================
-   COLLECTION DETECTION
+   PRODUCT CREATION
    ========================================================= */
 
-function getDefaultCollection(
-  category,
-  number
-){
+function getDefaultCollection(category, id) {
 
-  const id =
-    String(number).padStart(
-      3,
-      "0"
-    );
-
-
-  if(
-    PRODUCT_COLLECTION_OVERRIDES[id]
-  ){
-
+  if (PRODUCT_COLLECTION_OVERRIDES[id]) {
     return PRODUCT_COLLECTION_OVERRIDES[id];
-
   }
 
-
-  if(
-    PRODUCT_CATEGORY_OVERRIDES[id]
-  ){
-
-    return PRODUCT_CATEGORY_OVERRIDES[id];
-
-  }
-
-
-  if(
-    category === "footwear"
-  ){
-
+  if (category === "footwear") {
     return "footwear";
-
   }
 
-
-  if(
-    category === "accessories"
-  ){
-
+  if (category === "accessories") {
     return "accessories";
-
   }
-
 
   return "streetwear";
-
 }
 
 
-/* =========================================================
-   DESCRIPTIONS
-   ========================================================= */
+function createDescription(name, collection) {
 
-function createProductDescription(
-  name,
-  collection,
-  category
-){
-
-  if(
-    collection === "handmade"
-  ){
-
-    return (
-      `${name} — a structured Area Boyz selection ` +
-      `focused on tailored construction, distinctive ` +
-      `silhouette and statement styling.`
-    );
-
+  if (collection === "handmade") {
+    return `${name} — a structured Area Boyz selection focused on tailored construction, distinctive silhouette and statement styling.`;
   }
 
-
-  if(
-    collection === "footwear"
-  ){
-
-    return (
-      `${name} — footwear selected for everyday ` +
-      `styling, movement and street presence.`
-    );
-
+  if (collection === "footwear") {
+    return `${name} — a footwear selection chosen for everyday styling, street presence and comfort.`;
   }
 
-
-  if(
-    collection === "accessories"
-  ){
-
-    return (
-      `${name} — a versatile accessory selected to ` +
-      `complete and elevate your Area Boyz look.`
-    );
-
+  if (collection === "accessories") {
+    return `${name} — a versatile Area Boyz accessory selected to complete and elevate your look.`;
   }
 
-
-  return (
-    `${name} — a modern Area Boyz streetwear selection ` +
-    `built for expressive everyday style.`
-  );
-
+  return `${name} — a modern Area Boyz streetwear selection built for expressive everyday style.`;
 }
 
-
-/* =========================================================
-   DETAILS
-   ========================================================= */
-
-function createProductDetails(
-  name,
-  brand,
-  category,
-  collection
-){
-
-  return [
-
-    {
-      label:
-        "Brand",
-
-      value:
-        brand
-    },
-
-    {
-      label:
-        "Category",
-
-      value:
-        category
-    },
-
-    {
-      label:
-        "Collection",
-
-      value:
-        collection
-    },
-
-    {
-      label:
-        "Style",
-
-      value:
-        name
-    }
-
-  ];
-
-}
-
-
-/* =========================================================
-   BUILD PRODUCTS
-   ========================================================= */
 
 const PRODUCTS = [];
 
+for (let number = 1; number <= PRODUCT_TOTAL; number++) {
 
-for(
-  let number = 1;
-  number <= PRODUCT_TOTAL;
-  number++
-){
+  const id = String(number).padStart(3, "0");
 
-  const id =
-    String(number).padStart(
-      3,
-      "0"
-    );
+  const category =
+    PRODUCT_CATEGORY_OVERRIDES[id] ||
+    "men";
 
-
-  const visual =
-    VISUAL_PRODUCT_DATA[id] ||
-    {};
-
-
-  const override =
-    PRODUCT_CATALOG_OVERRIDES[id] ||
-    {};
-
+  const collection =
+    PRODUCT_COLLECTION_OVERRIDES[id] ||
+    getDefaultCollection(category, id);
 
   const name =
-    override.name ||
-    DEFAULT_PRODUCT_NAMES[id] ||
+    PRODUCT_NAMES[id] ||
     `Area Boyz Product ${id}`;
 
-
   const brand =
-    override.brand ||
     PRODUCT_BRAND_OVERRIDES[id] ||
     "Area Boyz Select";
 
-
-  const category =
-    override.category ||
-    PRODUCT_CATEGORY_OVERRIDES[id] ||
-    visual.category ||
-    "men";
-
-
-  const collection =
-    override.collection ||
-    PRODUCT_COLLECTION_OVERRIDES[id] ||
-    getDefaultCollection(
-      category,
-      number
-    );
-
-
   const price =
-    override.price ||
-    visual.price ||
+    PRODUCT_PRICES[id] ||
     DEFAULT_PRODUCT_PRICE;
 
-
   PRODUCTS.push({
-
     id,
-
     number,
-
     name,
-
     brand,
-
     category,
-
     collection,
-
     price,
-
-    image:
-      `${PATHS.products}product-${id}.jpg`,
-
-    description:
-      createProductDescription(
-        name,
-        collection,
-        category
-      ),
-
-    details:
-      createProductDetails(
-        name,
-        brand,
-        category,
-        collection
-      )
-
+    image: `${PATHS.products}product-${id}.jpg`,
+    description: createDescription(name, collection),
+    details: [
+      {
+        label: "Brand",
+        value: brand
+      },
+      {
+        label: "Category",
+        value: category
+      },
+      {
+        label: "Collection",
+        value: collection
+      },
+      {
+        label: "Style",
+        value: name
+      }
+    ]
   });
-
 }
 
 
@@ -951,229 +502,78 @@ for(
    STATE
    ========================================================= */
 
-const state = {
-
-  products:
-    [...PRODUCTS],
-
-  filteredProducts:
-    [...PRODUCTS],
-
-  category:
-    "all",
-
-  collection:
-    "all",
-
-  search:
-    "",
-
-  sort:
-    "featured",
-
-  cart:
-    [],
-
-  currentProduct:
-    null
-
+let state = {
+  products: [...PRODUCTS],
+  filteredProducts: [...PRODUCTS],
+  category: "all",
+  collection: "all",
+  search: "",
+  sort: "featured",
+  cart: [],
+  currentProduct: null
 };
 
 
 /* =========================================================
-   HELPERS
+   DOM HELPERS
    ========================================================= */
 
-function $(
-  selector
-){
+function $(selector) {
+  return document.querySelector(selector);
+}
 
-  return document.querySelector(
-    selector
-  );
-
+function $all(selector) {
+  return Array.from(document.querySelectorAll(selector));
 }
 
 
-function $all(
-  selector
-){
+/* =========================================================
+   SECURITY / HTML ESCAPING
+   ========================================================= */
 
-  return Array.from(
-    document.querySelectorAll(
-      selector
-    )
-  );
+function escapeHTML(value) {
 
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 
-function escapeHTML(
-  value
-){
+/* =========================================================
+   MONEY
+   ========================================================= */
 
-  return String(
-    value ?? ""
-  )
+function formatMoney(amount) {
 
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-function formatMoney(
-  amount
-){
+  const numericAmount =
+    Number(amount) || 0;
 
   return (
     CURRENCY_SYMBOL +
-    Number(
-      amount || 0
-    ).toLocaleString(
-      "en-NG"
+    numericAmount.toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }
     )
   );
-
 }
 
 
-function getProduct(
-  id
-){
+/* =========================================================
+   PRODUCT LOOKUP
+   ========================================================= */
+
+function getProduct(id) {
 
   return PRODUCTS.find(
     product =>
-      String(
-        product.id
-      ) ===
-      String(
-        id
-      )
+      String(product.id) === String(id)
   );
-
-}
-
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
-function showToast(
-  message
-){
-
-  const toast =
-    $("#toast");
-
-
-  if(!toast){
-
-    return;
-
-  }
-
-
-  toast.textContent =
-    message;
-
-
-  toast.classList.add(
-    "show"
-  );
-
-
-  clearTimeout(
-    showToast.timer
-  );
-
-
-  showToast.timer =
-    setTimeout(
-      () => {
-
-        toast.classList.remove(
-          "show"
-        );
-
-      },
-      2500
-    );
-
-}
-
-
-/* =========================================================
-   YEAR
-   ========================================================= */
-
-function updateYear(){
-
-  const year =
-    $("#year");
-
-
-  if(year){
-
-    year.textContent =
-      new Date()
-        .getFullYear();
-
-  }
-
-}
-
-
-/* =========================================================
-   PRELOADER
-   ========================================================= */
-
-function hidePreloader(){
-
-  const preloader =
-    $("#preloader");
-
-
-  if(!preloader){
-
-    return;
-
-  }
-
-
-  setTimeout(
-    () => {
-
-      preloader.classList.add(
-        "hide"
-      );
-
-    },
-    450
-  );
-
 }
 
 
@@ -1181,58 +581,16 @@ function hidePreloader(){
    CART STORAGE
    ========================================================= */
 
-function loadCart(){
+function saveCart() {
 
-  try{
-
-    const saved =
-      localStorage.getItem(
-        CART_STORAGE_KEY
-      );
-
-
-    state.cart =
-      saved
-        ? JSON.parse(saved)
-        : [];
-
-
-    if(
-      !Array.isArray(
-        state.cart
-      )
-    ){
-
-      state.cart = [];
-
-    }
-
-  }catch(error){
-
-    console.warn(
-      "Unable to load cart:",
-      error
-    );
-
-    state.cart = [];
-
-  }
-
-}
-
-
-function saveCart(){
-
-  try{
+  try {
 
     localStorage.setItem(
       CART_STORAGE_KEY,
-      JSON.stringify(
-        state.cart
-      )
+      JSON.stringify(state.cart)
     );
 
-  }catch(error){
+  } catch (error) {
 
     console.warn(
       "Unable to save cart:",
@@ -1240,358 +598,771 @@ function saveCart(){
     );
 
   }
+}
 
+
+function loadCart() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        CART_STORAGE_KEY
+      );
+
+    if (!saved) {
+      state.cart = [];
+      return;
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    if (Array.isArray(parsed)) {
+
+      state.cart =
+        parsed.filter(
+          item =>
+            item &&
+            item.id &&
+            Number(item.quantity) > 0
+        );
+
+    } else {
+
+      state.cart = [];
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Unable to load cart:",
+      error
+    );
+
+    state.cart = [];
+  }
 }
 
 
 /* =========================================================
-   CART COUNT
+   CART TOTALS
    ========================================================= */
 
-function getCartCount(){
+function getCartCount() {
 
   return state.cart.reduce(
-    (
-      total,
-      item
-    ) =>
+    (total, item) =>
       total +
-      Number(
-        item.quantity || 0
-      ),
+      Number(item.quantity),
     0
   );
-
 }
 
 
-function getCartTotal(){
+function getCartTotal() {
 
   return state.cart.reduce(
-    (
-      total,
-      item
-    ) =>
+    (total, item) =>
       total +
-      Number(
-        item.price || 0
-      ) *
-      Number(
-        item.quantity || 0
+      (
+        Number(item.price) *
+        Number(item.quantity)
       ),
     0
   );
-
 }
 
 
-function updateCartCount(){
+function updateCartBadges() {
 
-  const badge =
-    $("#cartCount");
+  const count =
+    getCartCount();
 
+  $all("[data-cart-count]")
+    .forEach(element => {
 
-  if(badge){
+      element.textContent = count;
 
-    badge.textContent =
-      getCartCount();
+      element.classList.toggle(
+        "has-items",
+        count > 0
+      );
 
+    });
+
+  const cartCount =
+    $("#cart-count");
+
+  if (cartCount) {
+    cartCount.textContent = count;
   }
-
 }
 
 
 /* =========================================================
-   ADD TO CART
+   FILTERING
+   ========================================================= */
+
+function applyFilters() {
+
+  let products =
+    [...PRODUCTS];
+
+  const search =
+    state.search
+      .trim()
+      .toLowerCase();
+
+  if (search) {
+
+    products =
+      products.filter(item => {
+
+        const searchable =
+          `${item.name} ${item.brand} ${item.category} ${item.collection}`;
+
+        return searchable
+          .toLowerCase()
+          .includes(search);
+
+      });
+  }
+
+  if (
+    state.category &&
+    state.category !== "all"
+  ) {
+
+    products =
+      products.filter(
+        item =>
+          item.category ===
+          state.category
+      );
+  }
+
+  if (
+    state.collection &&
+    state.collection !== "all"
+  ) {
+
+    products =
+      products.filter(
+        item =>
+          item.collection ===
+          state.collection
+      );
+  }
+
+  switch (state.sort) {
+
+    case "price-low":
+
+      products.sort(
+        (a, b) =>
+          a.price - b.price
+      );
+
+      break;
+
+    case "price-high":
+
+      products.sort(
+        (a, b) =>
+          b.price - a.price
+      );
+
+      break;
+
+    case "name":
+
+      products.sort(
+        (a, b) =>
+          a.name.localeCompare(
+            b.name
+          )
+      );
+
+      break;
+
+    case "newest":
+
+      products.sort(
+        (a, b) =>
+          b.number - a.number
+      );
+
+      break;
+
+    default:
+
+      products.sort(
+        (a, b) =>
+          a.number - b.number
+      );
+
+      break;
+  }
+
+  state.filteredProducts =
+    products;
+
+  renderProducts();
+  updateFilterButtons();
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
+
+function createProductCard(item) {
+
+  const name =
+    escapeHTML(item.name);
+
+  const brand =
+    escapeHTML(item.brand);
+
+  const collection =
+    escapeHTML(item.collection);
+
+  return `
+
+    <article
+      class="product-card"
+      data-product-id="${item.id}"
+    >
+
+      <button
+        class="product-image-button"
+        type="button"
+        data-product-view="${item.id}"
+        aria-label="View ${name}"
+      >
+
+        <div class="product-image-wrap">
+
+          <img
+            src="${escapeHTML(item.image)}"
+            alt="${name}"
+            class="product-image"
+            loading="lazy"
+            onerror="this.style.opacity='0.35';"
+          >
+
+          <span class="product-number">
+            ${brand} · ${collection}
+          </span>
+
+        </div>
+
+      </button>
+
+      <div class="product-info">
+
+        <div class="product-brand">
+          ${brand}
+        </div>
+
+        <h3 class="product-name">
+          ${name}
+        </h3>
+
+        <div class="product-bottom">
+
+          <span class="product-price">
+            ${formatMoney(item.price)}
+          </span>
+
+          <button
+            type="button"
+            class="add-to-cart"
+            data-add-to-cart="${item.id}"
+          >
+            Add to Bag
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+}
+
+
+/* =========================================================
+   RENDER PRODUCTS
+   ========================================================= */
+
+function renderProducts() {
+
+  const containers =
+    $all("[data-products]");
+
+  if (!containers.length) {
+    return;
+  }
+
+  const products =
+    state.filteredProducts;
+
+  containers.forEach(container => {
+
+    if (!products.length) {
+
+      container.innerHTML = `
+
+        <div class="empty-products">
+
+          <h3>No products found</h3>
+
+          <p>
+            Try another search,
+            category or collection.
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+    }
+
+    container.innerHTML =
+      products
+        .map(createProductCard)
+        .join("");
+
+  });
+
+  $all("[data-result-count]")
+    .forEach(element => {
+
+      element.textContent =
+        products.length;
+
+    });
+}
+
+
+/* =========================================================
+   PRODUCT MODAL
+   ========================================================= */
+
+function createProductModal() {
+
+  if ($("#product-modal")) {
+    return;
+  }
+
+  const modal =
+    document.createElement("div");
+
+  modal.id =
+    "product-modal";
+
+  modal.className =
+    "product-modal";
+
+  modal.innerHTML = `
+
+    <div
+      class="product-modal-overlay"
+      data-close-product
+    ></div>
+
+    <div
+      class="product-modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-modal-title"
+    >
+
+      <button
+        type="button"
+        class="product-modal-close"
+        data-close-product
+        aria-label="Close product"
+      >
+        ×
+      </button>
+
+      <div
+        class="product-modal-content"
+        id="product-modal-content"
+      ></div>
+
+    </div>
+
+  `;
+
+  document.body.appendChild(modal);
+}
+
+
+function openProductModal(id) {
+
+  const product =
+    getProduct(id);
+
+  if (!product) {
+    return;
+  }
+
+  state.currentProduct =
+    product;
+
+  createProductModal();
+
+  const modal =
+    $("#product-modal");
+
+  const content =
+    $("#product-modal-content");
+
+  if (!modal || !content) {
+    return;
+  }
+
+  const details =
+    product.details
+      .map(detail => `
+
+        <div class="product-detail-row">
+
+          <span>
+            ${escapeHTML(detail.label)}
+          </span>
+
+          <strong>
+            ${escapeHTML(detail.value)}
+          </strong>
+
+        </div>
+
+      `)
+      .join("");
+
+  content.innerHTML = `
+
+    <div class="product-modal-image">
+
+      <img
+        src="${escapeHTML(product.image)}"
+        alt="${escapeHTML(product.name)}"
+      >
+
+    </div>
+
+    <div class="product-modal-info">
+
+      <span class="product-modal-number">
+
+        ${escapeHTML(product.brand)}
+        ·
+        ${escapeHTML(product.category)}
+
+      </span>
+
+      <h2 id="product-modal-title">
+        ${escapeHTML(product.name)}
+      </h2>
+
+      <div class="product-modal-price">
+        ${formatMoney(product.price)}
+      </div>
+
+      <p class="product-modal-description">
+        ${escapeHTML(product.description)}
+      </p>
+
+      <div class="product-details">
+        ${details}
+      </div>
+
+      <button
+        type="button"
+        class="page-btn product-modal-add"
+        data-add-to-cart="${product.id}"
+      >
+        Add to Bag
+      </button>
+
+    </div>
+
+  `;
+
+  modal.classList.add("open");
+
+  document.body.classList.add(
+    "modal-open"
+  );
+}
+
+
+function closeProductModal() {
+
+  const modal =
+    $("#product-modal");
+
+  if (!modal) {
+    return;
+  }
+
+  modal.classList.remove("open");
+
+  document.body.classList.remove(
+    "modal-open"
+  );
+
+  state.currentProduct = null;
+}
+
+
+/* =========================================================
+   CART
    ========================================================= */
 
 function addToCart(
   id,
   quantity = 1
-){
+) {
 
   const product =
     getProduct(id);
 
-
-  if(!product){
-
+  if (!product) {
     return;
-
   }
-
 
   const existing =
     state.cart.find(
       item =>
-        String(
-          item.id
-        ) ===
-        String(
-          id
-        )
+        String(item.id) ===
+        String(id)
     );
 
-
-  if(existing){
+  if (existing) {
 
     existing.quantity +=
-      Number(
-        quantity
-      );
+      Number(quantity);
 
-  }else{
+  } else {
 
     state.cart.push({
 
-      id:
-        product.id,
-
-      name:
-        product.name,
-
-      brand:
-        product.brand,
-
-      price:
-        product.price,
-
-      image:
-        product.image,
-
-      quantity:
-        Number(
-          quantity
-        )
+      id: product.id,
+      name: product.name,
+      brand: product.brand,
+      price: product.price,
+      image: product.image,
+      quantity: Number(quantity)
 
     });
 
   }
 
-
   saveCart();
-
-  updateCartCount();
-
+  updateCartBadges();
   renderCart();
-
 
   showToast(
     `${product.name} added to your bag.`
   );
-
 }
 
 
-/* =========================================================
-   REMOVE CART ITEM
-   ========================================================= */
-
-function removeFromCart(
-  id
-){
+function removeFromCart(id) {
 
   state.cart =
     state.cart.filter(
       item =>
-        String(
-          item.id
-        ) !==
-        String(
-          id
-        )
+        String(item.id) !==
+        String(id)
     );
 
-
   saveCart();
-
-  updateCartCount();
-
+  updateCartBadges();
   renderCart();
-
 }
 
 
-/* =========================================================
-   CHANGE QUANTITY
-   ========================================================= */
-
-function changeQuantity(
+function changeCartQuantity(
   id,
-  amount
-){
+  change
+) {
 
   const item =
     state.cart.find(
       cartItem =>
-        String(
-          cartItem.id
-        ) ===
-        String(
-          id
-        )
+        String(cartItem.id) ===
+        String(id)
     );
 
-
-  if(!item){
-
+  if (!item) {
     return;
-
   }
-
 
   item.quantity +=
-    amount;
+    Number(change);
 
+  if (item.quantity <= 0) {
 
-  if(
-    item.quantity <= 0
-  ){
-
-    removeFromCart(
-      id
-    );
-
+    removeFromCart(id);
     return;
 
   }
-
 
   saveCart();
-
-  updateCartCount();
-
+  updateCartBadges();
   renderCart();
-
 }
 
 
 /* =========================================================
-   OPEN CART
+   CART DRAWER
    ========================================================= */
 
-function openCart(){
+function createCartDrawer() {
+
+  if ($("#cart-drawer")) {
+    return;
+  }
 
   const drawer =
-    $("#cartDrawer");
+    document.createElement("aside");
+
+  drawer.id =
+    "cart-drawer";
+
+  drawer.className =
+    "cart-drawer";
+
+  drawer.innerHTML = `
+
+    <div
+      class="cart-overlay"
+      data-close-cart
+    ></div>
+
+    <div class="cart-panel">
+
+      <div class="cart-header">
+
+        <div>
+
+          <span class="cart-eyebrow">
+            YOUR BAG
+          </span>
+
+          <h2>
+            Shopping Bag
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="cart-close"
+          data-close-cart
+          aria-label="Close cart"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="cart-items"
+        id="cart-items"
+      ></div>
+
+      <div class="cart-footer">
+
+        <div class="cart-total-row">
+
+          <span>Total</span>
+
+          <strong id="cart-total">
+            $0.00
+          </strong>
+
+        </div>
+
+        <button
+          type="button"
+          class="checkout-button"
+          id="checkout-button"
+        >
+          Proceed to Checkout
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+  document.body.appendChild(drawer);
+}
 
 
-  const backdrop =
-    $("#drawerBackdrop");
+function openCart() {
 
+  createCartDrawer();
+  renderCart();
 
-  if(!drawer){
+  const drawer =
+    $("#cart-drawer");
 
-    return;
-
+  if (drawer) {
+    drawer.classList.add("open");
   }
-
-
-  drawer.classList.add(
-    "open"
-  );
-
-
-  drawer.setAttribute(
-    "aria-hidden",
-    "false"
-  );
-
-
-  if(backdrop){
-
-    backdrop.classList.add(
-      "show"
-    );
-
-  }
-
 
   document.body.classList.add(
-    "lock"
+    "cart-open"
   );
-
-
-  renderCart();
-
 }
 
 
-/* =========================================================
-   CLOSE CART
-   ========================================================= */
-
-function closeCart(){
+function closeCart() {
 
   const drawer =
-    $("#cartDrawer");
+    $("#cart-drawer");
 
-
-  const backdrop =
-    $("#drawerBackdrop");
-
-
-  if(drawer){
-
-    drawer.classList.remove(
-      "open"
-    );
-
-
-    drawer.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
+  if (drawer) {
+    drawer.classList.remove("open");
   }
-
-
-  if(backdrop){
-
-    backdrop.classList.remove(
-      "show"
-    );
-
-  }
-
 
   document.body.classList.remove(
-    "lock"
+    "cart-open"
   );
-
 }
 
 
-/* =========================================================
-   RENDER CART
-   ========================================================= */
-
-function renderCart(){
+function renderCart() {
 
   const container =
-    $("#cartItems");
+    $("#cart-items");
 
-
-  const total =
-    $("#cartTotal");
-
-
-  if(!container){
-
+  if (!container) {
     return;
-
   }
 
-
-  if(
-    !state.cart.length
-  ){
+  if (!state.cart.length) {
 
     container.innerHTML = `
 
-      <div class="empty">
+      <div class="cart-empty">
 
-        <i class="fa-solid fa-bag-shopping"></i>
+        <div class="cart-empty-icon">
+          🛍️
+        </div>
 
         <h3>
           Your bag is empty
@@ -1606,92 +1377,85 @@ function renderCart(){
 
     `;
 
+    const total =
+      $("#cart-total");
 
-    if(total){
-
+    if (total) {
       total.textContent =
-        formatMoney(
-          0
-        );
-
+        formatMoney(0);
     }
 
-
     return;
-
   }
 
-
   container.innerHTML =
-    state.cart.map(
-      item => `
+    state.cart
+      .map(item => `
 
-        <div class="cart-line">
+        <div
+          class="cart-item"
+          data-cart-item="${escapeHTML(item.id)}"
+        >
 
           <img
             src="${escapeHTML(item.image)}"
             alt="${escapeHTML(item.name)}"
           >
 
-          <div class="cart-info">
+          <div class="cart-item-info">
 
-            <h4>
+            <strong>
               ${escapeHTML(item.name)}
-            </h4>
+            </strong>
 
-            <small>
+            <span>
               ${formatMoney(item.price)}
-            </small>
+            </span>
 
-
-            <div class="qty">
+            <div class="cart-item-controls">
 
               <button
                 type="button"
-                data-cart-minus="${escapeHTML(item.id)}"
+                data-cart-minus="${item.id}"
+                aria-label="Decrease quantity"
               >
                 −
               </button>
 
               <span>
-                ${item.quantity}
+                ${Number(item.quantity)}
               </span>
 
               <button
                 type="button"
-                data-cart-plus="${escapeHTML(item.id)}"
+                data-cart-plus="${item.id}"
+                aria-label="Increase quantity"
               >
                 +
               </button>
 
             </div>
 
-
-            <button
-              class="remove"
-              type="button"
-              data-cart-remove="${escapeHTML(item.id)}"
-            >
-              Remove
-            </button>
-
           </div>
 
-
-          <strong>
-            ${formatMoney(
-              Number(item.price) *
-              Number(item.quantity)
-            )}
-          </strong>
+          <button
+            type="button"
+            class="cart-item-remove"
+            data-cart-remove="${item.id}"
+            aria-label="Remove item"
+          >
+            ×
+          </button>
 
         </div>
 
-      `
-    ).join("");
+      `)
+      .join("");
 
+  const total =
+    $("#cart-total");
 
-  if(total){
+  if (total) {
 
     total.textContent =
       formatMoney(
@@ -1699,282 +1463,58 @@ function renderCart(){
       );
 
   }
-
 }
 
 
 /* =========================================================
-   HERO SLIDESHOW
+   TOAST
    ========================================================= */
 
-const HERO_IMAGES = [
+function showToast(message) {
 
-  "hero-1.jpg",
+  let toast =
+    $("#area-boyz-toast");
 
-  "hero-2.jpg",
+  if (!toast) {
 
-  "hero-3.jpg",
+    toast =
+      document.createElement("div");
 
-  "hero-4.jpg",
+    toast.id =
+      "area-boyz-toast";
 
-  "hero-5.jpg",
+    toast.className =
+      "area-boyz-toast";
 
-  "hero-6.jpg"
-
-];
-
-
-let heroIndex =
-  0;
-
-
-let heroTimer =
-  null;
-
-
-/* =========================================================
-   RENDER HERO
-   ========================================================= */
-
-function renderHero(){
-
-  const container =
-    $("#heroSlides");
-
-
-  const dots =
-    $("#heroDots");
-
-
-  if(!container){
-
-    return;
-
+    document.body.appendChild(toast);
   }
 
+  toast.textContent =
+    message;
 
-  container.innerHTML =
-    HERO_IMAGES.map(
-      (
-        image,
-        index
-      ) => `
+  toast.classList.add("show");
 
-        <div
-          class="hero-slide${index === 0 ? " active" : ""}"
-          data-hero-slide="${index}"
-        >
-
-          <img
-            src="${PATHS.hero}${image}"
-            alt="Area Boyz Enterprise fashion collection ${index + 1}"
-          >
-
-          <div
-            class="hero-slide-shade"
-          ></div>
-
-        </div>
-
-      `
-    ).join("");
-
-
-  if(dots){
-
-    dots.innerHTML =
-      HERO_IMAGES.map(
-        (
-          image,
-          index
-        ) => `
-
-          <button
-            class="hero-dot${index === 0 ? " active" : ""}"
-            type="button"
-            data-hero-dot="${index}"
-            aria-label="Go to slide ${index + 1}"
-          ></button>
-
-        `
-      ).join("");
-
-  }
-
-
-  startHeroTimer();
-
-}
-
-
-/* =========================================================
-   SHOW HERO SLIDE
-   ========================================================= */
-
-function showHeroSlide(
-  index
-){
-
-  const slides =
-    $all(
-      "[data-hero-slide]"
-    );
-
-
-  const dots =
-    $all(
-      "[data-hero-dot]"
-    );
-
-
-  if(
-    !slides.length
-  ){
-
-    return;
-
-  }
-
-
-  heroIndex =
-    (
-      index +
-      slides.length
-    ) %
-    slides.length;
-
-
-  slides.forEach(
-    (
-      slide,
-      i
-    ) => {
-
-      slide.classList.toggle(
-        "active",
-        i === heroIndex
-      );
-
-    }
+  clearTimeout(
+    toast._timeout
   );
 
-
-  dots.forEach(
-    (
-      dot,
-      i
-    ) => {
-
-      dot.classList.toggle(
-        "active",
-        i === heroIndex
-      );
-
-    }
-  );
-
+  toast._timeout =
+    setTimeout(
+      () =>
+        toast.classList.remove("show"),
+      2600
+    );
 }
 
 
 /* =========================================================
-   HERO TIMER
+   FILTER UI
    ========================================================= */
 
-function startHeroTimer(){
+function updateFilterButtons() {
 
-  if(heroTimer){
-
-    clearInterval(
-      heroTimer
-    );
-
-  }
-
-
-  const slides =
-    $all(
-      "[data-hero-slide]"
-    );
-
-
-  if(
-    slides.length < 2
-  ){
-
-    return;
-
-  }
-
-
-  heroTimer =
-    setInterval(
-      () => {
-
-        showHeroSlide(
-          heroIndex + 1
-        );
-
-      },
-      5000
-    );
-
-}
-
-
-/* =========================================================
-   BUILD SHOP FILTERS
-   ========================================================= */
-
-function buildFilters(){
-
-  const filters =
-    $("#filters");
-
-
-  if(!filters){
-
-    return;
-
-  }
-
-
-  filters.innerHTML =
-    CATEGORIES.map(
-      category => `
-
-        <button
-          class="filter${state.collection === category ? " active" : ""}"
-          type="button"
-          data-collection="${category}"
-        >
-
-          ${
-            category === "all"
-              ? "All"
-              : category
-                .charAt(0)
-                .toUpperCase() +
-                category.slice(1)
-          }
-
-        </button>
-
-      `
-    ).join("");
-
-}
-
-
-/* =========================================================
-   UPDATE FILTER BUTTONS
-   ========================================================= */
-
-function updateFilterButtons(){
-
-  $all(
-    "[data-collection]"
-  ).forEach(
-    button => {
+  $all("[data-collection]")
+    .forEach(button => {
 
       button.classList.toggle(
         "active",
@@ -1982,582 +1522,429 @@ function updateFilterButtons(){
         state.collection
       );
 
-    }
+    });
+
+  $all("[data-category]")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.category ===
+        state.category
+      );
+
+    });
+}
+
+
+function syncSearchInputs() {
+
+  $all("[data-product-search]")
+    .forEach(input => {
+
+      if (
+        input.value !==
+        state.search
+      ) {
+
+        input.value =
+          state.search;
+
+      }
+
+    });
+}
+
+
+function syncSortSelect() {
+
+  $all("[data-product-sort]")
+    .forEach(select => {
+
+      select.value =
+        state.sort;
+
+    });
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+let heroTimer = null;
+let heroIndex = 0;
+
+
+function getHeroSlides() {
+
+  return $all(
+    "[data-hero-slide]"
   );
-
 }
 
 
-/* =========================================================
-   APPLY FILTERS
-   ========================================================= */
+function renderHero() {
 
-function applyFilters(){
+  const hero =
+    $("[data-hero]");
 
-  let products =
-    [...PRODUCTS];
-
-
-  const search =
-    state.search
-      .trim()
-      .toLowerCase();
-
-
-  if(search){
-
-    products =
-      products.filter(
-        product => {
-
-          const searchable =
-            `${product.name} ${product.brand} ${product.category} ${product.collection}`
-              .toLowerCase();
-
-
-          return searchable.includes(
-            search
-          );
-
-        }
-      );
-
+  if (!hero) {
+    return;
   }
 
+  const slides =
+    getHeroSlides();
 
-  if(
-    state.collection !==
-    "all"
-  ){
+  if (slides.length) {
 
-    products =
-      products.filter(
-        product =>
-          product.collection ===
-          state.collection
-      );
-
-  }
-
-
-  switch(
-    state.sort
-  ){
-
-    case "low":
-
-      products.sort(
-        (
-          a,
-          b
-        ) =>
-          a.price -
-          b.price
-      );
-
-      break;
-
-
-    case "high":
-
-      products.sort(
-        (
-          a,
-          b
-        ) =>
-          b.price -
-          a.price
-      );
-
-      break;
-
-
-    case "name":
-
-      products.sort(
-        (
-          a,
-          b
-        ) =>
-          a.name.localeCompare(
-            b.name
-          )
-      );
-
-      break;
-
-
-    default:
-
-      products.sort(
-        (
-          a,
-          b
-        ) =>
-          a.number -
-          b.number
-      );
-
-  }
-
-
-  state.filteredProducts =
-    products;
-
-
-  renderProducts();
-
-  updateFilterButtons();
-
-}
-
-
-/* =========================================================
-   RENDER PRODUCTS
-   ========================================================= */
-
-function renderProducts(){
-
-  const grid =
-    $("#productGrid");
-
-
-  const empty =
-    $("#emptyState");
-
-
-  const meta =
-    $("#resultsMeta");
-
-
-  if(!grid){
-
+    startHeroSlider();
     return;
 
   }
 
+  const images = [
+    "hero-1.jpg",
+    "hero-2.jpg",
+    "hero-3.jpg",
+    "hero-4.jpg",
+    "hero-5.jpg",
+    "hero-6.jpg"
+  ];
 
-  grid.innerHTML =
-    state.filteredProducts
+  hero.innerHTML =
+    images
       .map(
-        product => `
+        (image, index) => `
 
-          <article
-            class="product-card"
+          <div
+            class="hero-slide ${
+              index === 0
+                ? "active"
+                : ""
+            }"
+            data-hero-slide
           >
 
-            <button
-              class="product-media"
-              type="button"
-              data-product-view="${escapeHTML(product.id)}"
-              aria-label="View ${escapeHTML(product.name)}"
+            <img
+              src="${PATHS.hero}${image}"
+              alt="Area Boyz Enterprise fashion collection ${
+                index + 1
+              }"
             >
 
-              <img
-                src="${escapeHTML(product.image)}"
-                alt="${escapeHTML(product.name)}"
-                loading="lazy"
-                onerror="this.classList.add('img-failed')"
-              >
-
-              <span>
-                ${escapeHTML(product.brand)}
-                ·
-                ${escapeHTML(product.collection)}
-              </span>
-
-            </button>
-
-
-            <div class="product-body">
-
-              <p class="product-number">
-
-                ${escapeHTML(product.brand)}
-                ·
-                ${escapeHTML(product.category)}
-
-              </p>
-
-
-              <h3>
-                ${escapeHTML(product.name)}
-              </h3>
-
-
-              <p>
-                ${escapeHTML(product.description)}
-              </p>
-
-
-              <div class="product-row">
-
-                <strong>
-                  ${formatMoney(product.price)}
-                </strong>
-
-
-                <button
-                  class="mini-btn"
-                  type="button"
-                  data-add-to-cart="${escapeHTML(product.id)}"
-                >
-                  Add to Bag
-                </button>
-
-              </div>
-
-            </div>
-
-          </article>
+          </div>
 
         `
       )
       .join("");
 
+  startHeroSlider();
+}
 
-  if(meta){
 
-    meta.textContent =
-      `${state.filteredProducts.length} product${
-        state.filteredProducts.length === 1
-          ? ""
-          : "s"
-      }`;
+function startHeroSlider() {
 
+  const slides =
+    getHeroSlides();
+
+  if (slides.length <= 1) {
+    return;
   }
 
-
-  if(empty){
-
-    empty.classList.toggle(
-      "hidden",
-      state.filteredProducts.length !== 0
-    );
-
-
-    grid.classList.toggle(
-      "hidden",
-      state.filteredProducts.length === 0
-    );
-
+  if (heroTimer) {
+    clearInterval(heroTimer);
   }
 
+  heroIndex = 0;
+
+  heroTimer =
+    setInterval(() => {
+
+      slides[
+        heroIndex
+      ].classList.remove("active");
+
+      heroIndex =
+        (heroIndex + 1) %
+        slides.length;
+
+      slides[
+        heroIndex
+      ].classList.add("active");
+
+    }, 5000);
 }
 
 
 /* =========================================================
-   READ COLLECTION FROM URL
+   MOBILE MENU
    ========================================================= */
 
-function readCollectionFromURL(){
+function setupMobileMenu() {
+
+  const toggle =
+    $("#menu-toggle");
+
+  const nav =
+    $("#nav-links");
+
+  if (!toggle || !nav) {
+    return;
+  }
+
+  toggle.addEventListener(
+    "click",
+    () => {
+
+      const isOpen =
+        nav.classList.toggle(
+          "open"
+        );
+
+      toggle.classList.toggle(
+        "active",
+        isOpen
+      );
+
+      toggle.setAttribute(
+        "aria-expanded",
+        String(isOpen)
+      );
+
+    }
+  );
+
+  $all("#nav-links a")
+    .forEach(link => {
+
+      link.addEventListener(
+        "click",
+        () => {
+
+          nav.classList.remove(
+            "open"
+          );
+
+          toggle.classList.remove(
+            "active"
+          );
+
+          toggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+
+        }
+      );
+
+    });
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+function setupHeaderScroll() {
+
+  const header =
+    document.querySelector("header");
+
+  if (!header) {
+    return;
+  }
+
+  const update = () => {
+
+    header.classList.toggle(
+      "scrolled",
+      window.scrollY > 20
+    );
+
+  };
+
+  update();
+
+  window.addEventListener(
+    "scroll",
+    update,
+    {
+      passive: true
+    }
+  );
+}
+
+
+/* =========================================================
+   REVEAL ANIMATION
+   ========================================================= */
+
+function setupRevealAnimations() {
+
+  const elements =
+    $all(".hidden");
+
+  if (!elements.length) {
+    return;
+  }
+
+  if (
+    !("IntersectionObserver" in window)
+  ) {
+
+    elements.forEach(
+      element =>
+        element.classList.add(
+          "active"
+        )
+    );
+
+    return;
+  }
+
+  const observer =
+    new IntersectionObserver(
+      entries => {
+
+        entries.forEach(entry => {
+
+          if (
+            entry.isIntersecting
+          ) {
+
+            entry.target.classList.add(
+              "active"
+            );
+
+            observer.unobserve(
+              entry.target
+            );
+
+          }
+
+        });
+
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+  elements.forEach(
+    element =>
+      observer.observe(element)
+  );
+}
+
+
+/* =========================================================
+   YEAR
+   ========================================================= */
+
+function updateYear() {
+
+  const year =
+    $("#year");
+
+  if (year) {
+
+    year.textContent =
+      new Date().getFullYear();
+
+  }
+}
+
+
+/* =========================================================
+   PRELOADER
+   ========================================================= */
+
+function hidePreloader() {
+
+  const preloader =
+    $("#preloader");
+
+  if (!preloader) {
+    return;
+  }
+
+  setTimeout(
+    () =>
+      preloader.classList.add(
+        "hide"
+      ),
+    450
+  );
+}
+
+
+/* =========================================================
+   COLLECTION URL
+   ========================================================= */
+
+function loadCollectionFromURL() {
 
   const params =
     new URLSearchParams(
       window.location.search
     );
 
-
   const collection =
-    params.get(
-      "collection"
-    );
+    params.get("collection");
 
-
-  if(
+  if (
     collection &&
-    CATEGORIES.includes(
-      collection
-    )
-  ){
+    CATEGORIES.includes(collection)
+  ) {
 
     state.collection =
       collection;
 
+    localStorage.setItem(
+      COLLECTION_STORAGE_KEY,
+      collection
+    );
   }
 
+  updateFilterButtons();
 }
 
 
-/* =========================================================
-   PRODUCT MODAL
-   ========================================================= */
+function restoreCollection() {
 
-function openProductModal(
-  id
-){
-
-  const product =
-    getProduct(id);
-
-
-  const modal =
-    $("#productModal");
-
-
-  const content =
-    $("#modalContent");
-
-
-  if(
-    !product ||
-    !modal ||
-    !content
-  ){
-
+  if (
+    state.collection !==
+    "all"
+  ) {
     return;
-
   }
 
+  try {
 
-  state.currentProduct =
-    product;
+    const saved =
+      localStorage.getItem(
+        COLLECTION_STORAGE_KEY
+      );
 
+    if (
+      saved &&
+      CATEGORIES.includes(saved)
+    ) {
 
-  content.innerHTML = `
+      state.collection =
+        saved;
 
-    <div
-      class="modal-product"
-    >
+    }
 
-      <div
-        class="modal-product-main"
-      >
+  } catch (error) {
 
-        <img
-          src="${escapeHTML(product.image)}"
-          alt="${escapeHTML(product.name)}"
-        >
-
-      </div>
-
-
-      <div
-        class="modal-info"
-      >
-
-        <p class="eyebrow">
-
-          ${escapeHTML(product.brand)}
-          ·
-          ${escapeHTML(product.collection)}
-
-        </p>
-
-
-        <p class="product-number">
-
-          PRODUCT
-          ${escapeHTML(product.id)}
-
-        </p>
-
-
-        <h2>
-
-          ${escapeHTML(product.name)}
-
-        </h2>
-
-
-        <div
-          class="modal-price"
-        >
-
-          ${formatMoney(product.price)}
-
-        </div>
-
-
-        <p>
-
-          ${escapeHTML(product.description)}
-
-        </p>
-
-
-        <ul>
-
-          ${
-            product.details
-              .map(
-                detail => `
-
-                  <li>
-
-                    <strong>
-                      ${escapeHTML(detail.label)}:
-                    </strong>
-
-                    ${escapeHTML(detail.value)}
-
-                  </li>
-
-                `
-              )
-              .join("")
-          }
-
-        </ul>
-
-
-        <button
-          class="btn dark"
-          type="button"
-          data-add-to-cart="${escapeHTML(product.id)}"
-        >
-
-          Add to Bag
-
-        </button>
-
-      </div>
-
-    </div>
-
-  `;
-
-
-  modal.classList.add(
-    "open"
-  );
-
-
-  modal.setAttribute(
-    "aria-hidden",
-    "false"
-  );
-
-
-  document.body.classList.add(
-    "lock"
-  );
-
-}
-
-
-/* =========================================================
-   CLOSE PRODUCT MODAL
-   ========================================================= */
-
-function closeProductModal(){
-
-  const modal =
-    $("#productModal");
-
-
-  if(!modal){
-
-    return;
-
-  }
-
-
-  modal.classList.remove(
-    "open"
-  );
-
-
-  modal.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-
-
-  document.body.classList.remove(
-    "lock"
-  );
-
-
-  state.currentProduct =
-    null;
-
-}
-
-
-/* =========================================================
-   MOBILE NAV
-   ========================================================= */
-
-function closeMobileNav(){
-
-  const nav =
-    $("#mobileNav");
-
-
-  const button =
-    $("#menuBtn");
-
-
-  if(nav){
-
-    nav.classList.remove(
-      "open"
+    console.warn(
+      "Unable to restore collection:",
+      error
     );
 
   }
-
-
-  if(button){
-
-    button.setAttribute(
-      "aria-expanded",
-      "false"
-    );
-
-
-    button.setAttribute(
-      "aria-label",
-      "Open menu"
-    );
-
-  }
-
-}
-
-
-function toggleMobileNav(){
-
-  const nav =
-    $("#mobileNav");
-
-
-  const button =
-    $("#menuBtn");
-
-
-  if(!nav){
-
-    return;
-
-  }
-
-
-  const open =
-    nav.classList.toggle(
-      "open"
-    );
-
-
-  if(button){
-
-    button.setAttribute(
-      "aria-expanded",
-      String(
-        open
-      )
-    );
-
-
-    button.setAttribute(
-      "aria-label",
-      open
-        ? "Close menu"
-        : "Open menu"
-    );
-
-  }
-
 }
 
 
@@ -2565,550 +1952,283 @@ function toggleMobileNav(){
    SEARCH
    ========================================================= */
 
-function openSearch(){
+function bindSearch() {
 
-  const panel =
-    $("#searchPanel");
+  $all("[data-product-search]")
+    .forEach(input => {
 
+      input.addEventListener(
+        "input",
+        event => {
 
-  const input =
-    $("#searchInput");
+          state.search =
+            event.target.value;
 
-
-  if(!panel){
-
-    return;
-
-  }
-
-
-  panel.classList.add(
-    "open"
-  );
-
-
-  if(input){
-
-    setTimeout(
-      () => input.focus(),
-      50
-    );
-
-  }
-
-}
-
-
-function closeSearch(){
-
-  const panel =
-    $("#searchPanel");
-
-
-  if(panel){
-
-    panel.classList.remove(
-      "open"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   NAVIGATION EVENTS
-   ========================================================= */
-
-function bindNavigation(){
-
-  const menuButton =
-    $("#menuBtn");
-
-
-  if(menuButton){
-
-    menuButton.addEventListener(
-      "click",
-      toggleMobileNav
-    );
-
-  }
-
-
-  $all(
-    "#mobileNav a"
-  ).forEach(
-    link => {
-
-      link.addEventListener(
-        "click",
-        closeMobileNav
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   SEARCH EVENTS
-   ========================================================= */
-
-function bindSearch(){
-
-  const searchButton =
-    $("#searchBtn");
-
-
-  const searchClose =
-    $("#searchClose");
-
-
-  const input =
-    $("#searchInput");
-
-
-  if(searchButton){
-
-    searchButton.addEventListener(
-      "click",
-      openSearch
-    );
-
-  }
-
-
-  if(searchClose){
-
-    searchClose.addEventListener(
-      "click",
-      closeSearch
-    );
-
-  }
-
-
-  if(input){
-
-    input.addEventListener(
-      "input",
-      event => {
-
-        state.search =
-          event.target.value;
-
-
-        if(
-          $("#productGrid")
-        ){
-
+          syncSearchInputs();
           applyFilters();
 
         }
+      );
 
-      }
-    );
-
-  }
-
+    });
 }
 
 
 /* =========================================================
-   COLLECTION BUTTONS
+   SORT
    ========================================================= */
 
-function bindCollectionButtons(){
+function bindSort() {
 
-  $all(
-    "[data-collection]"
-  ).forEach(
-    button => {
+  $all("[data-product-sort]")
+    .forEach(select => {
 
-      button.addEventListener(
-        "click",
-        () => {
+      select.addEventListener(
+        "change",
+        event => {
 
-          const collection =
-            button.dataset.collection;
+          state.sort =
+            event.target.value;
+
+          syncSortSelect();
+          applyFilters();
+
+        }
+      );
+
+    });
+}
 
 
-          if(
-            !CATEGORIES.includes(
-              collection
-            )
-          ){
+/* =========================================================
+   FILTERS
+   ========================================================= */
 
-            return;
+function bindFilters() {
 
-          }
+  document.addEventListener(
+    "click",
+    event => {
 
+      const collectionButton =
+        event.target.closest(
+          "[data-collection]"
+        );
+
+      if (collectionButton) {
+
+        const collection =
+          collectionButton.dataset.collection;
+
+        if (
+          CATEGORIES.includes(collection)
+        ) {
 
           state.collection =
             collection;
-
 
           localStorage.setItem(
             COLLECTION_STORAGE_KEY,
             collection
           );
 
-
-          if(
-            $("#productGrid")
-          ){
-
-            applyFilters();
-
-
-            const shop =
-              $("#shop");
-
-
-            if(shop){
-
-              shop.scrollIntoView({
-
-                behavior:
-                  "smooth",
-
-                block:
-                  "start"
-
-              });
-
-            }
-
-          }else{
-
-            window.location.href =
-              `${SITE_ROOT}pages/shop.html?collection=${encodeURIComponent(collection)}`;
-
-          }
+          updateFilterButtons();
+          applyFilters();
 
         }
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   SHOP CONTROLS
-   ========================================================= */
-
-function bindShopControls(){
-
-  const sort =
-    $("#sort");
-
-
-  const clear =
-    $("#clearFilters");
-
-
-  if(sort){
-
-    sort.addEventListener(
-      "change",
-      event => {
-
-        state.sort =
-          event.target.value;
-
-
-        applyFilters();
-
-      }
-    );
-
-  }
-
-
-  if(clear){
-
-    clear.addEventListener(
-      "click",
-      () => {
-
-        state.collection =
-          "all";
-
-
-        state.search =
-          "";
-
-
-        state.sort =
-          "featured";
-
-
-        const input =
-          $("#searchInput");
-
-
-        if(input){
-
-          input.value =
-            "";
-
-        }
-
-
-        if(sort){
-
-          sort.value =
-            "featured";
-
-        }
-
-
-        localStorage.removeItem(
-          COLLECTION_STORAGE_KEY
-        );
-
-
-        applyFilters();
-
-      }
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   HERO CONTROLS
-   ========================================================= */
-
-function bindHeroControls(){
-
-  const previous =
-    $(
-      "[data-hero-prev]"
-    );
-
-
-  const next =
-    $(
-      "[data-hero-next]"
-    );
-
-
-  if(previous){
-
-    previous.addEventListener(
-      "click",
-      () => {
-
-        showHeroSlide(
-          heroIndex - 1
-        );
-
-
-        startHeroTimer();
-
-      }
-    );
-
-  }
-
-
-  if(next){
-
-    next.addEventListener(
-      "click",
-      () => {
-
-        showHeroSlide(
-          heroIndex + 1
-        );
-
-
-        startHeroTimer();
-
-      }
-    );
-
-  }
-
-
-  document.addEventListener(
-    "click",
-    event => {
-
-      const dot =
-        event.target.closest(
-          "[data-hero-dot]"
-        );
-
-
-      if(!dot){
 
         return;
+      }
+
+      const categoryButton =
+        event.target.closest(
+          "[data-category]"
+        );
+
+      if (categoryButton) {
+
+        const category =
+          categoryButton.dataset.category;
+
+        if (
+          CATEGORIES.includes(category)
+        ) {
+
+          state.category =
+            category;
+
+          updateFilterButtons();
+          applyFilters();
+
+        }
 
       }
 
-
-      showHeroSlide(
-        Number(
-          dot.dataset.heroDot
-        )
-      );
-
-
-      startHeroTimer();
-
     }
   );
-
 }
 
 
 /* =========================================================
-   GLOBAL EVENTS
+   PRODUCT ACTIONS
    ========================================================= */
 
-function bindGlobalEvents(){
+function bindProductActions() {
 
   document.addEventListener(
     "click",
     event => {
+
+      const viewButton =
+        event.target.closest(
+          "[data-product-view]"
+        );
+
+      if (viewButton) {
+
+        openProductModal(
+          viewButton.dataset.productView
+        );
+
+        return;
+      }
 
       const addButton =
         event.target.closest(
           "[data-add-to-cart]"
         );
 
-
-      if(addButton){
+      if (addButton) {
 
         addToCart(
           addButton.dataset.addToCart
         );
 
-
-        return;
-
       }
 
-
-      const productButton =
-        event.target.closest(
-          "[data-product-view]"
-        );
+    }
+  );
+}
 
 
-      if(productButton){
+/* =========================================================
+   CART ACTIONS
+   ========================================================= */
 
-        openProductModal(
-          productButton.dataset.productView
-        );
+function bindCartActions() {
 
+  document.addEventListener(
+    "click",
+    event => {
 
-        return;
-
-      }
-
-
-      const cartButton =
-        event.target.closest(
-          "#cartBtn"
-        );
-
-
-      if(cartButton){
-
-        openCart();
-
-        return;
-
-      }
-
-
-      const cartClose =
-        event.target.closest(
-          "#cartClose, #drawerBackdrop"
-        );
-
-
-      if(cartClose){
-
-        closeCart();
-
-        return;
-
-      }
-
-
-      const cartPlus =
+      const plus =
         event.target.closest(
           "[data-cart-plus]"
         );
 
+      if (plus) {
 
-      if(cartPlus){
-
-        changeQuantity(
-          cartPlus.dataset.cartPlus,
+        changeCartQuantity(
+          plus.dataset.cartPlus,
           1
         );
 
-
         return;
-
       }
 
-
-      const cartMinus =
+      const minus =
         event.target.closest(
           "[data-cart-minus]"
         );
 
+      if (minus) {
 
-      if(cartMinus){
-
-        changeQuantity(
-          cartMinus.dataset.cartMinus,
+        changeCartQuantity(
+          minus.dataset.cartMinus,
           -1
         );
 
-
         return;
-
       }
 
-
-      const cartRemove =
+      const remove =
         event.target.closest(
           "[data-cart-remove]"
         );
 
-
-      if(cartRemove){
+      if (remove) {
 
         removeFromCart(
-          cartRemove.dataset.cartRemove
+          remove.dataset.cartRemove
         );
 
-
         return;
+      }
+
+      const closeButton =
+        event.target.closest(
+          "[data-close-cart]"
+        );
+
+      if (closeButton) {
+
+        closeCart();
+        return;
+      }
+
+      const openButton =
+        event.target.closest(
+          "[data-open-cart]"
+        );
+
+      if (openButton) {
+
+        event.preventDefault();
+        openCart();
+        return;
+      }
+
+      if (
+        event.target.closest(
+          "#cart-button"
+        )
+      ) {
+
+        event.preventDefault();
+        openCart();
+        return;
+      }
+
+      if (
+        event.target.closest(
+          "#checkout-button"
+        )
+      ) {
+
+        handleCheckout();
 
       }
 
+    }
+  );
+}
 
-      const modalClose =
+
+/* =========================================================
+   MODAL ACTIONS
+   ========================================================= */
+
+function bindModalActions() {
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      if (
         event.target.closest(
-          "[data-close-modal]"
-        );
-
-
-      if(modalClose){
+          "[data-close-product]"
+        )
+      ) {
 
         closeProductModal();
 
@@ -3117,104 +2237,86 @@ function bindGlobalEvents(){
     }
   );
 
+  document.addEventListener(
+    "keydown",
+    event => {
 
-  const checkout =
-    $("#checkoutBtn");
+      if (
+        event.key ===
+        "Escape"
+      ) {
 
+        closeProductModal();
+        closeCart();
 
-  if(checkout){
+      }
 
-    checkout.addEventListener(
-      "click",
-      handleCheckout
-    );
-
-  }
-
+    }
+  );
 }
 
 
 /* =========================================================
    FLUTTERWAVE
+   =========================================================
+
+   Replace only the PUBLIC key when you are ready.
+   NEVER place the secret key in this file.
+
    ========================================================= */
 
 const FLUTTERWAVE_PUBLIC_KEY =
   "FLWPUBK_TEST-REPLACE_WITH_YOUR_PUBLIC_KEY";
 
 
-function loadFlutterwave(){
+function loadFlutterwave() {
 
   return new Promise(
-    (
-      resolve,
-      reject
-    ) => {
+    (resolve, reject) => {
 
-      if(
+      if (
         window.FlutterwaveCheckout
-      ){
+      ) {
 
         resolve();
-
         return;
-
       }
-
 
       const existing =
         document.querySelector(
           'script[src*="flutterwave"]'
         );
 
-
-      if(existing){
+      if (existing) {
 
         existing.addEventListener(
           "load",
-          resolve,
-          {
-            once:
-              true
-          }
+          resolve
         );
-
 
         existing.addEventListener(
           "error",
-          reject,
-          {
-            once:
-              true
-          }
+          reject
         );
 
-
         return;
-
       }
-
 
       const script =
         document.createElement(
           "script"
         );
 
-
       script.src =
         "https://checkout.flutterwave.com/v3.js";
 
-
-      script.async =
-        true;
-
+      script.async = true;
 
       script.onload =
         resolve;
 
-
       script.onerror =
         reject;
-
 
       document.head.appendChild(
         script
@@ -3222,25 +2324,24 @@ function loadFlutterwave(){
 
     }
   );
-
 }
 
 
-function getCustomerDetails(){
+/* =========================================================
+   CUSTOMER DETAILS
+   ========================================================= */
+
+function getCustomerDetails() {
 
   const savedName =
     localStorage.getItem(
       "areaBoyzCustomerName"
-    ) ||
-    "";
-
+    ) || "";
 
   const savedEmail =
     localStorage.getItem(
       "areaBoyzCustomerEmail"
-    ) ||
-    "";
-
+    ) || "";
 
   const name =
     window.prompt(
@@ -3248,16 +2349,13 @@ function getCustomerDetails(){
       savedName
     );
 
-
-  if(
+  if (
     !name ||
     !name.trim()
-  ){
+  ) {
 
     return null;
-
   }
-
 
   const email =
     window.prompt(
@@ -3265,94 +2363,84 @@ function getCustomerDetails(){
       savedEmail
     );
 
-
-  if(
+  if (
     !email ||
     !email.trim()
-  ){
+  ) {
 
     return null;
-
   }
-
 
   localStorage.setItem(
     "areaBoyzCustomerName",
     name.trim()
   );
 
-
   localStorage.setItem(
     "areaBoyzCustomerEmail",
     email.trim()
   );
 
-
   return {
-
-    name:
-      name.trim(),
-
-    email:
-      email.trim()
-
+    name: name.trim(),
+    email: email.trim()
   };
-
 }
 
 
-async function handleCheckout(){
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
 
-  if(
-    !state.cart.length
-  ){
+async function handleCheckout() {
+
+  if (!state.cart.length) {
 
     showToast(
       "Your bag is empty."
     );
 
     return;
-
   }
-
-
-  if(
-    FLUTTERWAVE_PUBLIC_KEY.includes(
-      "REPLACE_WITH"
-    )
-  ){
-
-    showToast(
-      "Flutterwave public key has not been configured yet."
-    );
-
-    return;
-
-  }
-
 
   const customer =
     getCustomerDetails();
 
+  if (!customer) {
 
-  if(!customer){
+    showToast(
+      "Checkout cancelled."
+    );
 
     return;
-
   }
 
+  const amount =
+    getCartTotal();
 
-  try{
+  try {
+
+    showToast(
+      "Preparing secure checkout..."
+    );
 
     await loadFlutterwave();
 
+    if (
+      typeof window.FlutterwaveCheckout !==
+      "function"
+    ) {
 
-    const reference =
+      throw new Error(
+        "Flutterwave checkout is unavailable."
+      );
+    }
+
+    const transactionReference =
       `ABZ-${Date.now()}-${Math.random()
         .toString(36)
-        .slice(2,8)
+        .slice(2, 9)
         .toUpperCase()}`;
-
 
     window.FlutterwaveCheckout({
 
@@ -3360,16 +2448,17 @@ async function handleCheckout(){
         FLUTTERWAVE_PUBLIC_KEY,
 
       tx_ref:
-        reference,
+        transactionReference,
 
       amount:
-        getCartTotal(),
+        amount,
 
+      /* ALL STORE PURCHASES ARE USD */
       currency:
-        "NGN",
+        "USD",
 
       payment_options:
-        "card,banktransfer,ussd",
+        "card",
 
       customer: {
 
@@ -3387,50 +2476,25 @@ async function handleCheckout(){
           "Area Boyz Enterprise",
 
         description:
-          "Area Boyz Enterprise purchase"
+          "Fashion & lifestyle purchase",
+
+        logo:
+          `${SITE_ROOT}images/logo.png`
 
       },
 
       callback:
-        payment => {
+        function(payment) {
 
-          if(
-            payment &&
-            (
-              payment.status ===
-                "successful" ||
-              payment.status ===
-                "completed"
-            )
-          ){
-
-            showToast(
-              "Payment successful. Thank you for shopping with Area Boyz."
-            );
-
-
-            state.cart = [];
-
-            saveCart();
-
-            updateCartCount();
-
-            renderCart();
-
-            closeCart();
-
-          }else{
-
-            showToast(
-              "Payment was not completed."
-            );
-
-          }
+          handleFlutterwaveResponse(
+            payment,
+            transactionReference
+          );
 
         },
 
       onclose:
-        () => {
+        function() {
 
           showToast(
             "Checkout window closed."
@@ -3440,223 +2504,464 @@ async function handleCheckout(){
 
     });
 
-  }catch(error){
+  } catch (error) {
 
     console.error(
       "Checkout error:",
       error
     );
 
-
     showToast(
       "Unable to initialize payment."
     );
 
   }
-
 }
 
 
 /* =========================================================
-   KEYBOARD
+   FLUTTERWAVE RESPONSE
    ========================================================= */
 
-function bindKeyboard(){
+function handleFlutterwaveResponse(
+  payment,
+  reference
+) {
 
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if(
-        event.key !==
-        "Escape"
-      ){
-
-        return;
-
-      }
-
-
-      closeMobileNav();
-
-      closeSearch();
-
-      closeProductModal();
-
-      closeCart();
-
-    }
+  console.log(
+    "Flutterwave payment response:",
+    payment
   );
 
+  if (
+    payment &&
+    (
+      payment.status === "successful" ||
+      payment.status === "completed"
+    )
+  ) {
+
+    showToast(
+      "Payment successful. Thank you for shopping with Area Boyz."
+    );
+
+    localStorage.setItem(
+      "areaBoyzLastTransaction",
+      JSON.stringify({
+
+        reference:
+          reference,
+
+        payment:
+          payment,
+
+        total:
+          getCartTotal(),
+
+        cart:
+          state.cart,
+
+        date:
+          new Date().toISOString()
+
+      })
+    );
+
+    state.cart = [];
+
+    saveCart();
+    updateCartBadges();
+    renderCart();
+
+    setTimeout(
+      () => closeCart(),
+      1000
+    );
+
+    return;
+  }
+
+  showToast(
+    "Payment was not completed."
+  );
 }
 
 
 /* =========================================================
-   INITIALIZE
+   PAYMENT RETURN
    ========================================================= */
 
-function init(){
+function handlePaymentReturn() {
 
-  try{
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
-    loadCart();
+  const status =
+    params.get("status");
 
-    updateYear();
+  const transactionId =
+    params.get("transaction_id");
 
-    renderHero();
+  if (status) {
 
-    buildFilters();
+    console.log(
+      "Payment return:",
+      {
+        status,
+        transactionId
+      }
+    );
 
-    readCollectionFromURL();
-
-
-    const savedCollection =
-      localStorage.getItem(
-        COLLECTION_STORAGE_KEY
-      );
-
-
-    if(
-      state.collection ===
-        "all" &&
-      savedCollection &&
-      CATEGORIES.includes(
-        savedCollection
-      )
-    ){
-
-      state.collection =
-        savedCollection;
-
-    }
+  }
+}
 
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
+/* =========================================================
+   SHOP DETECTION
+   ========================================================= */
+
+function isShopPage() {
+
+  const path =
+    window.location.pathname
+      .toLowerCase();
+
+  return (
+    path.endsWith("/shop.html") ||
+    path.endsWith("/shop") ||
+    !!document.querySelector(
+      "[data-products]"
+    )
+  );
+}
 
 
-    const urlSearch =
-      params.get(
-        "search"
-      );
+/* =========================================================
+   STORE INITIALIZATION
+   ========================================================= */
+
+function initializeStore() {
+
+  if (!isShopPage()) {
+    return;
+  }
+
+  createCartDrawer();
+  renderProducts();
+  renderCart();
+  updateCartBadges();
+  updateFilterButtons();
+  syncSearchInputs();
+  syncSortSelect();
+}
 
 
-    if(urlSearch){
+/* =========================================================
+   SMOOTH SCROLL
+   ========================================================= */
 
-      state.search =
-        urlSearch;
+function setupSmoothScroll() {
+
+  $all(
+    'a[href^="#"]'
+  ).forEach(link => {
+
+    link.addEventListener(
+      "click",
+      event => {
+
+        const targetId =
+          link.getAttribute("href");
+
+        if (
+          !targetId ||
+          targetId === "#"
+        ) {
+          return;
+        }
+
+        const target =
+          document.querySelector(
+            targetId
+          );
+
+        if (!target) {
+          return;
+        }
+
+        event.preventDefault();
+
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      }
+    );
+
+  });
+}
 
 
-      const input =
-        $("#searchInput");
+/* =========================================================
+   IMAGE FALLBACK
+   ========================================================= */
 
+function setupImageFallback() {
 
-      if(input){
+  document.addEventListener(
+    "error",
+    event => {
 
-        input.value =
-          urlSearch;
+      const image =
+        event.target;
+
+      if (
+        image &&
+        image.tagName === "IMG"
+      ) {
+
+        image.classList.add(
+          "image-error"
+        );
 
       }
 
-    }
-
-
-    if(
-      $("#productGrid")
-    ){
-
-      applyFilters();
-
-    }
-
-
-    updateCartCount();
-
-    renderCart();
-
-    bindNavigation();
-
-    bindSearch();
-
-    bindCollectionButtons();
-
-    bindShopControls();
-
-    bindHeroControls();
-
-    bindGlobalEvents();
-
-    bindKeyboard();
-
-    hidePreloader();
-
-  }catch(error){
-
-    console.error(
-      "Area Boyz initialization error:",
-      error
-    );
-
-
-    hidePreloader();
-
-  }
-
+    },
+    true
+  );
 }
 
 
 /* =========================================================
-   PUBLIC STORE OBJECT
+   CART BUTTONS
+   ========================================================= */
+
+function setupCartButtons() {
+
+  $all("[data-open-cart]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+          openCart();
+
+        }
+      );
+
+    });
+
+  const cartButton =
+    $("#cart-button");
+
+  if (cartButton) {
+
+    cartButton.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+        openCart();
+
+      }
+    );
+
+  }
+}
+
+
+/* =========================================================
+   COLLECTION LINKS
+   ========================================================= */
+
+function setupCollectionLinks() {
+
+  $all(
+    'a[href*="shop.html?collection="]'
+  ).forEach(link => {
+
+    link.addEventListener(
+      "click",
+      () => {
+
+        const href =
+          link.getAttribute("href");
+
+        if (!href) {
+          return;
+        }
+
+        const match =
+          href.match(
+            /collection=([^&]+)/i
+          );
+
+        if (
+          match &&
+          match[1]
+        ) {
+
+          const collection =
+            decodeURIComponent(
+              match[1]
+            );
+
+          if (
+            CATEGORIES.includes(
+              collection
+            )
+          ) {
+
+            localStorage.setItem(
+              COLLECTION_STORAGE_KEY,
+              collection
+            );
+
+          }
+
+        }
+
+      }
+    );
+
+  });
+}
+
+
+/* =========================================================
+   HERO PRELOAD
+   ========================================================= */
+
+function preloadHeroImages() {
+
+  [
+    "hero-1.jpg",
+    "hero-2.jpg",
+    "hero-3.jpg",
+    "hero-4.jpg",
+    "hero-5.jpg",
+    "hero-6.jpg"
+  ].forEach(filename => {
+
+    const image =
+      new Image();
+
+    image.src =
+      `${PATHS.hero}${filename}`;
+
+  });
+}
+
+
+/* =========================================================
+   PUBLIC STORE API
    ========================================================= */
 
 window.AreaBoyzStore = {
 
-  products:
-    PRODUCTS,
+  products: PRODUCTS,
 
   getProduct,
-
   addToCart,
-
   removeFromCart,
-
-  changeQuantity,
-
+  changeCartQuantity,
   openCart,
-
   closeCart,
-
   getCartCount,
-
   getCartTotal,
-
   formatMoney
 
 };
 
 
 /* =========================================================
+   INIT
+   ========================================================= */
+
+function init() {
+
+  try {
+
+    loadCart();
+
+    loadCollectionFromURL();
+
+    restoreCollection();
+
+    updateYear();
+
+    renderHero();
+
+    initializeStore();
+
+    bindSearch();
+
+    bindSort();
+
+    bindFilters();
+
+    bindProductActions();
+
+    bindCartActions();
+
+    bindModalActions();
+
+    setupMobileMenu();
+
+    setupHeaderScroll();
+
+    setupRevealAnimations();
+
+    setupSmoothScroll();
+
+    setupImageFallback();
+
+    setupCartButtons();
+
+    setupCollectionLinks();
+
+    preloadHeroImages();
+
+    handlePaymentReturn();
+
+    hidePreloader();
+
+    applyFilters();
+
+  } catch (error) {
+
+    console.error(
+      "Area Boyz initialization error:",
+      error
+    );
+
+    hidePreloader();
+
+  }
+}
+
+
+/* =========================================================
    START
    ========================================================= */
 
-if(
+if (
   document.readyState ===
   "loading"
-){
+) {
 
   document.addEventListener(
     "DOMContentLoaded",
-    init,
-    {
-      once:
-        true
-    }
+    init
   );
 
-}else{
+} else {
 
   init();
 
-          }
+     }
