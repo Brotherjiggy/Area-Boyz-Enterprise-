@@ -1,1 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Area Boyz Enterprise equity investment confirmation."
+  >
+
+  <title>Investment Confirmation | Area Boyz Enterprise</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/equity.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7f7f5;
+      color: #111;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ================================
+       HEADER
+    ================================= */
+
+    .confirmation-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 76px;
+      z-index: 1000;
+
+      background: #111;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .confirmation-header-inner {
+      width: min(1200px, calc(100% - 40px));
+      height: 100%;
+      margin: 0 auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .confirmation-logo {
+      color: #f5c400;
+      font-size: 1.15rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
+
+    .confirmation-logo span {
+      color: #fff;
+      margin-left: 5px;
+    }
+
+    .confirmation-nav {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .confirmation-nav a {
+      position: relative;
+
+      padding: 28px 0;
+
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+
+      transition: color 0.2s ease;
+    }
+
+    .confirmation-nav a:hover {
+      color: #f5c400;
+    }
+
+    .confirmation-nav a.active {
+      color: #f5c400;
+    }
+
+    .confirmation-nav a.active::after {
+      content: "";
+
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 18px;
+
+      height: 2px;
+      background: #f5c400;
+    }
+
+    .confirmation-menu-btn {
+      display: none;
+
+      width: 44px;
+      height: 44px;
+
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+
+      background: transparent;
+      color: #fff;
+
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* ================================
+       MAIN
+    ================================= */
+
+    .confirmation-page {
+      min-height: 100vh;
+
+      padding:
+        130px
+        20px
+        80px;
+
+      display: flex;
+      align-items: center;
+    }
+
+    .confirmation-container {
+      width: min(850px, 100%);
+      margin: 0 auto;
+    }
+
+    /* ================================
+       SUCCESS CARD
+    ================================= */
+
+    .confirmation-card {
+      background: #fff;
+
+      border: 1px solid #e5e5e5;
+      border-radius: 20px;
+
+      padding: 45px;
+
+      box-shadow:
+        0 15px 40px rgba(0,0,0,0.07);
+
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 76px;
+      height: 76px;
+
+      margin: 0 auto 24px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #111;
+      color: #f5c400;
+
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .confirmation-card .eyebrow {
+      display: inline-block;
+
+      margin-bottom: 10px;
+
+      color: #9a7900;
+
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .confirmation-card h1 {
+      margin: 0 0 12px;
+
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .confirmation-message {
+      max-width: 650px;
+      margin: 0 auto 35px;
+
+      color: #666;
+
+      line-height: 1.7;
+    }
+
+    .confirmation-message strong {
+      color: #111;
+    }
+
+    /* ================================
+       INVESTMENT SUMMARY
+    ================================= */
+
+    .investment-summary {
+      max-width: 650px;
+      margin: 0 auto 30px;
+
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+
+      overflow: hidden;
+
+      text-align: left;
+    }
+
+    .summary-heading {
+      padding: 16px 20px;
+
+      background: #111;
+      color: #fff;
+
+      font-size: 0.95rem;
+      font-weight: 900;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+
+      padding: 15px 20px;
+
+      border-bottom: 1px solid #ededed;
+    }
+
+    .summary-row:last-child {
+      border-bottom: 0;
+    }
+
+    .summary-label {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    .summary-value {
+      color: #111;
+      font-size: 0.95rem;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    /* ================================
+       STATUS NOTICE
+    ================================= */
+
+    .status-notice {
+      max-width: 650px;
+      margin: 0 auto 30px;
+
+      padding: 18px;
+
+      background: #fffbea;
+
+      border: 1px solid #eee3a6;
+      border-radius: 12px;
+
+      color: #555;
+
+      font-size: 0.88rem;
+      line-height: 1.6;
+
+      text-align: left;
+    }
+
+    .status-notice strong {
+      display: block;
+
+      margin-bottom: 5px;
+
+      color: #111;
+    }
+
+    /* ================================
+       ACTIONS
+    ================================= */
+
+    .confirmation-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .confirmation-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 50px;
+
+      padding: 13px 22px;
+
+      border-radius: 9px;
+
+      font-size: 0.92rem;
+      font-weight: 900;
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .confirmation-button.primary {
+      background: #f5c400;
+      color: #111;
+    }
+
+    .confirmation-button.secondary {
+      background: #111;
+      color: #fff;
+    }
+
+    .confirmation-button:hover {
+      transform: translateY(-1px);
+
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    /* ================================
+       FOOTER
+    ================================= */
+
+    .confirmation-footer {
+      padding: 30px 20px;
+
+      background: #111;
+      color: #aaa;
+
+      text-align: center;
+    }
+
+    .confirmation-footer p {
+      margin: 0;
+      font-size: 0.82rem;
+    }
+
+    .confirmation-footer span {
+      color: #f5c400;
+    }
+
+    /* ================================
+       MOBILE
+    ================================= */
+
+    @media (max-width: 850px) {
+
+      .confirmation-menu-btn {
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+      }
+
+      .confirmation-nav {
+        position: absolute;
+
+        top: 76px;
+        left: 0;
+
+        width: 100%;
+
+        display: none;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 0;
+
+        padding: 10px 20px 18px;
+
+        background: #111;
+
+        border-top: 1px solid
+          rgba(255,255,255,0.08);
+
+        box-shadow:
+          0 15px 30px rgba(0,0,0,0.2);
+      }
+
+      .confirmation-nav.active {
+        display: flex;
+      }
+
+      .confirmation-nav a {
+        padding: 15px 5px;
+
+        border-bottom: 1px solid
+          rgba(255,255,255,0.08);
+      }
+
+      .confirmation-nav a:last-child {
+        border-bottom: 0;
+      }
+
+      .confirmation-nav a.active::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+
+      .confirmation-header-inner {
+        width: calc(100% - 30px);
+      }
+
+      .confirmation-logo {
+        font-size: 1rem;
+      }
+
+      .confirmation-page {
+        padding:
+          110px
+          15px
+          60px;
+      }
+
+      .confirmation-card {
+        padding: 28px 20px;
+        border-radius: 15px;
+      }
+
+      .summary-row {
+        gap: 12px;
+      }
+
+      .confirmation-actions {
+        flex-direction: column;
+      }
+
+      .confirmation-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================================
+       HEADER
+  ========================================== -->
+
+  <header class="confirmation-header">
+
+    <div class="confirmation-header-inner">
+
+      <a
+        href="../index.html"
+        class="confirmation-logo"
+      >
+        AREA <span>BOYZ</span>
+      </a>
+
+      <button
+        type="button"
+        class="confirmation-menu-btn"
+        id="menuBtn"
+        aria-label="Open navigation"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+
+      <nav
+        class="confirmation-nav"
+        id="mobileNav"
+      >
+
+        <a href="../index.html">
+          Home
+        </a>
+
+        <a href="../pages/shop.html">
+          Shop
+        </a>
+
+        <a href="../pages/collections.html">
+          Collections
+        </a>
+
+        <a href="../pages/our-story.html">
+          Our Story
+        </a>
+
+        <a href="../pages/contact.html">
+          Contact
+        </a>
+
+        <a
+          href="index.html"
+          class="active"
+        >
+          Equity
+        </a>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================================
+       MAIN
+  ========================================== -->
+
+  <main class="confirmation-page">
+
+    <div class="confirmation-container">
+
+      <section class="confirmation-card">
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+        <span class="eyebrow">
+          Area Boyz Enterprise Equity
+        </span>
+
+        <h1>
+          Investment Request Received
+        </h1>
+
+        <p
+          class="confirmation-message"
+          id="confirmationMessage"
+        >
+          Your proposed investment details have been
+          saved for this browser session.
+        </p>
+
+
+        <!-- Investment Summary -->
+
+        <div class="investment-summary">
+
+          <div class="summary-heading">
+            Proposed Investment Summary
+          </div>
+
+
+          <div class="summary-row">
+
+            <span class="summary-label">
+              Investor
+            </span>
+
+            <span
+              class="summary-value"
+              id="investorNameDisplay"
+            >
+              —
+            </span>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span class="summary-label">
+              Proposed Investment
+            </span>
+
+            <span
+              class="summary-value"
+              id="investmentDisplay"
+            >
+              $0
+            </span>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span class="summary-label">
+              Proposed Share Price
+            </span>
+
+            <span class="summary-value">
+              $1.00
+            </span>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span class="summary-label">
+              Estimated Shares
+            </span>
+
+            <span
+              class="summary-value"
+              id="sharesDisplay"
+            >
+              0
+            </span>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span class="summary-label">
+              Proposed Ownership
+            </span>
+
+            <span
+              class="summary-value"
+              id="ownershipDisplay"
+            >
+              0.000%
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Status -->
+
+        <div class="status-notice">
+
+          <strong>
+            Important: Frontend-only confirmation
+          </strong>
+
+          This confirmation does not represent a completed
+          securities transaction, payment, share issuance,
+          or binding investment agreement. The current
+          website is only preparing and displaying the
+          proposed investment information. Payment,
+          investor verification, legal documentation,
+          database storage, and final investment processing
+          will be connected during the backend stage.
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div class="confirmation-actions">
+
+          <a
+            href="index.html"
+            class="confirmation-button primary"
+          >
+            Back to Equity
+          </a>
+
+          <a
+            href="../pages/shop.html"
+            class="confirmation-button secondary"
+          >
+            Continue Shopping
+          </a>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================
+       FOOTER
+  ========================================== -->
+
+  <footer class="confirmation-footer">
+
+    <p>
+      &copy;
+      <span id="year"></span>
+      Area Boyz Enterprise.
+      All rights reserved.
+    </p>
+
+  </footer>
+
+
+  <!-- =========================================
+       JAVASCRIPT
+  ========================================== -->
+
+  <script>
+
+    /* =========================================
+       ELEMENTS
+    ========================================== */
+
+    const investorNameDisplay =
+      document.getElementById(
+        "investorNameDisplay"
+      );
+
+    const investmentDisplay =
+      document.getElementById(
+        "investmentDisplay"
+      );
+
+    const sharesDisplay =
+      document.getElementById(
+        "sharesDisplay"
+      );
+
+    const ownershipDisplay =
+      document.getElementById(
+        "ownershipDisplay"
+      );
+
+    const confirmationMessage =
+      document.getElementById(
+        "confirmationMessage"
+      );
+
+
+    /* =========================================
+       FORMAT MONEY
+    ========================================== */
+
+    function formatMoney(amount) {
+
+      return new Intl.NumberFormat(
+        "en-US",
+        {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0
+        }
+      ).format(amount);
+
+    }
+
+
+    /* =========================================
+       LOAD INVESTMENT DATA
+    ========================================== */
+
+    const savedInvestment =
+      sessionStorage.getItem(
+        "areaBoyzInvestment"
+      );
+
+
+    if (savedInvestment) {
+
+      try {
+
+        const investment =
+          JSON.parse(
+            savedInvestment
+          );
+
+
+        const name =
+          investment.name || "Investor";
+
+
+        const amount =
+          Number(
+            investment.amount
+          ) || 0;
+
+
+        const shares =
+          Number(
+            investment.shares
+          ) || 0;
+
+
+        const ownership =
+          Number(
+            investment.ownership
+          ) || 0;
+
+
+        investorNameDisplay.textContent =
+          name;
+
+
+        investmentDisplay.textContent =
+          formatMoney(amount);
+
+
+        sharesDisplay.textContent =
+          shares.toLocaleString(
+            "en-US"
+          );
+
+
+        ownershipDisplay.textContent =
+          ownership.toFixed(3) + "%";
+
+
+        confirmationMessage.innerHTML =
+          "Thank you, <strong>" +
+          name.replace(
+            /[<>&"]/g,
+            ""
+          ) +
+          ".</strong> Your proposed investment details " +
+          "have been prepared successfully for this browser session.";
+
+      } catch (error) {
+
+        console.error(
+          "Unable to read investment data:",
+          error
+        );
+
+      }
+
+    } else {
+
+      /*
+       * If somebody opens confirmation.html
+       * directly without completing checkout,
+       * show a safe message.
+       */
+
+      confirmationMessage.textContent =
+        "No investment information was found in this browser session. Please return to the equity page and begin the investment process again.";
+
+    }
+
+
+    /* =========================================
+       MOBILE NAVIGATION
+    ========================================== */
+
+    const menuBtn =
+      document.getElementById(
+        "menuBtn"
+      );
+
+    const mobileNav =
+      document.getElementById(
+        "mobileNav"
+      );
+
+
+    if (
+      menuBtn &&
+      mobileNav
+    ) {
+
+      menuBtn.addEventListener(
+        "click",
+        () => {
+
+          const isOpen =
+            mobileNav.classList.toggle(
+              "active"
+            );
+
+
+          menuBtn.setAttribute(
+            "aria-expanded",
+            String(isOpen)
+          );
+
+        }
+      );
+
+
+      mobileNav
+        .querySelectorAll("a")
+        .forEach(link => {
+
+          link.addEventListener(
+            "click",
+            () => {
+
+              mobileNav.classList.remove(
+                "active"
+              );
+
+
+              menuBtn.setAttribute(
+                "aria-expanded",
+                "false"
+              );
+
+            }
+          );
+
+        });
+
+    }
+
+
+    /* =========================================
+       YEAR
+    ========================================== */
+
+    document.getElementById(
+      "year"
+    ).textContent =
+      new Date().getFullYear();
+
+  </script>
+
+</body>
+</html>
