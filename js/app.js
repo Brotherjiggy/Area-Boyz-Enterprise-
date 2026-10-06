@@ -277,20 +277,43 @@ const PRODUCTS = Array.from(
 
     let collection = "streetwear";
 
-    if (category === "footwear") {
-      collection = "footwear";
-    }
+/*
+ * Collection assignment is based on the
+ * product's actual catalogue category.
+ */
 
-    if (
-      [
-        "bags",
-        "headwear",
-        "accessories",
-        "jewelry"
-      ].includes(category)
-    ) {
-      collection = "accessories";
-    }
+if (category === "footwear") {
+
+  collection = "footwear";
+
+}
+
+else if (
+  [
+    "bags",
+    "headwear",
+    "accessories",
+    "jewelry"
+  ].includes(category)
+) {
+
+  collection = "accessories";
+
+}
+
+else if (
+  category === "handmade"
+) {
+
+  collection = "handmade";
+
+}
+
+else {
+
+  collection = "streetwear";
+
+}
 
     return {
 
