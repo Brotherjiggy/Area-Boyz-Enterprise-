@@ -1,1306 +1,1110 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8">
-
+  <meta charset="UTF-8" />
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  >
+  />
+
+  <title>Equity Checkout | Area Boyz Enterprise</title>
 
   <meta
     name="description"
-    content="Area Boyz Enterprise investment checkout."
-  >
+    content="Review your proposed Area Boyz Enterprise equity investment."
+  />
 
-  <meta
-    name="theme-color"
-    content="#ffd400"
-  >
-
-  <title>Investment | Area Boyz Enterprise</title>
-
-
-  <!-- FONT AWESOME -->
-
-  <link
-    rel="preconnect"
-    href="https://cdnjs.cloudflare.com"
-  >
-
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-  >
-
-
-  <!-- MAIN CSS -->
-
-  <link
-    rel="stylesheet"
-    href="../css/style.css"
-  >
-
-
-  <!-- PAGE CSS -->
-
-  <link
-    rel="stylesheet"
-    href="../css/pages.css"
-  >
-
-
-  <!-- EQUITY CSS -->
-
-  <link
-    rel="stylesheet"
-    href="../css/equity.css"
-  >
-
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <link rel="stylesheet" href="../css/equity.css" />
 
   <style>
-
-    /* =====================================================
+    /* =========================================
        CHECKOUT PAGE
-       ===================================================== */
+    ========================================= */
 
-    .investment-checkout {
-      padding: 80px 0 110px;
-      background: #f5f2e9;
+    .checkout-page {
+      min-height: 100vh;
+      background: #f7f7f5;
+      padding: 120px 20px 80px;
     }
 
+    .checkout-container {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+    }
 
     .checkout-header {
+      text-align: center;
       max-width: 760px;
-      margin-bottom: 45px;
+      margin: 0 auto 45px;
     }
-
 
     .checkout-header h1 {
-      margin: 0;
-
-      font-size: clamp(42px, 7vw, 72px);
-      line-height: .95;
-      letter-spacing: -.055em;
+      margin-bottom: 12px;
     }
-
-
-    .checkout-header h1 span {
-      display: block;
-      color: #ffd400;
-      -webkit-text-stroke: 1px #0d0d0d;
-    }
-
 
     .checkout-header p {
-      max-width: 650px;
-
-      margin-top: 22px;
-
-      color: #686860;
-
-      font-size: 16px;
+      color: #666;
       line-height: 1.7;
+      margin: 0;
     }
 
-
-    .checkout-layout {
+    .checkout-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
-      gap: 30px;
-
+      grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+      gap: 28px;
       align-items: start;
     }
 
-
     .checkout-card {
       background: #fff;
-
-      border: 1px solid #dedbd0;
+      border: 1px solid #e5e5e5;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
     }
 
-
-    .checkout-card-header {
-      padding: 28px 30px;
-
-      border-bottom: 1px solid #dedbd0;
+    .checkout-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.45rem;
     }
 
-
-    .checkout-card-header h2 {
-      margin: 0;
-
-      font-size: 22px;
-    }
-
-
-    .checkout-card-header p {
-      margin: 8px 0 0;
-
-      color: #686860;
-
-      font-size: 13px;
+    .checkout-card-intro {
+      color: #707070;
+      margin: 0 0 28px;
       line-height: 1.6;
     }
 
-
-    .checkout-form {
-      padding: 30px;
-    }
-
+    /* =========================================
+       FORM
+    ========================================= */
 
     .form-group {
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
-
 
     .form-group label {
       display: block;
-
-      margin-bottom: 9px;
-
-      font-size: 12px;
-      font-weight: 900;
-
-      text-transform: uppercase;
-      letter-spacing: .08em;
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: #111;
     }
 
-
-    .form-help {
+    .form-group small {
       display: block;
-
-      margin-top: 7px;
-
-      color: #77776f;
-
-      font-size: 11px;
+      margin-top: 8px;
+      color: #777;
       line-height: 1.5;
     }
 
-
-    .investment-input-wrap {
-      position: relative;
-    }
-
-
-    .investment-input-symbol {
-      position: absolute;
-
-      left: 18px;
-      top: 50%;
-
-      transform: translateY(-50%);
-
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-
-    .investment-input {
+    .form-group input {
       width: 100%;
+      min-height: 52px;
+      padding: 14px 16px;
+      border: 1px solid #d8d8d8;
+      border-radius: 10px;
+      background: #fff;
+      color: #111;
+      font-size: 1rem;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
 
-      min-height: 62px;
+    .form-group input:focus {
+      border-color: #f5c400;
+      box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.15);
+    }
 
-      padding: 0 18px 0 48px;
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
 
-      border: 2px solid #d8d5ca;
+    /* =========================================
+       MONEY INPUT
+    ========================================= */
+
+    .money-input {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .money-symbol {
+      position: absolute;
+      left: 17px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #111;
+
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .money-input input {
+      width: 100%;
+      min-height: 56px;
+
+      padding: 14px 18px 14px 42px;
+
+      border: 1px solid #d8d8d8;
+      border-radius: 10px;
 
       background: #fff;
+      color: #111;
 
-      color: #0d0d0d;
-
-      font-size: 25px;
-      font-weight: 900;
+      font-size: 1.1rem;
+      font-weight: 700;
 
       outline: none;
+      box-sizing: border-box;
+
+      appearance: textfield;
+      -moz-appearance: textfield;
 
       transition:
-        border-color .2s ease,
-        box-shadow .2s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
-
-    .investment-input:focus {
-      border-color: #0d0d0d;
-
-      box-shadow: 5px 5px 0 #ffd400;
+    .money-input input::-webkit-outer-spin-button,
+    .money-input input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
+    .money-input input:focus {
+      border-color: #f5c400;
+      box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.15);
+    }
+
+    .money-input input::placeholder {
+      color: #999;
+      font-weight: 600;
+    }
+
+    /* =========================================
+       QUICK AMOUNTS
+    ========================================= */
 
     .quick-amounts {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-
+      gap: 10px;
       margin-top: 12px;
     }
 
-
     .quick-amount {
-      padding: 9px 13px;
-
-      border: 1px solid #d8d5ca;
-
+      border: 1px solid #d7d7d7;
       background: #fff;
-
-      color: #0d0d0d;
-
-      font-size: 12px;
-      font-weight: 800;
-
+      color: #111;
+      border-radius: 999px;
+      padding: 9px 15px;
+      font-size: 0.9rem;
+      font-weight: 700;
       cursor: pointer;
-
       transition:
-        background .2s ease,
-        border-color .2s ease;
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
     }
-
 
     .quick-amount:hover {
-      background: #ffd400;
-      border-color: #0d0d0d;
+      background: #f5c400;
+      border-color: #f5c400;
+      transform: translateY(-1px);
     }
 
+    /* =========================================
+       ACKNOWLEDGEMENT
+    ========================================= */
 
-    .investor-field {
-      width: 100%;
-
-      min-height: 50px;
-
-      padding: 0 15px;
-
-      border: 1px solid #d8d5ca;
-
-      background: #fff;
-
-      outline: none;
-
-      font: inherit;
-    }
-
-
-    .investor-field:focus {
-      border-color: #0d0d0d;
-    }
-
-
-    .checkbox-row {
+    .acknowledgement {
       display: flex;
       align-items: flex-start;
-      gap: 11px;
-
-      margin: 22px 0;
+      gap: 12px;
+      margin: 25px 0;
+      padding: 16px;
+      border-radius: 12px;
+      background: #faf8eb;
+      border: 1px solid #eee3a6;
     }
 
-
-    .checkbox-row input {
+    .acknowledgement input {
       width: 18px;
       height: 18px;
-
-      flex: 0 0 auto;
-
+      min-width: 18px;
       margin-top: 2px;
-
-      accent-color: #ffd400;
+      accent-color: #111;
     }
 
-
-    .checkbox-row label {
+    .acknowledgement label {
       margin: 0;
-
-      color: #575750;
-
-      font-size: 12px;
-      line-height: 1.6;
-
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
-
-    .checkout-submit {
-      width: 100%;
-
-      min-height: 56px;
-
-      border: 1px solid #0d0d0d;
-
-      background: #0d0d0d;
-
-      color: #fff;
-
-      font-size: 13px;
-      font-weight: 900;
-
+      color: #444;
+      font-size: 0.92rem;
+      line-height: 1.55;
       cursor: pointer;
-
-      transition:
-        background .2s ease,
-        color .2s ease,
-        transform .2s ease;
     }
 
-
-    .checkout-submit:hover {
-      background: #ffd400;
-      color: #0d0d0d;
-
-      transform: translateY(-2px);
-    }
-
-
-    .checkout-submit:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-
-    /* =====================================================
+    /* =========================================
        SUMMARY
-       ===================================================== */
+    ========================================= */
 
-    .checkout-summary {
+    .summary-card {
       position: sticky;
-      top: 25px;
-
-      background: #0d0d0d;
-      color: #fff;
+      top: 100px;
     }
 
-
-    .checkout-summary-header {
-      padding: 30px;
-
-      border-bottom: 1px solid rgba(255,255,255,.12);
+    .summary-list {
+      margin: 25px 0 0;
     }
-
-
-    .checkout-summary-header span {
-      display: block;
-
-      margin-bottom: 10px;
-
-      color: #ffd400;
-
-      font-size: 10px;
-      font-weight: 900;
-
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-
-
-    .checkout-summary-header h2 {
-      margin: 0;
-
-      font-size: 26px;
-    }
-
-
-    .summary-body {
-      padding: 30px;
-    }
-
-
-    .summary-price {
-      margin-bottom: 30px;
-    }
-
-
-    .summary-price span {
-      display: block;
-
-      color: rgba(255,255,255,.55);
-
-      font-size: 11px;
-    }
-
-
-    .summary-price strong {
-      display: block;
-
-      margin-top: 5px;
-
-      color: #ffd400;
-
-      font-size: 48px;
-      line-height: 1;
-
-      letter-spacing: -.05em;
-    }
-
 
     .summary-row {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       gap: 20px;
-
       padding: 15px 0;
-
-      border-bottom: 1px solid rgba(255,255,255,.1);
+      border-bottom: 1px solid #ededed;
     }
 
-
-    .summary-row span {
-      color: rgba(255,255,255,.58);
-
-      font-size: 12px;
+    .summary-row:last-child {
+      border-bottom: 0;
     }
 
+    .summary-label {
+      color: #707070;
+      font-size: 0.92rem;
+    }
 
-    .summary-row strong {
+    .summary-value {
+      color: #111;
+      font-weight: 800;
       text-align: right;
-
-      font-size: 13px;
     }
 
-
-    .summary-note {
-      margin-top: 22px;
-
-      color: rgba(255,255,255,.45);
-
-      font-size: 10px;
-      line-height: 1.7;
+    .summary-total {
+      margin-top: 10px;
+      padding-top: 20px;
+      border-top: 2px solid #111;
     }
 
-
-    .checkout-security {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      margin-top: 25px;
-
-      color: rgba(255,255,255,.5);
-
-      font-size: 10px;
+    .summary-total .summary-value {
+      font-size: 1.35rem;
     }
 
-
-    .checkout-security i {
-      color: #ffd400;
+    .ownership-note {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #111;
+      color: #fff;
     }
 
-
-    /* =====================================================
-       FRONTEND NOTICE
-       ===================================================== */
-
-    .checkout-frontend-notice {
-      max-width: 820px;
-
-      margin: 35px auto 0;
-
-      padding: 20px;
-
-      border: 1px solid #dedbd0;
-
-      background: #fff;
-    }
-
-
-    .checkout-frontend-notice strong {
+    .ownership-note strong {
       display: block;
-
-      margin-bottom: 7px;
-
-      font-size: 12px;
+      color: #f5c400;
+      margin-bottom: 5px;
     }
 
-
-    .checkout-frontend-notice p {
+    .ownership-note p {
       margin: 0;
-
-      color: #686860;
-
-      font-size: 11px;
-      line-height: 1.7;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #ddd;
     }
 
+    /* =========================================
+       BUTTON
+    ========================================= */
 
-    /* =====================================================
+    .checkout-submit {
+      width: 100%;
+      min-height: 54px;
+      border: 0;
+      border-radius: 10px;
+      background: #f5c400;
+      color: #111;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 14px 20px;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .checkout-submit:hover {
+      background: #ffd21a;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .checkout-submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* =========================================
+       FRONTEND NOTICE
+    ========================================= */
+
+    .frontend-notice {
+      margin-top: 25px;
+      padding: 17px;
+      border-left: 4px solid #f5c400;
+      background: #fafafa;
+      color: #666;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      border-radius: 0 10px 10px 0;
+    }
+
+    /* =========================================
        MOBILE
-       ===================================================== */
+    ========================================= */
 
     @media (max-width: 850px) {
-
-      .checkout-layout {
+      .checkout-grid {
         grid-template-columns: 1fr;
       }
 
-
-      .checkout-summary {
+      .summary-card {
         position: static;
       }
-
     }
-
 
     @media (max-width: 600px) {
-
-      .investment-checkout {
-        padding: 60px 0 80px;
+      .checkout-page {
+        padding: 100px 15px 60px;
       }
 
-
-      .checkout-form,
-      .checkout-card-header,
-      .checkout-summary-header,
-      .summary-body {
+      .checkout-card {
         padding: 22px;
+        border-radius: 14px;
       }
 
+      .checkout-header {
+        margin-bottom: 30px;
+      }
 
       .checkout-header h1 {
-        font-size: 46px;
+        font-size: 2rem;
       }
 
-
-      .summary-price strong {
-        font-size: 42px;
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
       }
 
+      .quick-amounts {
+        gap: 8px;
+      }
+
+      .quick-amount {
+        padding: 8px 13px;
+      }
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-
-  <!-- =====================================================
+  <!-- =========================================
        HEADER
-       ===================================================== -->
+  ========================================== -->
 
   <header class="site-header">
+    <div class="container">
 
-    <div class="header-inner">
-
-
-      <a
-        href="../index.html"
-        class="logo"
-        aria-label="Area Boyz Enterprise home"
-      >
-
-        <span class="logo-mark">
-          AB
-        </span>
-
-        <span class="logo-text">
-
-          <strong>
-            AREA BOYZ
-          </strong>
-
-          <small>
-            ENTERPRISE
-          </small>
-
-        </span>
-
+      <a href="../index.html" class="logo">
+        AREA BOYZ
       </a>
 
-
-      <nav
-        id="nav-links"
-        class="nav-links"
-        aria-label="Main navigation"
+      <button
+        class="menu-btn"
+        id="menuBtn"
+        type="button"
+        aria-label="Open navigation"
+        aria-expanded="false"
       >
+        <i class="fas fa-bars"></i>
+      </button>
 
-        <a href="../index.html">
-          Home
-        </a>
-
-        <a href="../pages/shop.html">
-          Shop
-        </a>
-
-        <a href="../pages/collections.html">
-          Collections
-        </a>
-
-        <a
-          href="index.html"
-          class="active"
-        >
-          Equity
-        </a>
-
-        <a href="../pages/our-story.html">
-          Our Story
-        </a>
-
-        <a href="../pages/contact.html">
-          Contact
-        </a>
-
+      <nav class="main-nav" id="mobileNav">
+        <a href="../index.html">Home</a>
+        <a href="../pages/shop.html">Shop</a>
+        <a href="../pages/collections.html">Collections</a>
+        <a href="../pages/our-story.html">Our Story</a>
+        <a href="../pages/contact.html">Contact</a>
+        <a href="index.html" class="active">Equity</a>
       </nav>
 
-
-      <div class="header-actions">
-
-        <a
-          href="../pages/shop.html"
-          class="header-cart"
-          aria-label="Shop"
-        >
-
-          <i class="fa-solid fa-bag-shopping"></i>
-
-        </a>
-
-
-        <button
-          id="menu-toggle"
-          class="menu-toggle"
-          type="button"
-          aria-label="Open navigation menu"
-          aria-expanded="false"
-          aria-controls="mobile-nav"
-        >
-
-          <i class="fa-solid fa-bars"></i>
-
-        </button>
-
-      </div>
-
     </div>
-
   </header>
 
 
+  <!-- =========================================
+       CHECKOUT
+  ========================================== -->
 
-  <!-- =====================================================
-       MOBILE NAV
-       ===================================================== -->
+  <main class="checkout-page">
 
-  <div
-    id="mobile-nav"
-    class="mobile-nav"
-    aria-hidden="true"
-  >
+    <div class="checkout-container">
 
-    <div class="mobile-nav-inner">
+      <div class="checkout-header">
+        <h1>Equity Investment</h1>
 
-      <a href="../index.html">
-        Home
-      </a>
-
-      <a href="../pages/shop.html">
-        Shop
-      </a>
-
-      <a href="../pages/collections.html">
-        Collections
-      </a>
-
-      <a
-        href="index.html"
-        class="active"
-      >
-        Equity
-      </a>
-
-      <a href="../pages/our-story.html">
-        Our Story
-      </a>
-
-      <a href="../pages/contact.html">
-        Contact
-      </a>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- =====================================================
-       MAIN
-       ===================================================== -->
-
-  <main>
-
-    <section class="investment-checkout">
-
-      <div class="equity-container">
-
-
-        <!-- HEADER -->
-
-        <div class="checkout-header">
-
-          <span class="equity-eyebrow">
-            PROPOSED INVESTMENT
-          </span>
-
-          <h1>
-            Choose your
-            <span>investment.</span>
-          </h1>
-
-          <p>
-            Enter an intended investment amount below to see the
-            corresponding number of proposed shares and illustrative
-            ownership percentage.
-          </p>
-
-        </div>
-
-
-
-        <!-- =================================================
-             CHECKOUT LAYOUT
-             ================================================= -->
-
-        <div class="checkout-layout">
-
-
-          <!-- ===============================================
-               FORM
-               =============================================== -->
-
-          <section class="checkout-card">
-
-            <div class="checkout-card-header">
-
-              <h2>
-                Investment details
-              </h2>
-
-              <p>
-                Complete the information below to prepare your
-                proposed investment request.
-              </p>
-
-            </div>
-
-
-            <form
-              id="investmentForm"
-              class="checkout-form"
-            >
-
-
-              <!-- AMOUNT -->
-
-              <div class="form-group">
-
-                <label for="investmentAmount">
-                  Investment amount
-                </label>
-
-
-                <div class="investment-input-wrap">
-
-                  <span class="investment-input-symbol">
-                    $
-                  </span>
-
-                  <input
-                    id="investmentAmount"
-                    class="investment-input"
-                    type="number"
-                    min="500"
-                    step="1"
-                    value="500"
-                    inputmode="decimal"
-                    required
-                  >
-
-                </div>
-
-
-                <span class="form-help">
-                  Minimum proposed investment: $500.
-                  Proposed share price: $1 per share.
-                </span>
-
-
-                <div class="quick-amounts">
-
-                  <button
-                    type="button"
-                    class="quick-amount"
-                    data-amount="500"
-                  >
-                    $500
-                  </button>
-
-                  <button
-                    type="button"
-                    class="quick-amount"
-                    data-amount="1000"
-                  >
-                    $1,000
-                  </button>
-
-                  <button
-                    type="button"
-                    class="quick-amount"
-                    data-amount="5000"
-                  >
-                    $5,000
-                  </button>
-
-                  <button
-                    type="button"
-                    class="quick-amount"
-                    data-amount="10000"
-                  >
-                    $10,000
-                  </button>
-
-                  <button
-                    type="button"
-                    class="quick-amount"
-                    data-amount="25000"
-                  >
-                    $25,000
-                  </button>
-
-                </div>
-
-              </div>
-
-
-
-              <!-- NAME -->
-
-              <div class="form-group">
-
-                <label for="investorName">
-                  Full name
-                </label>
-
-                <input
-                  id="investorName"
-                  class="investor-field"
-                  type="text"
-                  autocomplete="name"
-                  placeholder="Your full name"
-                  required
-                >
-
-              </div>
-
-
-
-              <!-- EMAIL -->
-
-              <div class="form-group">
-
-                <label for="investorEmail">
-                  Email address
-                </label>
-
-                <input
-                  id="investorEmail"
-                  class="investor-field"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="you@example.com"
-                  required
-                >
-
-              </div>
-
-
-
-              <!-- PHONE -->
-
-              <div class="form-group">
-
-                <label for="investorPhone">
-                  Phone number
-                </label>
-
-                <input
-                  id="investorPhone"
-                  class="investor-field"
-                  type="tel"
-                  autocomplete="tel"
-                  placeholder="+1 000 000 0000"
-                >
-
-              </div>
-
-
-
-              <!-- ACKNOWLEDGEMENT -->
-
-              <div class="checkbox-row">
-
-                <input
-                  id="riskAcknowledgement"
-                  type="checkbox"
-                  required
-                >
-
-                <label for="riskAcknowledgement">
-
-                  I understand that this is a proposed private-company
-                  equity opportunity and that an actual investment may
-                  involve substantial risk, including possible loss
-                  of capital.
-
-                </label>
-
-              </div>
-
-
-
-              <!-- SUBMIT -->
-
-              <button
-                id="continueButton"
-                class="checkout-submit"
-                type="submit"
-              >
-
-                Continue
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-              </button>
-
-            </form>
-
-          </section>
-
-
-
-          <!-- ===============================================
-               SUMMARY
-               =============================================== -->
-
-          <aside class="checkout-summary">
-
-            <div class="checkout-summary-header">
-
-              <span>
-                Investment summary
-              </span>
-
-              <h2>
-                Area Boyz Enterprise
-              </h2>
-
-            </div>
-
-
-            <div class="summary-body">
-
-
-              <div class="summary-price">
-
-                <span>
-                  Intended investment
-                </span>
-
-                <strong id="summaryAmount">
-                  $500
-                </strong>
-
-              </div>
-
-
-              <div class="summary-row">
-
-                <span>
-                  Proposed share price
-                </span>
-
-                <strong>
-                  $1.00
-                </strong>
-
-              </div>
-
-
-              <div class="summary-row">
-
-                <span>
-                  Proposed shares
-                </span>
-
-                <strong id="summaryShares">
-                  500
-                </strong>
-
-              </div>
-
-
-              <div class="summary-row">
-
-                <span>
-                  Approx. pre-offering ownership
-                </span>
-
-                <strong id="summaryOwnership">
-                  0.066%
-                </strong>
-
-              </div>
-
-
-              <div class="summary-row">
-
-                <span>
-                  Minimum investment
-                </span>
-
-                <strong>
-                  $500
-                </strong>
-
-              </div>
-
-
-              <p class="summary-note">
-
-                Ownership figures are illustrative calculations
-                based on 758,000 existing shares and do not
-                represent a guarantee of ownership or future value.
-
-              </p>
-
-
-              <div class="checkout-security">
-
-                <i class="fa-solid fa-lock"></i>
-
-                <span>
-                  Secure transaction functionality will be connected
-                  during backend implementation.
-                </span>
-
-              </div>
-
-            </div>
-
-          </aside>
-
-        </div>
-
-
-
-        <!-- FRONTEND NOTICE -->
-
-        <div class="checkout-frontend-notice">
-
-          <strong>
-            Frontend preview
-          </strong>
-
-          <p>
-            This page currently prepares an investment request only.
-            Payment processing, investor verification, database
-            storage, authentication and legal subscription documents
-            will be connected during the backend phase.
-          </p>
-
-        </div>
-
+        <p>
+          Review your proposed investment details before continuing.
+          This page is currently a frontend-only investment flow and does
+          not process payments or issue securities.
+        </p>
       </div>
 
-    </section>
+
+      <div class="checkout-grid">
+
+        <!-- =====================================
+             INVESTMENT FORM
+        ====================================== -->
+
+        <section class="checkout-card">
+
+          <h2>Investment Details</h2>
+
+          <p class="checkout-card-intro">
+            Enter the amount you would like to propose for investment.
+            The figures below are based on the current proposed equity terms.
+          </p>
 
 
+          <!-- Investment Amount -->
 
-    <!-- =====================================================
-         NOTICE
-         ===================================================== -->
+          <div class="form-group">
 
-    <section class="equity-notice">
+            <label for="investmentAmount">
+              Investment Amount
+            </label>
 
-      <div class="equity-container">
+            <div class="money-input">
 
-        <div class="equity-notice-inner">
+              <span
+                class="money-symbol"
+                aria-hidden="true"
+              >
+                $
+              </span>
 
-          <i class="fa-solid fa-circle-info"></i>
+              <input
+                type="number"
+                id="investmentAmount"
+                name="investmentAmount"
+                min="500"
+                max="189500"
+                step="1"
+                placeholder="500"
+                inputmode="numeric"
+                autocomplete="off"
+                required
+              />
 
-          <div>
+            </div>
 
-            <h2>
-              Important information
-            </h2>
+            <small>
+              Minimum investment: $500 · Maximum investment: $189,500
+            </small>
+
+
+            <!-- Quick Amounts -->
+
+            <div
+              class="quick-amounts"
+              aria-label="Quick investment amounts"
+            >
+
+              <button
+                type="button"
+                class="quick-amount"
+                data-amount="500"
+              >
+                $500
+              </button>
+
+              <button
+                type="button"
+                class="quick-amount"
+                data-amount="1000"
+              >
+                $1,000
+              </button>
+
+              <button
+                type="button"
+                class="quick-amount"
+                data-amount="5000"
+              >
+                $5,000
+              </button>
+
+              <button
+                type="button"
+                class="quick-amount"
+                data-amount="10000"
+              >
+                $10,000
+              </button>
+
+              <button
+                type="button"
+                class="quick-amount"
+                data-amount="25000"
+              >
+                $25,000
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- Personal Information -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label for="investorName">
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                id="investorName"
+                name="investorName"
+                placeholder="Your full name"
+                autocomplete="name"
+                required
+              />
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="investorEmail">
+                Email Address
+              </label>
+
+              <input
+                type="email"
+                id="investorEmail"
+                name="investorEmail"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- Phone -->
+
+          <div class="form-group">
+
+            <label for="investorPhone">
+              Phone Number
+            </label>
+
+            <input
+              type="tel"
+              id="investorPhone"
+              name="investorPhone"
+              placeholder="Your phone number"
+              autocomplete="tel"
+              inputmode="tel"
+              required
+            />
+
+          </div>
+
+
+          <!-- Risk Acknowledgement -->
+
+          <div class="acknowledgement">
+
+            <input
+              type="checkbox"
+              id="riskAcknowledgement"
+              name="riskAcknowledgement"
+              required
+            />
+
+            <label for="riskAcknowledgement">
+              I understand that this is a proposed equity investment
+              opportunity and that investment involves risk, including
+              the possible loss of invested capital. I understand that
+              this frontend page does not constitute a completed
+              securities transaction.
+            </label>
+
+          </div>
+
+
+          <!-- Submit -->
+
+          <button
+            type="submit"
+            class="checkout-submit"
+            id="continueButton"
+            disabled
+          >
+            Continue to Confirmation
+          </button>
+
+
+          <div class="frontend-notice">
+            <strong>Frontend demonstration:</strong>
+            Your information is currently stored only temporarily in
+            this browser session. No payment is processed and no
+            investment is created at this stage.
+          </div>
+
+        </section>
+
+
+        <!-- =====================================
+             SUMMARY
+        ====================================== -->
+
+        <aside class="checkout-card summary-card">
+
+          <h2>Investment Summary</h2>
+
+          <div class="summary-list">
+
+            <div class="summary-row">
+
+              <span class="summary-label">
+                Proposed Investment
+              </span>
+
+              <span
+                class="summary-value"
+                id="summaryInvestment"
+              >
+                $0
+              </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span class="summary-label">
+                Proposed Share Price
+              </span>
+
+              <span class="summary-value">
+                $1.00
+              </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span class="summary-label">
+                Estimated Shares
+              </span>
+
+              <span
+                class="summary-value"
+                id="summaryShares"
+              >
+                0
+              </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span class="summary-label">
+                Proposed Pre-Offering Ownership
+              </span>
+
+              <span
+                class="summary-value"
+                id="summaryOwnership"
+              >
+                0.000%
+              </span>
+
+            </div>
+
+
+            <div class="summary-row summary-total">
+
+              <span class="summary-label">
+                Total Proposed Investment
+              </span>
+
+              <span
+                class="summary-value"
+                id="summaryTotal"
+              >
+                $0
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="ownership-note">
+
+            <strong>
+              Proposed Equity
+            </strong>
 
             <p>
-              This page is a frontend representation of the
-              proposed investment workflow.
-            </p>
-
-            <p>
-              It does not currently accept investment funds,
-              create securities ownership or constitute an offer
-              to sell securities.
-            </p>
-
-            <p>
-              Any future transaction flow will be subject to
-              appropriate legal documentation, verification and
-              applicable regulatory requirements.
+              Ownership is calculated using the proposed $1 share
+              price and 758,000 existing shares. These figures are
+              illustrative and subject to final documentation.
             </p>
 
           </div>
 
-        </div>
+        </aside>
 
       </div>
 
-    </section>
+    </div>
 
   </main>
 
 
-
-  <!-- =====================================================
+  <!-- =========================================
        FOOTER
-       ===================================================== -->
+  ========================================== -->
 
-  <footer class="equity-footer">
+  <footer class="site-footer">
 
-    <div class="equity-container">
+    <div class="container">
 
-      <div class="equity-footer-grid">
-
-
-        <div>
-
-          <a
-            href="../index.html"
-            class="logo"
-          >
-
-            <span class="logo-mark">
-              AB
-            </span>
-
-            <span class="logo-text">
-
-              <strong>
-                AREA BOYZ
-              </strong>
-
-              <small>
-                ENTERPRISE
-              </small>
-
-            </span>
-
-          </a>
-
-          <p>
-            Styles that fit your life.
-          </p>
-
-        </div>
-
-
-        <div>
-
-          <h3>
-            Explore
-          </h3>
-
-          <a href="../pages/shop.html">
-            Shop
-          </a>
-
-          <a href="../pages/collections.html">
-            Collections
-          </a>
-
-          <a href="../pages/our-story.html">
-            Our Story
-          </a>
-
-        </div>
-
-
-        <div>
-
-          <h3>
-            Company
-          </h3>
-
-          <a href="index.html">
-            Equity
-          </a>
-
-          <a href="../pages/contact.html">
-            Contact
-          </a>
-
-        </div>
-
-      </div>
-
-
-      <div class="equity-footer-bottom">
-
-        <span>
-          © <span id="year"></span>
-          Area Boyz Enterprise.
-          All rights reserved.
-        </span>
-
-        <span>
-          For discussion purposes only.
-        </span>
-
-      </div>
+      <p>
+        &copy;
+        <span id="year"></span>
+        Area Boyz Enterprise. All rights reserved.
+      </p>
 
     </div>
 
   </footer>
 
 
-
-  <!-- =====================================================
+  <!-- =========================================
        JAVASCRIPT
-       ===================================================== -->
+  ========================================== -->
 
   <script>
+    /* =========================================
+       INVESTMENT TERMS
+    ========================================= */
 
-    /* =====================================================
+    const SHARE_PRICE = 1;
+    const EXISTING_SHARES = 758000;
+
+    const MINIMUM_INVESTMENT = 500;
+    const MAXIMUM_INVESTMENT = 189500;
+
+
+    /* =========================================
+       ELEMENTS
+    ========================================= */
+
+    const investmentAmount =
+      document.getElementById("investmentAmount");
+
+    const investorName =
+      document.getElementById("investorName");
+
+    const investorEmail =
+      document.getElementById("investorEmail");
+
+    const investorPhone =
+      document.getElementById("investorPhone");
+
+    const riskAcknowledgement =
+      document.getElementById("riskAcknowledgement");
+
+    const continueButton =
+      document.getElementById("continueButton");
+
+    const summaryInvestment =
+      document.getElementById("summaryInvestment");
+
+    const summaryShares =
+      document.getElementById("summaryShares");
+
+    const summaryOwnership =
+      document.getElementById("summaryOwnership");
+
+    const summaryTotal =
+      document.getElementById("summaryTotal");
+
+
+    /* =========================================
+       MONEY FORMAT
+    ========================================= */
+
+    function formatMoney(amount) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      }).format(amount);
+    }
+
+
+    /* =========================================
+       UPDATE SUMMARY
+    ========================================= */
+
+    function updateSummary() {
+
+      let amount =
+        Number(investmentAmount.value) || 0;
+
+
+      if (amount < 0) {
+        amount = 0;
+      }
+
+
+      const shares =
+        Math.floor(amount / SHARE_PRICE);
+
+
+      const ownership =
+        EXISTING_SHARES > 0
+          ? (shares / EXISTING_SHARES) * 100
+          : 0;
+
+
+      summaryInvestment.textContent =
+        formatMoney(amount);
+
+      summaryShares.textContent =
+        shares.toLocaleString("en-US");
+
+      summaryOwnership.textContent =
+        ownership.toFixed(3) + "%";
+
+      summaryTotal.textContent =
+        formatMoney(amount);
+
+
+      validateForm();
+    }
+
+
+    /* =========================================
+       VALIDATE FORM
+    ========================================= */
+
+    function validateForm() {
+
+      const amount =
+        Number(investmentAmount.value) || 0;
+
+      const nameValid =
+        investorName.value.trim().length >= 2;
+
+      const emailValid =
+        investorEmail.validity.valid &&
+        investorEmail.value.trim() !== "";
+
+      const phoneValid =
+        investorPhone.value.trim().length >= 5;
+
+      const amountValid =
+        amount >= MINIMUM_INVESTMENT &&
+        amount <= MAXIMUM_INVESTMENT;
+
+      const riskAccepted =
+        riskAcknowledgement.checked;
+
+
+      continueButton.disabled =
+        !(
+          amountValid &&
+          nameValid &&
+          emailValid &&
+          phoneValid &&
+          riskAccepted
+        );
+    }
+
+
+    /* =========================================
+       QUICK AMOUNT BUTTONS
+    ========================================= */
+
+    document
+      .querySelectorAll(".quick-amount")
+      .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+          const amount =
+            button.dataset.amount;
+
+          investmentAmount.value =
+            amount;
+
+          updateSummary();
+
+          investmentAmount.focus();
+
+        });
+
+      });
+
+
+    /* =========================================
+       FORM INPUT EVENTS
+    ========================================= */
+
+    investmentAmount.addEventListener(
+      "input",
+      updateSummary
+    );
+
+    investorName.addEventListener(
+      "input",
+      validateForm
+    );
+
+    investorEmail.addEventListener(
+      "input",
+      validateForm
+    );
+
+    investorPhone.addEventListener(
+      "input",
+      validateForm
+    );
+
+    riskAcknowledgement.addEventListener(
+      "change",
+      validateForm
+    );
+
+
+    /* =========================================
+       SUBMIT
+    ========================================= */
+
+    continueButton.addEventListener(
+      "click",
+      function () {
+
+        if (continueButton.disabled) {
+          return;
+        }
+
+
+        const amount =
+          Number(investmentAmount.value);
+
+        const shares =
+          Math.floor(amount / SHARE_PRICE);
+
+        const ownership =
+          (shares / EXISTING_SHARES) * 100;
+
+
+        const investmentData = {
+
+          amount: amount,
+
+          sharePrice: SHARE_PRICE,
+
+          shares: shares,
+
+          ownership: ownership,
+
+          name:
+            investorName.value.trim(),
+
+          email:
+            investorEmail.value.trim(),
+
+          phone:
+            investorPhone.value.trim(),
+
+          riskAcknowledged:
+            riskAcknowledgement.checked,
+
+          createdAt:
+            new Date().toISOString()
+
+        };
+
+
+        sessionStorage.setItem(
+          "areaBoyzInvestment",
+          JSON.stringify(investmentData)
+        );
+
+
+        window.location.href =
+          "confirmation.html";
+
+      }
+    );
+
+
+    /* =========================================
        MOBILE NAVIGATION
-       ===================================================== */
+    ========================================= */
 
-    const menuToggle =
-      document.getElementById("menu-toggle");
+    const menuBtn =
+      document.getElementById("menuBtn");
 
     const mobileNav =
-      document.getElementById("mobile-nav");
+      document.getElementById("mobileNav");
 
 
-    if (menuToggle && mobileNav) {
+    if (menuBtn && mobileNav) {
 
-      menuToggle.addEventListener(
+      menuBtn.addEventListener(
         "click",
-        function () {
+        () => {
 
           const isOpen =
-            mobileNav.classList.toggle("open");
+            mobileNav.classList.toggle("active");
 
-          menuToggle.setAttribute(
+          menuBtn.setAttribute(
             "aria-expanded",
             String(isOpen)
-          );
-
-          mobileNav.setAttribute(
-            "aria-hidden",
-            String(!isOpen)
           );
 
         }
@@ -1309,22 +1113,19 @@
 
       mobileNav
         .querySelectorAll("a")
-        .forEach(function (link) {
+        .forEach(link => {
 
           link.addEventListener(
             "click",
-            function () {
+            () => {
 
-              mobileNav.classList.remove("open");
-
-              menuToggle.setAttribute(
-                "aria-expanded",
-                "false"
+              mobileNav.classList.remove(
+                "active"
               );
 
-              mobileNav.setAttribute(
-                "aria-hidden",
-                "true"
+              menuBtn.setAttribute(
+                "aria-expanded",
+                "false"
               );
 
             }
@@ -1335,260 +1136,28 @@
     }
 
 
-
-    /* =====================================================
-       INVESTMENT CALCULATOR
-       ===================================================== */
-
-    const investmentAmount =
-      document.getElementById(
-        "investmentAmount"
-      );
-
-    const summaryAmount =
-      document.getElementById(
-        "summaryAmount"
-      );
-
-    const summaryShares =
-      document.getElementById(
-        "summaryShares"
-      );
-
-    const summaryOwnership =
-      document.getElementById(
-        "summaryOwnership"
-      );
-
-
-    const SHARE_PRICE = 1;
-
-    const EXISTING_SHARES = 758000;
-
-    const MINIMUM_INVESTMENT = 500;
-
-    const MAXIMUM_INVESTMENT = 189500;
-
-
-
-    function formatUSD(amount) {
-
-      return new Intl.NumberFormat(
-        "en-US",
-        {
-          style: "currency",
-          currency: "USD",
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        }
-      ).format(amount);
-
-    }
-
-
-
-    function updateInvestmentSummary() {
-
-      let amount =
-        Number(investmentAmount.value);
-
-
-      if (!Number.isFinite(amount)) {
-
-        amount = MINIMUM_INVESTMENT;
-
-      }
-
-
-      if (amount < MINIMUM_INVESTMENT) {
-
-        amount = MINIMUM_INVESTMENT;
-
-      }
-
-
-      if (amount > MAXIMUM_INVESTMENT) {
-
-        amount = MAXIMUM_INVESTMENT;
-
-      }
-
-
-      const shares =
-        Math.floor(
-          amount / SHARE_PRICE
-        );
-
-
-      const ownership =
-        (
-          shares /
-          EXISTING_SHARES
-        ) *
-        100;
-
-
-      summaryAmount.textContent =
-        formatUSD(amount);
-
-
-      summaryShares.textContent =
-        shares.toLocaleString("en-US");
-
-
-      summaryOwnership.textContent =
-        ownership.toFixed(3) + "%";
-
-    }
-
-
-
-    investmentAmount.addEventListener(
-      "input",
-      updateInvestmentSummary
-    );
-
-
-
-    /* =====================================================
-       QUICK AMOUNTS
-       ===================================================== */
-
-    document
-      .querySelectorAll(".quick-amount")
-      .forEach(function (button) {
-
-        button.addEventListener(
-          "click",
-          function () {
-
-            investmentAmount.value =
-              button.dataset.amount;
-
-            updateInvestmentSummary();
-
-          }
-        );
-
-      });
-
-
-
-    /* =====================================================
-       FORM
-       ===================================================== */
-
-    const investmentForm =
-      document.getElementById(
-        "investmentForm"
-      );
-
-
-    investmentForm.addEventListener(
-      "submit",
-      function (event) {
-
-        event.preventDefault();
-
-
-        if (!investmentForm.checkValidity()) {
-
-          investmentForm.reportValidity();
-
-          return;
-
-        }
-
-
-        /*
-          FRONTEND ONLY
-
-          We are intentionally not sending
-          investor information anywhere yet.
-
-          Backend integration comes later.
-        */
-
-
-        const amount =
-          Number(
-            investmentAmount.value
-          );
-
-
-        const shares =
-          Math.floor(
-            amount / SHARE_PRICE
-          );
-
-
-        const name =
-          document.getElementById(
-            "investorName"
-          ).value.trim();
-
-
-        const email =
-          document.getElementById(
-            "investorEmail"
-          ).value.trim();
-
-
-        /*
-          Store temporary frontend state.
-
-          This is NOT a database.
-        */
-
-        sessionStorage.setItem(
-          "areaBoyzInvestment",
-          JSON.stringify({
-            name,
-            email,
-            amount,
-            shares,
-            createdAt:
-              new Date().toISOString()
-          })
-        );
-
-
-        /*
-          Move to confirmation preview.
-        */
-
-        window.location.href =
-          "confirmation.html";
-
-      }
-    );
-
-
-
-    /* =====================================================
-       YEAR
-       ===================================================== */
-
-    const year =
+    /* =========================================
+       CURRENT YEAR
+    ========================================= */
+
+    const yearElement =
       document.getElementById("year");
 
+    if (yearElement) {
 
-    if (year) {
-
-      year.textContent =
+      yearElement.textContent =
         new Date().getFullYear();
 
     }
 
 
+    /* =========================================
+       INITIALIZE
+    ========================================= */
 
-    /* INITIAL CALCULATION */
-
-    updateInvestmentSummary();
+    updateSummary();
 
   </script>
 
-
 </body>
-
-                    </html>
+</html>
