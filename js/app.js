@@ -24,44 +24,23 @@
    │   └── product-109.jpg
    │
    ├── categories/
-   │
    └── collections/
+
+   This file is designed to work from:
+   - index.html
+   - pages/shop.html
+   - pages/collections.html
+   - pages/our-story.html
+   - pages/contact.html
+   - investment/*
+   - account/*
+   - admin/*
+
    ========================================================= */
 
 
 /* =========================================================
-   CONFIG
-   ========================================================= */
-
-const CONFIG = {
-
-  currency: "USD",
-
-  storageKey: "areaBoyzCartV3",
-
-  /*
-    Put your Supabase project URL here after
-    your Edge Functions are deployed.
-
-    Example:
-
-    supabaseUrl:
-    "https://xxxxxxxx.supabase.co"
-  */
-
-  supabaseUrl: "",
-
-  paymentFunction: "create-payment",
-
-  verifyFunction: "verify-payment",
-
-  shopName: "Area Boyz Enterprise"
-
-};
-
-
-/* =========================================================
-   SITE PATHS
+   SITE ROOT + IMAGE PATHS
    ========================================================= */
 
 const SITE_ROOT =
@@ -87,309 +66,1451 @@ const PATHS = {
 
 };
 
+
+/* =========================================================
+   STORE SETTINGS
+   ========================================================= */
+
 const PRODUCT_TOTAL = 109;
 
+const DEFAULT_PRODUCT_PRICE = 45000;
 
-/* =========================================================
-   HERO IMAGES
-   ========================================================= */
+const CURRENCY_SYMBOL = "₦";
 
-const HEROES = [
+const CART_STORAGE_KEY =
+  "areaBoyzCart";
 
-  "hero-1.jpg",
-  "hero-2.jpg",
-  "hero-3.jpg",
-  "hero-4.jpg",
-  "hero-5.jpg",
-  "hero-6.jpg"
-
-];
+const COLLECTION_STORAGE_KEY =
+  "areaBoyzCollection";
 
 
 /* =========================================================
-   PRODUCT INFORMATION
-   =========================================================
-
-   The first 80 products preserve the previous catalogue
-   names/categories/prices.
-
-   They now use:
-
-   product-001.jpg
-   product-002.jpg
-   ...
-   product-080.jpg
-
-   Products 081-109 are automatically included.
-   ========================================================= */
-const VISUAL_PRODUCT_DATA = {
-  "001": ["Black tailored long-coat look","outerwear","A black floor-length tailored outer layer shown on a model, with a structured silhouette and a dramatic elongated hem."],
-  "002": ["Yellow graphic slogan T-shirt","shirts","Yellow short-sleeve T-shirt with a bold black printed slogan across the chest."],
-  "003": ["Blue lightweight logo jacket","outerwear","Blue lightweight zip-front jacket with a small contrasting chest mark and a relaxed everyday shape."],
-  "004": ["Pink cartoon graphic jacket","outerwear","Bright pink jacket covered with colorful cartoon-style graphics and large front artwork."],
-  "005": ["White cartoon graphic T-shirt","shirts","White T-shirt featuring a colorful cartoon-style character graphic and printed text across the front."],
-  "006": ["White illustrated graphic T-shirt","shirts","White T-shirt with a large illustrated character graphic printed across the front."],
-  "007": ["Blue-and-white athletic sneaker","footwear","Low-top sneaker with a white upper, blue detailing and a chunky cushioned sole."],
-  "008": ["Black-and-white high-top footwear","footwear","Black-and-white high-top footwear with wrapped contrasting straps and a chunky sole."],
-  "009": ["Sheer mesh tank top","shirts","Sleeveless sheer mesh top with an open textured pattern and a fitted, elongated silhouette."],
-  "010": ["Black streetwear jacket with red sneakers","outerwear","Black hooded streetwear jacket shown with bright red sneakers; the garment has a relaxed, layered silhouette."],
-  "011": ["Black hooded utility jacket","outerwear","Black hooded jacket with a technical, panelled construction and relaxed outerwear proportions."],
-  "012": ["White layered formal outfit","sets","White long coat and coordinated layered trousers shown as a complete formal outfit."],
-  "013": ["Brown long tailored coat","outerwear","Long brown tailored coat with a clean front and elongated formal silhouette."],
-  "014": ["Brown long-sleeve relaxed outfit","sets","Monochrome brown long-sleeve top and matching trousers styled as a coordinated relaxed outfit."],
-  "015": ["Mixed streetwear outfit collage","sets","A collage of layered streetwear pieces including graphic outerwear, hoodies and dark bottoms."],
-  "016": ["Neutral cap collection","headwear","Selection of neutral-toned caps in several shapes and shades, displayed as a small headwear collection."],
-  "017": ["Plaid wrap skirt outfit","sets","Model wearing a light top with a long red-and-brown plaid wrap-style skirt."],
-  "018": ["Blue denim detail piece","denim","Close-up of blue denim with a contrasting stitched decorative motif near the pocket area."],
-  "019": ["Distressed neutral graphic top","shirts","Neutral-toned top with a worn, distressed finish and large printed numerals/graphics."],
-  "020": ["Brown relaxed two-piece outfit","sets","Brown coordinated outfit consisting of a relaxed top and matching wide-leg trousers."],
-  "021": ["Blue embellished long dress","sets","Long blue dress with prominent decorative embellishment and a flowing silhouette."],
-  "022": ["Layered tailored clothing display","sets","A coordinated display of layered tailored garments in neutral and muted tones."],
-  "023": ["Teal fitted long-sleeve top","shirts","Teal long-sleeve top with a close, streamlined silhouette and high neckline."],
-  "024": ["Gray relaxed trousers and bag","bottoms","Gray wide-leg trousers paired with a dark handbag, presented as a polished casual look."],
-  "025": ["Black leather fashion look","outerwear","Black leather-focused outfit shown on a model, with a fitted jacket and layered dark styling."],
-  "026": ["Multicolor illustrated bomber jacket","outerwear","Colorful bomber-style jacket covered in bold illustrated graphics and contrasting artwork."],
-  "027": ["Red graphic distressed trousers","bottoms","Red trousers featuring printed graphics, distressed details and a relaxed streetwear cut."],
-  "028": ["Black structured mini bag","bags","Compact black structured bag with a short handle and rectangular silhouette."],
-  "029": ["Mustard cropped polo shirt","shirts","Mustard-yellow cropped short-sleeve shirt with a pointed collar and small embroidered chest detail."],
-  "030": ["Black tailored long coat","outerwear","Black tailored coat with a long, flowing silhouette and sharp formal proportions."],
-  "031": ["Blue denim vest","denim","Sleeveless blue denim vest with a simple V-neck front and fitted arm openings."],
-  "032": ["Fringe detail long-sleeve top","shirts","Light gray long-sleeve top with hanging fringe or tassel-like detailing throughout the front."],
-  "033": ["Cream layered knit look","sets","Cream and tan layered knit styling with a soft oversized wrap-like upper layer."],
-  "034": ["Pale blue patterned puffer jacket","outerwear","Light blue padded jacket with an all-over decorative pattern and high collar."],
-
-  "036": ["Decorative beaded neck accessory","accessories","Long decorative neck piece with beads, metallic-looking accents and layered ornamentation."],
-  "037": ["White cropped jacket","outerwear","White cropped jacket with a high collar, gathered cuffs and a compact structured silhouette."],
-  "038": ["Gray compact shoulder bag","bags","Small gray shoulder or crossbody bag with a rounded rectangular body and dark strap details."],
-  "039": ["Spider graphic T-shirt","shirts","White T-shirt with a large red-and-blue superhero-style spider graphic across the front."],
-  "040": ["White casual top and blue jeans outfit","sets","Casual outfit combining a white long-sleeve top with relaxed blue jeans."],
-  "041": ["Blue patterned slide sandals","footwear","Open slide sandals with blue decorative straps and a flat everyday sole."],
-
-  "043": ["Multicolor knitted beanie","headwear","Chunky knitted beanie with alternating blue, cream and neutral textured bands."],
-  "044": ["Printed cap worn outdoors","headwear","Patterned baseball-style cap shown worn, featuring a multicolor illustrated print."],
-  "045": ["Olive padded jacket","outerwear","Olive green padded jacket with a high collar and warm-looking quilted construction."],
-  "046": ["Black floral bomber jacket","outerwear","Black bomber-style jacket decorated with large pink and red floral graphics."],
-  "047": ["Red cropped jacket with multicolor styling","outerwear","Bright red cropped jacket styled with contrasting multicolor neck and scarf-like details."],
-  "048": ["Green illustrated bucket hat","headwear","Green bucket hat covered with black-and-white illustrated graphics."],
-  "049": ["Black graphic beanie","headwear","Black knit beanie featuring a small contrasting graphic emblem on the front."],
-  "050": ["Black-and-purple graphic hoodie","hoodies","Dark hooded jacket or hoodie with purple accents and a red graphic printed on the chest."],
-  "051": ["Heavy black utility footwear","footwear","Chunky black footwear with rugged soles and multiple straps or hardware details."],
-  "052": ["Black graphic sweatshirt","shirts","Black long-sleeve sweatshirt with a small centered printed graphic across the chest."],
-  "053": ["Black sculptural accessory","accessories","Black rounded sculptural accessory displayed in close-up, with a hard textured surface."],
-
-  "055": ["Pink-and-blue hooded jacket","outerwear","Color-block hooded jacket combining a bright pink hood with blue textured body panels."],
-  "056": ["Dark blue cropped jacket","outerwear","Dark blue cropped jacket with contrasting trim and a clean zip-front construction."],
-  "057": ["Burgundy graphic varsity jacket","outerwear","Burgundy varsity-style jacket with cream sleeves, graphic lettering and decorative patches."],
-  "058": ["Olive hooded jacket","outerwear","Olive green hooded jacket with a compact cropped shape and utility-inspired styling."],
-  "059": ["Brown leather tote bag","bags","Brown leather-look tote with two handles and a simple open-top rectangular silhouette."],
-  "060": ["Mustard cropped polo jacket","outerwear","Mustard cropped collared jacket with a small embroidered chest detail and short boxy cut."],
-  "061": ["Black padded utility jacket","outerwear","Black padded jacket with multiple utility pockets and a high protective collar."],
-  "062": ["Brown rugged boots","footwear","Pair of brown rugged lace-up boots with substantial soles and a worn outdoor character."],
-  "063": ["Red low-top sneakers","footwear","Red low-top sneakers with contrasting white detailing and a casual athletic silhouette."],
-  "064": ["Black leather backpack","bags","Compact black leather-look backpack with a rounded top and front pocket."],
-  "065": ["Color-block hooded jacket","outerwear","Relaxed hooded jacket combining muted lavender, tan and olive panels with a layered color-block design."],
-  "066": ["Cream sculptural footwear detail","footwear","Close-up of light neutral footwear with sculptural layered construction and rounded forms."],
-  "067": ["Colorful outerwear collection","outerwear","Display of several colorful outerwear pieces in different graphic and utility styles."],
-  "068": ["Black-and-denim layered streetwear","sets","Dark streetwear look combining a black upper layer with blue denim bottoms and chain-like details."],
-  "069": ["Red-and-black varsity jacket","outerwear","Red-and-black varsity-style jacket with contrasting lettering and athletic-inspired paneling."],
-  "070": ["Black textured statement jacket","outerwear","Black statement jacket with a heavily textured, sculptural surface and voluminous silhouette."],
-  "071": ["Multicolor patchwork hooded jacket","outerwear","Patchwork-style hooded jacket covered in colorful illustrated fabric sections."],
-  "072": ["Black padded gloves","accessories","Pair of black padded gloves with a quilted or segmented construction."],
-  "073": ["Vintage leather jacket rack","outerwear","Several vintage-style leather jackets displayed together, showing dark worn finishes and varied cuts."],
-  "074": ["Orange-and-white graphic sneakers","footwear","Low-top sneakers with orange and white contrast panels and a sporty sole."],
-  "075": ["Red high-top sneakers","footwear","Red high-top sneakers with white laces and contrasting trim."],
-  "076": ["Black-white-red high-top sneaker","footwear","High-top sneaker combining black, white and red panels with a chunky athletic sole."],
-  "077": ["Blue leather jacket","outerwear","Blue-gray leather-style jacket with a front zip, chest pockets and a classic biker-inspired cut."],
-  "078": ["Blue ribbed knit top","shirts","Blue ribbed long-sleeve knit top with a simple fitted silhouette."],
-  "079": ["Tan western graphic jacket","outerwear","Tan jacket with a large western-style graphic across the back and a structured collar."],
-  "080": ["Patchwork striped jacket","outerwear","Jacket assembled from horizontal strips of contrasting fabrics and muted colors."],
-
-  "081": ["Abstract printed fitted top","shirts","Fitted long-sleeve top with a large abstract portrait-style print in dark neutral tones."],
-  "082": ["Tan graphic western jacket","outerwear","Tan western-inspired jacket with large illustrated artwork and decorative chest details."],
-  "083": ["Colorful illustrated jacket","outerwear","Bright multicolor jacket covered with dense abstract and illustrated graphics."],
-  "084": ["Mixed shirt and jacket collection","sets","A mixed clothing display featuring a light jacket, red plaid shirt and neutral knit pieces."],
-  "085": ["Tan zip-up graphic jacket","outerwear","Tan jacket with a high collar, zip front and bold graphic detailing around the chest and shoulders."],
-  "086": ["Gray graphic hooded sweatshirt","hoodies","Gray hooded sweatshirt with large collegiate-style lettering and numerals across the front."],
-  "087": ["Black embossed card wallet","accessories","Compact black leather-look card wallet with embossed detailing and multiple card slots."],
-  "088": ["Black graphic jacket","outerwear","Black jacket with a large contrasting graphic panel and structured zip-front construction."],
-  "089": ["Black knit beanie","headwear","Simple black knit beanie with a small decorative emblem on the front."],
-  "090": ["White relaxed outfit","sets","White short-sleeve top and matching relaxed trousers styled as a clean monochrome outfit."],
-  "091": ["Plain white T-shirt","shirts","Clean white short-sleeve T-shirt with a minimal front and no visible large graphic."],
-  "092": ["White utility trousers","bottoms","White wide-leg trousers with visible pocket and panel details for a utility-inspired look."],
-  "093": ["Colorful graphic slides","footwear","Open slide sandals with colorful printed straps and a flat casual sole."],
-  "094": ["Black padded gloves","accessories","Pair of black padded gloves with segmented construction and a rugged appearance."],
-  "095": ["Light blue patterned cap","headwear","Light blue cap featuring an all-over newspaper-style printed pattern."],
-  "096": ["Blue hooded leather-style jacket","outerwear","Blue jacket with a bright pink hood, front zip and compact hooded silhouette."],
-  "097": ["Burgundy graphic varsity jacket","outerwear","Burgundy varsity-style jacket with cream sleeves, bold front artwork and decorative trim."],
-  "098": ["Blue hooded leather-style jacket","outerwear","Blue jacket with a bright pink hood and front zip, shown as a clean product view."],
-  "099": ["Vintage dark leather jacket","outerwear","Dark vintage-style leather jacket with a worn finish, broad shoulders and classic utility details."],
-  "100": ["Black padded gloves","accessories","Pair of black padded gloves with a quilted texture and protective-looking construction."],
-  "101": ["White patterned shirt with pink trousers","sets","White button-front shirt with small dark patterning paired with loose pink trousers."],
-  "102": ["Brown rugged leather boot","footwear","Brown rugged boot with a thick treaded sole and raised ankle construction."],
-  "103": ["Sneaker display collage","footwear","Collage showing several sneaker styles and colorways, including red, blue, black and white pairs."],
-  "104": ["Mixed sneaker display","footwear","Display of multiple sneaker silhouettes and colorways arranged together as a footwear selection."],
-  "105": ["Red-and-black travel outfit","sets","Person wearing a coordinated red-and-black outfit with a matching bag in a retail setting."],
-  "106": ["Brown leather jacket detail","outerwear","Close-up of a brown leather-style jacket showing the collar, zipper and interior label area."],
-  "107": ["Khaki utility trouser detail","bottoms","Close-up of khaki utility trousers showing pocket construction and contrasting yellow detail."],
-  "108": ["White-and-blue running sneaker","footwear","White athletic sneaker with pale blue accents and a lightweight rounded sole."],
-  "109": ["Brown leather dress shoe","footwear","Brown leather-style lace-up dress shoe with a pointed toe and decorative stitched detailing."]
-};
-
-/* =========================================================
-   CATEGORY FILTERS
+   CATEGORIES
    ========================================================= */
 
 const CATEGORIES = [
 
   "all",
+
   "streetwear",
+
   "handmade",
+
   "footwear",
+
   "accessories"
 
 ];
 
 
 /* =========================================================
-   BUILD PRODUCTS
+   PRODUCT CATALOG OVERRIDES
+   =========================================================
+
+   These override generic product names and classifications
+   where the visual catalogue gives us enough confidence.
+
+   IMPORTANT:
+   We only identify a brand when the branding is visibly
+   supported by the product image.
+
    ========================================================= */
 
-const PRODUCTS = Array.from(
-  { length: PRODUCT_TOTAL },
-  (_, index) => {
+const PRODUCT_CATALOG_OVERRIDES = {
 
-    const number = index + 1;
-    const padded = String(number).padStart(3, "0");
+  /* -------------------------------------------------------
+     HANDMADE / TAILORED / STRUCTURED
+     ------------------------------------------------------- */
 
-    const visual = VISUAL_PRODUCT_DATA[padded];
+  "001": {
+    name:
+      "Black Structured Tailored Long Coat",
+    collection:
+      "handmade"
+  },
 
-    const name =
-      visual?.[0] ||
-      `Area Boyz Product ${padded}`;
+  "012": {
+    name:
+      "White Traditional Tailored Set",
+    collection:
+      "handmade"
+  },
 
-    const category =
-      visual?.[1] ||
-      "streetwear";
+  "013": {
+    name:
+      "Brown Tailored Suit Set",
+    collection:
+      "handmade"
+  },
 
-    const description =
-      visual?.[2] ||
-      `${name}. View the product photograph for the exact visible design, colour and construction.`;
+  "014": {
+    name:
+      "Brown Traditional Two-Piece Set",
+    collection:
+      "handmade"
+  },
 
-    let collection = "streetwear";
+  "017": {
+    name:
+      "Red & Brown Tailored Wrap Skirt Set",
+    collection:
+      "handmade"
+  },
 
-/*
- * Collection assignment is based on the
- * product's actual catalogue category.
- */
+  "020": {
+    name:
+      "Brown Tailored Two-Piece Suit",
+    collection:
+      "handmade"
+  },
 
-if (category === "footwear") {
+  "021": {
+    name:
+      "Blue Embellished Tailored Dress",
+    collection:
+      "handmade"
+  },
 
-  collection = "footwear";
+  "022": {
+    name:
+      "Layered Tailored Statement Pieces",
+    collection:
+      "handmade"
+  },
 
-}
+  "030": {
+    name:
+      "Black Tailored Formal Suit",
+    collection:
+      "handmade"
+  },
 
-else if (
-  [
-    "bags",
-    "headwear",
-    "accessories",
-    "jewelry"
-  ].includes(category)
-) {
+  "054": {
+    name:
+      "Black Formal Tailored Suit",
+    collection:
+      "handmade"
+  },
 
-  collection = "accessories";
+  "080": {
+    name:
+      "Patchwork Striped Tailored Jacket",
+    collection:
+      "handmade"
+  },
 
-}
 
-else if (
-  category === "handmade"
-) {
+  /* -------------------------------------------------------
+     CLEARLY IDENTIFIABLE BRANDS
+     ------------------------------------------------------- */
 
-  collection = "handmade";
+  "005": {
+    name:
+      "Kanye West Graphic T-Shirt",
+    brand:
+      "Kanye West"
+  },
 
-}
+  "086": {
+    name:
+      "Supreme Graphic Hoodie",
+    brand:
+      "Supreme"
+  },
 
-else {
 
-  collection = "streetwear";
+  /* -------------------------------------------------------
+     BETTER DESCRIPTIVE PRODUCT NAMES
+     ------------------------------------------------------- */
 
-}
+  "007": {
+    name:
+      "Blue & White Athletic Sneaker"
+  },
 
-    return {
+  "008": {
+    name:
+      "Black & White Strap High-Top"
+  },
 
-      id: `ab-${padded}`,
+  "016": {
+    name:
+      "Neutral Cap Collection"
+  },
 
-      number,
+  "028": {
+    name:
+      "Black Structured Mini Bag"
+  },
 
-      name,
+  "036": {
+    name:
+      "Decorative Beaded Neckpiece"
+  },
 
-      category,
+  "038": {
+    name:
+      "Gray Structured Shoulder Bag"
+  },
 
-      collection,
+  "039": {
+    name:
+      "Spider Graphic T-Shirt"
+  },
 
-      /*
-       * Prices are kept separate from visual identification.
-       * We are NOT guessing a product's price from its photograph.
-       */
-      price:
-        category === "footwear" ? 165 :
-        category === "outerwear" ? 180 :
-        category === "hoodies" ? 125 :
-        category === "sets" ? 160 :
-        category === "bags" ? 90 :
-        category === "headwear" ? 50 :
-        category === "accessories" ? 65 :
-        category === "bottoms" ||
-        category === "denim" ? 120 :
-        70,
+  "041": {
+    name:
+      "Blue Charm Clogs"
+  },
 
-      image:
-        `product-${padded}.jpg`,
+  "043": {
+    name:
+      "Multicolor Knit Beanie"
+  },
 
-      description,
+  "044": {
+    name:
+      "Printed Graphic Cap"
+  },
 
-      details: [
+  "048": {
+    name:
+      "Green Graphic Bucket Hat"
+  },
 
-        `Catalogue image: product-${padded}.jpg`,
+  "049": {
+    name:
+      "Black Graphic Beanie"
+  },
 
-        `Category: ${category}`,
+  "051": {
+    name:
+      "Heavy Black Utility Footwear"
+  },
 
-        `Collection: ${collection}`,
+  "059": {
+    name:
+      "Brown Leather-Style Tote Bag"
+  },
 
-        "Product identity and description are based on the visible catalogue photograph."
+  "062": {
+    name:
+      "Brown Rugged Lace-Up Boots"
+  },
 
-      ]
+  "063": {
+    name:
+      "Red Low-Top Sneakers"
+  },
 
-    };
+  "064": {
+    name:
+      "Black Leather-Style Backpack"
+  },
+
+  "066": {
+    name:
+      "Cream Sculptural Footwear"
+  },
+
+  "069": {
+    name:
+      "Red & Black Varsity Jacket"
+  },
+
+  "072": {
+    name:
+      "Black Padded Gloves"
+  },
+
+  "074": {
+    name:
+      "Orange & White Graphic Sneakers"
+  },
+
+  "075": {
+    name:
+      "Red High-Top Sneakers"
+  },
+
+  "076": {
+    name:
+      "Black White & Red High-Top"
+  },
+
+  "079": {
+    name:
+      "Tan Western Graphic Jacket"
+  },
+
+  "082": {
+    name:
+      "Tan Western Graphic Jacket"
+  },
+
+  "083": {
+    name:
+      "Multicolor Graphic Jacket"
+  },
+
+  "087": {
+    name:
+      "Black Embossed Card Wallet"
+  },
+
+  "089": {
+    name:
+      "Black Knit Beanie"
+  },
+
+  "092": {
+    name:
+      "White Utility Wide-Leg Trousers"
+  },
+
+  "093": {
+    name:
+      "Colorful Charm Clogs"
+  },
+
+  "095": {
+    name:
+      "Light Blue Patterned Cap"
+  },
+
+  "102": {
+    name:
+      "Brown Rugged Leather-Style Boot"
+  },
+
+  "103": {
+    name:
+      "Mixed Sneaker Selection"
+  },
+
+  "104": {
+    name:
+      "Mixed Sneaker Display"
+  },
+
+  "108": {
+    name:
+      "White & Blue Running Sneaker"
+  },
+
+  "109": {
+    name:
+      "Brown Leather Dress Shoe"
+  }
+
+};
+
+
+/* =========================================================
+   DEFAULT PRODUCT NAMES
+   ========================================================= */
+
+const DEFAULT_PRODUCT_NAMES = {
+
+  "001": "Area Boyz Statement Piece",
+  "002": "Urban Graphic Tee",
+  "003": "Classic Street Tee",
+  "004": "Everyday Graphic Tee",
+  "005": "Kanye West Graphic T-Shirt",
+  "006": "Urban Casual Tee",
+  "007": "Blue & White Athletic Sneaker",
+  "008": "Black & White Strap High-Top",
+  "009": "Classic Streetwear Piece",
+  "010": "Urban Essential",
+  "011": "Modern Casual Piece",
+  "012": "White Traditional Tailored Set",
+  "013": "Brown Tailored Suit Set",
+  "014": "Brown Traditional Two-Piece Set",
+  "015": "Modern Streetwear Piece",
+  "016": "Neutral Cap Collection",
+  "017": "Red & Brown Tailored Wrap Skirt Set",
+  "018": "Urban Statement Piece",
+  "019": "Everyday Streetwear",
+  "020": "Brown Tailored Two-Piece Suit",
+  "021": "Blue Embellished Tailored Dress",
+  "022": "Layered Tailored Statement Pieces",
+  "023": "Urban Essential",
+  "024": "Graphic Streetwear Tee",
+  "025": "Modern Casual Wear",
+  "026": "Street Style Essential",
+  "027": "Urban Statement Wear",
+  "028": "Black Structured Mini Bag",
+  "029": "Modern Streetwear",
+  "030": "Black Tailored Formal Suit",
+  "031": "Urban Graphic Piece",
+  "032": "Streetwear Essential",
+  "033": "Modern Casual Piece",
+  "034": "Urban Statement Piece",
+  "035": "Area Boyz Select Piece",
+  "036": "Decorative Beaded Neckpiece",
+  "037": "Urban Streetwear Piece",
+  "038": "Gray Structured Shoulder Bag",
+  "039": "Spider Graphic T-Shirt",
+  "040": "Graphic Streetwear Piece",
+  "041": "Blue Charm Clogs",
+  "042": "Urban Accessory",
+  "043": "Multicolor Knit Beanie",
+  "044": "Printed Graphic Cap",
+  "045": "Streetwear Accessory",
+  "046": "Urban Essential",
+  "047": "Graphic Streetwear",
+  "048": "Green Graphic Bucket Hat",
+  "049": "Black Graphic Beanie",
+  "050": "Urban Statement Piece",
+  "051": "Heavy Black Utility Footwear",
+  "052": "Streetwear Essential",
+  "053": "Urban Casual Piece",
+  "054": "Black Formal Tailored Suit",
+  "055": "Modern Streetwear",
+  "056": "Urban Essential",
+  "057": "Graphic Streetwear",
+  "058": "Casual Streetwear Piece",
+  "059": "Brown Leather-Style Tote Bag",
+  "060": "Urban Accessory",
+  "061": "Streetwear Essential",
+  "062": "Brown Rugged Lace-Up Boots",
+  "063": "Red Low-Top Sneakers",
+  "064": "Black Leather-Style Backpack",
+  "065": "Urban Streetwear",
+  "066": "Cream Sculptural Footwear",
+  "067": "Modern Casual Piece",
+  "068": "Urban Essential",
+  "069": "Red & Black Varsity Jacket",
+  "070": "Streetwear Essential",
+  "071": "Urban Accessory",
+  "072": "Black Padded Gloves",
+  "073": "Modern Streetwear",
+  "074": "Orange & White Graphic Sneakers",
+  "075": "Red High-Top Sneakers",
+  "076": "Black White & Red High-Top",
+  "077": "Urban Streetwear",
+  "078": "Modern Casual Piece",
+  "079": "Tan Western Graphic Jacket",
+  "080": "Patchwork Striped Tailored Jacket",
+  "081": "Urban Statement Jacket",
+  "082": "Tan Western Graphic Jacket",
+  "083": "Multicolor Graphic Jacket",
+  "084": "Streetwear Essential",
+  "085": "Urban Graphic Piece",
+  "086": "Supreme Graphic Hoodie",
+  "087": "Black Embossed Card Wallet",
+  "088": "Urban Accessory",
+  "089": "Black Knit Beanie",
+  "090": "Streetwear Essential",
+  "091": "Urban Casual Piece",
+  "092": "White Utility Wide-Leg Trousers",
+  "093": "Colorful Charm Clogs",
+  "094": "Urban Accessory",
+  "095": "Light Blue Patterned Cap",
+  "096": "Modern Streetwear",
+  "097": "Urban Essential",
+  "098": "Streetwear Statement Piece",
+  "099": "Modern Casual Wear",
+  "100": "Urban Essential",
+  "101": "Streetwear Footwear",
+  "102": "Brown Rugged Leather-Style Boot",
+  "103": "Mixed Sneaker Selection",
+  "104": "Mixed Sneaker Display",
+  "105": "Urban Footwear",
+  "106": "Streetwear Essential",
+  "107": "Modern Casual Piece",
+  "108": "White & Blue Running Sneaker",
+  "109": "Brown Leather Dress Shoe"
+
+};
+
+
+/* =========================================================
+   PRODUCT CATEGORY MAP
+   ========================================================= */
+
+const PRODUCT_CATEGORY_OVERRIDES = {
+
+  /* -------------------------------------------------------
+     FOOTWEAR
+     ------------------------------------------------------- */
+
+  "007": "footwear",
+  "008": "footwear",
+  "041": "footwear",
+  "051": "footwear",
+  "062": "footwear",
+  "063": "footwear",
+  "066": "footwear",
+  "074": "footwear",
+  "075": "footwear",
+  "076": "footwear",
+  "093": "footwear",
+  "102": "footwear",
+  "103": "footwear",
+  "104": "footwear",
+  "108": "footwear",
+  "109": "footwear",
+
+
+  /* -------------------------------------------------------
+     ACCESSORIES
+     ------------------------------------------------------- */
+
+  "016": "accessories",
+  "028": "accessories",
+  "036": "accessories",
+  "038": "accessories",
+  "043": "accessories",
+  "044": "accessories",
+  "048": "accessories",
+  "049": "accessories",
+  "059": "accessories",
+  "064": "accessories",
+  "072": "accessories",
+  "087": "accessories",
+  "089": "accessories",
+  "095": "accessories",
+
+
+  /* -------------------------------------------------------
+     HANDMADE
+     ------------------------------------------------------- */
+
+  "001": "handmade",
+  "012": "handmade",
+  "013": "handmade",
+  "014": "handmade",
+  "017": "handmade",
+  "020": "handmade",
+  "021": "handmade",
+  "022": "handmade",
+  "030": "handmade",
+  "054": "handmade",
+  "080": "handmade"
+
+};
+
+
+/* =========================================================
+   COLLECTION OVERRIDES
+   ========================================================= */
+
+const PRODUCT_COLLECTION_OVERRIDES = {
+
+  "001": "handmade",
+  "012": "handmade",
+  "013": "handmade",
+  "014": "handmade",
+  "017": "handmade",
+  "020": "handmade",
+  "021": "handmade",
+  "022": "handmade",
+  "030": "handmade",
+  "054": "handmade",
+  "080": "handmade"
+
+};
+
+
+/* =========================================================
+   BRAND OVERRIDES
+   ========================================================= */
+
+const PRODUCT_BRAND_OVERRIDES = {
+
+  "005": "Kanye West",
+
+  "086": "Supreme"
+
+};
+
+
+/* =========================================================
+   VISUAL PRODUCT DATA
+   =========================================================
+
+   Existing visual product metadata.
+
+   The product engine below combines this information with
+   the catalogue overrides above.
+
+   ========================================================= */
+
+const VISUAL_PRODUCT_DATA = {
+
+  "001": {
+    category: "men",
+    price: 85000
+  },
+
+  "002": {
+    category: "men",
+    price: 42000
+  },
+
+  "003": {
+    category: "men",
+    price: 38000
+  },
+
+  "004": {
+    category: "men",
+    price: 45000
+  },
+
+  "005": {
+    category: "men",
+    price: 48000
+  },
+
+  "006": {
+    category: "men",
+    price: 40000
+  },
+
+  "007": {
+    category: "footwear",
+    price: 65000
+  },
+
+  "008": {
+    category: "footwear",
+    price: 72000
+  },
+
+  "009": {
+    category: "men",
+    price: 45000
+  },
+
+  "010": {
+    category: "men",
+    price: 42000
+  },
+
+  "011": {
+    category: "men",
+    price: 46000
+  },
+
+  "012": {
+    category: "women",
+    price: 78000
+  },
+
+  "013": {
+    category: "men",
+    price: 95000
+  },
+
+  "014": {
+    category: "men",
+    price: 88000
+  },
+
+  "015": {
+    category: "men",
+    price: 45000
+  },
+
+  "016": {
+    category: "accessories",
+    price: 25000
+  },
+
+  "017": {
+    category: "women",
+    price: 82000
+  },
+
+  "018": {
+    category: "men",
+    price: 45000
+  },
+
+  "019": {
+    category: "men",
+    price: 40000
+  },
+
+  "020": {
+    category: "men",
+    price: 92000
+  },
+
+  "021": {
+    category: "women",
+    price: 88000
+  },
+
+  "022": {
+    category: "women",
+    price: 90000
+  },
+
+  "023": {
+    category: "men",
+    price: 43000
+  },
+
+  "024": {
+    category: "men",
+    price: 44000
+  },
+
+  "025": {
+    category: "men",
+    price: 42000
+  },
+
+  "026": {
+    category: "men",
+    price: 40000
+  },
+
+  "027": {
+    category: "men",
+    price: 47000
+  },
+
+  "028": {
+    category: "accessories",
+    price: 55000
+  },
+
+  "029": {
+    category: "men",
+    price: 43000
+  },
+
+  "030": {
+    category: "men",
+    price: 98000
+  },
+
+  "031": {
+    category: "men",
+    price: 44000
+  },
+
+  "032": {
+    category: "men",
+    price: 42000
+  },
+
+  "033": {
+    category: "men",
+    price: 45000
+  },
+
+  "034": {
+    category: "men",
+    price: 48000
+  },
+
+  "035": {
+    category: "men",
+    price: 45000
+  },
+
+  "036": {
+    category: "accessories",
+    price: 30000
+  },
+
+  "037": {
+    category: "men",
+    price: 45000
+  },
+
+  "038": {
+    category: "accessories",
+    price: 58000
+  },
+
+  "039": {
+    category: "men",
+    price: 46000
+  },
+
+  "040": {
+    category: "men",
+    price: 43000
+  },
+
+  "041": {
+    category: "footwear",
+    price: 62000
+  },
+
+  "042": {
+    category: "accessories",
+    price: 28000
+  },
+
+  "043": {
+    category: "accessories",
+    price: 22000
+  },
+
+  "044": {
+    category: "accessories",
+    price: 24000
+  },
+
+  "045": {
+    category: "accessories",
+    price: 26000
+  },
+
+  "046": {
+    category: "men",
+    price: 42000
+  },
+
+  "047": {
+    category: "men",
+    price: 44000
+  },
+
+  "048": {
+    category: "accessories",
+    price: 28000
+  },
+
+  "049": {
+    category: "accessories",
+    price: 22000
+  },
+
+  "050": {
+    category: "men",
+    price: 45000
+  },
+
+  "051": {
+    category: "footwear",
+    price: 76000
+  },
+
+  "052": {
+    category: "men",
+    price: 43000
+  },
+
+  "053": {
+    category: "men",
+    price: 42000
+  },
+
+  "054": {
+    category: "men",
+    price: 98000
+  },
+
+  "055": {
+    category: "men",
+    price: 44000
+  },
+
+  "056": {
+    category: "men",
+    price: 42000
+  },
+
+  "057": {
+    category: "men",
+    price: 45000
+  },
+
+  "058": {
+    category: "men",
+    price: 42000
+  },
+
+  "059": {
+    category: "accessories",
+    price: 58000
+  },
+
+  "060": {
+    category: "accessories",
+    price: 26000
+  },
+
+  "061": {
+    category: "men",
+    price: 43000
+  },
+
+  "062": {
+    category: "footwear",
+    price: 78000
+  },
+
+  "063": {
+    category: "footwear",
+    price: 65000
+  },
+
+  "064": {
+    category: "accessories",
+    price: 52000
+  },
+
+  "065": {
+    category: "men",
+    price: 45000
+  },
+
+  "066": {
+    category: "footwear",
+    price: 68000
+  },
+
+  "067": {
+    category: "men",
+    price: 43000
+  },
+
+  "068": {
+    category: "men",
+    price: 42000
+  },
+
+  "069": {
+    category: "men",
+    price: 72000
+  },
+
+  "070": {
+    category: "men",
+    price: 44000
+  },
+
+  "071": {
+    category: "accessories",
+    price: 26000
+  },
+
+  "072": {
+    category: "accessories",
+    price: 22000
+  },
+
+  "073": {
+    category: "men",
+    price: 43000
+  },
+
+  "074": {
+    category: "footwear",
+    price: 65000
+  },
+
+  "075": {
+    category: "footwear",
+    price: 68000
+  },
+
+  "076": {
+    category: "footwear",
+    price: 72000
+  },
+
+  "077": {
+    category: "men",
+    price: 45000
+  },
+
+  "078": {
+    category: "men",
+    price: 43000
+  },
+
+  "079": {
+    category: "men",
+    price: 70000
+  },
+
+  "080": {
+    category: "men",
+    price: 76000
+  },
+
+  "081": {
+    category: "men",
+    price: 65000
+  },
+
+  "082": {
+    category: "men",
+    price: 70000
+  },
+
+  "083": {
+    category: "men",
+    price: 72000
+  },
+
+  "084": {
+    category: "men",
+    price: 44000
+  },
+
+  "085": {
+    category: "men",
+    price: 46000
+  },
+
+  "086": {
+    category: "men",
+    price: 68000
+  },
+
+  "087": {
+    category: "accessories",
+    price: 30000
+  },
+
+  "088": {
+    category: "accessories",
+    price: 26000
+  },
+
+  "089": {
+    category: "accessories",
+    price: 22000
+  },
+
+  "090": {
+    category: "men",
+    price: 44000
+  },
+
+  "091": {
+    category: "men",
+    price: 42000
+  },
+
+  "092": {
+    category: "men",
+    price: 55000
+  },
+
+  "093": {
+    category: "footwear",
+    price: 62000
+  },
+
+  "094": {
+    category: "accessories",
+    price: 26000
+  },
+
+  "095": {
+    category: "accessories",
+    price: 24000
+  },
+
+  "096": {
+    category: "men",
+    price: 43000
+  },
+
+  "097": {
+    category: "men",
+    price: 42000
+  },
+
+  "098": {
+    category: "men",
+    price: 46000
+  },
+
+  "099": {
+    category: "men",
+    price: 43000
+  },
+
+  "100": {
+    category: "men",
+    price: 45000
+  },
+
+  "101": {
+    category: "footwear",
+    price: 62000
+  },
+
+  "102": {
+    category: "footwear",
+    price: 78000
+  },
+
+  "103": {
+    category: "footwear",
+    price: 65000
+  },
+
+  "104": {
+    category: "footwear",
+    price: 65000
+  },
+
+  "105": {
+    category: "footwear",
+    price: 62000
+  },
+
+  "106": {
+    category: "men",
+    price: 43000
+  },
+
+  "107": {
+    category: "men",
+    price: 42000
+  },
+
+  "108": {
+    category: "footwear",
+    price: 65000
+  },
+
+  "109": {
+    category: "footwear",
+    price: 70000
+  }
+
+};
+
+
+/* =========================================================
+   COLLECTION DETECTION
+   ========================================================= */
+
+function getDefaultCollection(
+  category,
+  number
+){
+
+  const id =
+    String(number).padStart(
+      3,
+      "0"
+    );
+
+
+  if(
+    PRODUCT_COLLECTION_OVERRIDES[id]
+  ){
+
+    return PRODUCT_COLLECTION_OVERRIDES[id];
 
   }
 
-);
+
+  if(
+    PRODUCT_CATEGORY_OVERRIDES[id]
+  ){
+
+    return PRODUCT_CATEGORY_OVERRIDES[id];
+
+  }
+
+
+  if(
+    category === "footwear"
+  ){
+
+    return "footwear";
+
+  }
+
+
+  if(
+    category === "accessories"
+  ){
+
+    return "accessories";
+
+  }
+
+
+  return "streetwear";
+
+}
+
+
+/* =========================================================
+   PRODUCT DESCRIPTION
+   ========================================================= */
+
+function createProductDescription(
+  name,
+  collection,
+  category
+){
+
+  if(
+    collection === "handmade"
+  ){
+
+    return (
+      `${name} — a structured Area Boyz selection ` +
+      `focused on tailored construction, statement ` +
+      `silhouette and distinctive styling.`
+    );
+
+  }
+
+
+  if(
+    collection === "footwear"
+  ){
+
+    return (
+      `${name} — a footwear selection chosen for ` +
+      `everyday styling, street presence and comfort.`
+    );
+
+  }
+
+
+  if(
+    collection === "accessories"
+  ){
+
+    return (
+      `${name} — a versatile Area Boyz accessory ` +
+      `selected to complete and elevate your look.`
+    );
+
+  }
+
+
+  return (
+    `${name} — a modern Area Boyz streetwear selection ` +
+    `built for expressive everyday style.`
+  );
+
+}
+
+
+/* =========================================================
+   PRODUCT DETAILS
+   ========================================================= */
+
+function createProductDetails(
+  name,
+  brand,
+  category,
+  collection
+){
+
+  const details = [
+
+    {
+      label: "Brand",
+      value: brand
+    },
+
+    {
+      label: "Category",
+      value: category
+    },
+
+    {
+      label: "Collection",
+      value: collection
+    },
+
+    {
+      label: "Style",
+      value: name
+    }
+
+  ];
+
+
+  return details;
+
+}
+
+
+/* =========================================================
+   BUILD PRODUCTS
+   ========================================================= */
+
+const PRODUCTS = [];
+
+
+for(
+  let number = 1;
+  number <= PRODUCT_TOTAL;
+  number++
+){
+
+  const id =
+    String(number).padStart(
+      3,
+      "0"
+    );
+
+
+  const visual =
+    VISUAL_PRODUCT_DATA[id] ||
+    {};
+
+
+  const override =
+    PRODUCT_CATALOG_OVERRIDES[id] ||
+    {};
+
+
+  const defaultName =
+    DEFAULT_PRODUCT_NAMES[id] ||
+    `Area Boyz Product ${id}`;
+
+
+  const name =
+    override.name ||
+    defaultName;
+
+
+  const brand =
+    override.brand ||
+    PRODUCT_BRAND_OVERRIDES[id] ||
+    "Area Boyz Select";
+
+
+  const category =
+    override.category ||
+    PRODUCT_CATEGORY_OVERRIDES[id] ||
+    visual.category ||
+    "men";
+
+
+  const collection =
+    override.collection ||
+    PRODUCT_COLLECTION_OVERRIDES[id] ||
+    getDefaultCollection(
+      category,
+      number
+    );
+
+
+  const price =
+    override.price ||
+    visual.price ||
+    DEFAULT_PRODUCT_PRICE;
+
+
+  const image =
+    `${PATHS.products}product-${id}.jpg`;
+
+
+  const description =
+    createProductDescription(
+      name,
+      collection,
+      category
+    );
+
+
+  const details =
+    createProductDetails(
+      name,
+      brand,
+      category,
+      collection
+    );
+
+
+  PRODUCTS.push({
+
+    id,
+
+    number,
+
+    name,
+
+    brand,
+
+    category,
+
+    collection,
+
+    price,
+
+    image,
+
+    description,
+
+    details
+
+  });
+
+}
 
 
 /* =========================================================
    STATE
    ========================================================= */
 
-const state = {
+let state = {
 
-  collection: "all",
+  products:
+    [...PRODUCTS],
 
-  query: "",
+  filteredProducts:
+    [...PRODUCTS],
 
-  sort: "featured",
+  category:
+    "all",
 
-  cart: []
+  collection:
+    "all",
+
+  search:
+    "",
+
+  sort:
+    "featured",
+
+  cart:
+    [],
+
+  currentProduct:
+    null
 
 };
 
 
 /* =========================================================
-   DOM HELPER
+   DOM HELPERS
    ========================================================= */
 
-const $ = selector =>
-  document.querySelector(selector);
+function $(selector){
+
+  return document.querySelector(
+    selector
+  );
+
+}
+
+
+function $all(selector){
+
+  return Array.from(
+    document.querySelectorAll(
+      selector
+    )
+  );
+
+}
 
 
 /* =========================================================
@@ -398,152 +1519,106 @@ const $ = selector =>
 
 function escapeHTML(value){
 
-  return String(value ?? "").replace(
+  return String(
+    value ?? ""
+  )
 
-    /[&<>"']/g,
+    .replace(
+      /&/g,
+      "&amp;"
+    )
 
-    character => ({
+    .replace(
+      /</g,
+      "&lt;"
+    )
 
-      "&":"&amp;",
+    .replace(
+      />/g,
+      "&gt;"
+    )
 
-      "<":"&lt;",
+    .replace(
+      /"/g,
+      "&quot;"
+    )
 
-      ">":"&gt;",
-
-      "\"":"&quot;",
-
-      "'":"&#039;"
-
-    }[character])
-
-  );
-
-}
-
-
-/* =========================================================
-   MONEY
-   ========================================================= */
-
-function money(number){
-
-  return new Intl.NumberFormat(
-
-    "en-US",
-
-    {
-
-      style:"currency",
-
-      currency:CONFIG.currency
-
-    }
-
-  ).format(Number(number) || 0);
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
 
 /* =========================================================
-   PRODUCT LOOKUP
+   FORMAT MONEY
    ========================================================= */
 
-function product(id){
-
-  return PRODUCTS.find(
-    item => item.id === id
-  );
-
-}
-
-
-/* =========================================================
-   ASSET URL
-   ========================================================= */
-
-function asset(folder,file){
-
-  return new URL(
-
-    `${folder}${encodeURIComponent(file)}`,
-
-    document.baseURI
-
-  ).href;
-
-}
-
-
-/* =========================================================
-   PRODUCT IMAGE
-   ========================================================= */
-
-function productImage(file){
-
-  return asset(
-    PATHS.products,
-    file
-  );
-
-}
-
-
-/* =========================================================
-   HERO IMAGE
-   ========================================================= */
-
-function heroImage(file){
-
-  return asset(
-    PATHS.hero,
-    file
-  );
-
-}
-
-
-/* =========================================================
-   SAFE IMAGE
-   =========================================================
-
-   If an image cannot load, the user won't see a broken
-   image icon. A clean Area Boyz placeholder is shown.
-   ========================================================= */
-
-function safeImg(
-  src,
-  alt = "",
-  className = ""
+function formatMoney(
+  amount
 ){
 
-  const fallback =
-    "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 800%22%3E%3Crect width=%22800%22 height=%22800%22 fill=%22%23f0eee8%22/%3E%3Ctext x=%22400%22 y=%22400%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-family=%22Arial%22 font-size=%2238%22 fill=%22%23111111%22%3EAREA BOYZ%3C/text%3E%3C/svg%3E";
+  const numericAmount =
+    Number(amount) || 0;
 
-  return `
 
-    <img
-
-      class="${className}"
-
-      src="${src}"
-
-      alt="${escapeHTML(alt)}"
-
-      loading="lazy"
-
-      decoding="async"
-
-      onerror="this.onerror=null;this.classList.add('img-failed');this.src='${fallback}'"
-
-    >
-
-  `;
+  return (
+    CURRENCY_SYMBOL +
+    numericAmount.toLocaleString(
+      "en-NG"
+    )
+  );
 
 }
 
 
 /* =========================================================
-   CART
+   GET PRODUCT
+   ========================================================= */
+
+function getProduct(
+  id
+){
+
+  return PRODUCTS.find(
+    product =>
+      String(product.id) ===
+      String(id)
+  );
+
+}
+
+
+/* =========================================================
+   SAVE CART
+   ========================================================= */
+
+function saveCart(){
+
+  try{
+
+    localStorage.setItem(
+      CART_STORAGE_KEY,
+      JSON.stringify(
+        state.cart
+      )
+    );
+
+  }catch(error){
+
+    console.warn(
+      "Unable to save cart:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD CART
    ========================================================= */
 
 function loadCart(){
@@ -551,553 +1626,1015 @@ function loadCart(){
   try{
 
     const saved =
-      JSON.parse(
-        localStorage.getItem(CONFIG.storageKey) || "[]"
+      localStorage.getItem(
+        CART_STORAGE_KEY
       );
 
-    return saved.filter(
 
-      item =>
-        productSafe(item.id) &&
-        Number(item.qty) > 0
+    if(!saved){
 
+      state.cart = [];
+
+      return;
+
+    }
+
+
+    const parsed =
+      JSON.parse(
+        saved
+      );
+
+
+    if(
+      Array.isArray(parsed)
+    ){
+
+      state.cart =
+        parsed.filter(
+          item =>
+            item &&
+            item.id &&
+            Number(item.quantity) > 0
+        );
+
+    }else{
+
+      state.cart = [];
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Unable to load cart:",
+      error
     );
 
-  }catch{
-
-    return [];
+    state.cart = [];
 
   }
 
 }
 
 
-function productSafe(id){
-
-  return (
-
-    /^ab-\d{3}$/.test(String(id)) &&
-
-    Number(id.slice(3)) >= 1 &&
-
-    Number(id.slice(3)) <= PRODUCT_TOTAL
-
-  );
-
-}
-
-
-function saveCart(){
-
-  localStorage.setItem(
-
-    CONFIG.storageKey,
-
-    JSON.stringify(state.cart)
-
-  );
-
-}
-
-
 /* =========================================================
-   TOAST
+   CART COUNT
    ========================================================= */
 
-function toast(message){
+function getCartCount(){
 
-  const element = $("#toast");
-
-  if(!element) return;
-
-  element.textContent = message;
-
-  element.classList.add("show");
-
-  clearTimeout(toast.timer);
-
-  toast.timer = setTimeout(
-
-    () => element.classList.remove("show"),
-
-    3200
-
+  return state.cart.reduce(
+    (
+      total,
+      item
+    ) =>
+      total +
+      Number(
+        item.quantity
+      ),
+    0
   );
 
 }
 
 
 /* =========================================================
-   FILTER PRODUCTS
+   CART TOTAL
    ========================================================= */
 
-function filtered(){
+function getCartTotal(){
 
-  let list = PRODUCTS.filter(
+  return state.cart.reduce(
+    (
+      total,
+      item
+    ) =>
+      total +
+      (
+        Number(item.price) *
+        Number(item.quantity)
+      ),
+    0
+  );
 
-    item =>
+}
 
-      state.collection === "all" ||
 
-      item.collection === state.collection ||
+/* =========================================================
+   UPDATE CART BADGES
+   ========================================================= */
 
-      item.category === state.collection
+function updateCartBadges(){
 
+  const count =
+    getCartCount();
+
+
+  $all(
+    "[data-cart-count]"
+  ).forEach(
+    element => {
+
+      element.textContent =
+        count;
+
+      element.classList.toggle(
+        "has-items",
+        count > 0
+      );
+
+    }
   );
 
 
-  if(state.query){
+  const cartCount =
+    $("#cart-count");
 
-    const query =
-      state.query.toLowerCase();
 
-    list = list.filter(
+  if(cartCount){
 
-      item =>
-
-        `${item.name} ${item.category} ${item.collection}`
-
-          .toLowerCase()
-
-          .includes(query)
-
-    );
+    cartCount.textContent =
+      count;
 
   }
-
-
-  if(state.sort === "low"){
-
-    list.sort(
-      (a,b) => a.price - b.price
-    );
-
-  }
-
-
-  if(state.sort === "high"){
-
-    list.sort(
-      (a,b) => b.price - a.price
-    );
-
-  }
-
-
-  if(state.sort === "name"){
-
-    list.sort(
-      (a,b) =>
-        a.name.localeCompare(b.name)
-    );
-
-  }
-
-
-  return list;
 
 }
 
 
 /* =========================================================
-   FILTER BUTTONS
+   APPLY FILTERS
    ========================================================= */
 
-function renderFilters(){
+function applyFilters(){
 
-  const wrapper =
-    $("#filters");
+  let products =
+    [...PRODUCTS];
 
-  if(!wrapper) return;
 
-  wrapper.innerHTML =
-    CATEGORIES.map(
+  /* SEARCH */
 
-      category => `
+  const search =
+    state.search
+      .trim()
+      .toLowerCase();
 
-        <button
 
-          class="filter ${
-            state.collection === category
-              ? "active"
-              : ""
-          }"
+  if(search){
 
-          data-filter="${category}"
+    products =
+      products.filter(
+        item => {
 
-        >
+          const searchable =
+            `${item.name} ${item.brand} ${item.category} ${item.collection}`;
 
-          ${
-            category.charAt(0).toUpperCase() +
-            category.slice(1)
-          }
+          return searchable
+            .toLowerCase()
+            .includes(
+              search
+            );
 
-        </button>
+        }
+      );
 
-      `
+  }
 
-    ).join("");
+
+  /* CATEGORY */
+
+  if(
+    state.category &&
+    state.category !== "all"
+  ){
+
+    products =
+      products.filter(
+        item =>
+          item.category ===
+          state.category
+      );
+
+  }
+
+
+  /* COLLECTION */
+
+  if(
+    state.collection &&
+    state.collection !== "all"
+  ){
+
+    products =
+      products.filter(
+        item =>
+          item.collection ===
+          state.collection
+      );
+
+  }
+
+
+  /* SORT */
+
+  switch(
+    state.sort
+  ){
+
+    case "price-low":
+
+      products.sort(
+        (
+          a,
+          b
+        ) =>
+          a.price -
+          b.price
+      );
+
+      break;
+
+
+    case "price-high":
+
+      products.sort(
+        (
+          a,
+          b
+        ) =>
+          b.price -
+          a.price
+      );
+
+      break;
+
+
+    case "name":
+
+      products.sort(
+        (
+          a,
+          b
+        ) =>
+          a.name.localeCompare(
+            b.name
+          )
+      );
+
+      break;
+
+
+    case "newest":
+
+      products.sort(
+        (
+          a,
+          b
+        ) =>
+          b.number -
+          a.number
+      );
+
+      break;
+
+
+    default:
+
+      products.sort(
+        (
+          a,
+          b
+        ) =>
+          a.number -
+          b.number
+      );
+
+      break;
+
+  }
+
+
+  state.filteredProducts =
+    products;
+
+
+  renderProducts();
 
 }
 
 
 /* =========================================================
-   PRODUCTS
+   PRODUCT CARD
+   ========================================================= */
+
+function createProductCard(
+  item
+){
+
+  const image =
+    escapeHTML(
+      item.image
+    );
+
+
+  const name =
+    escapeHTML(
+      item.name
+    );
+
+
+  const brand =
+    escapeHTML(
+      item.brand
+    );
+
+
+  const collection =
+    escapeHTML(
+      item.collection
+    );
+
+
+  const price =
+    formatMoney(
+      item.price
+    );
+
+
+  return `
+
+    <article
+      class="product-card"
+      data-product-id="${escapeHTML(item.id)}"
+    >
+
+      <button
+        class="product-image-button"
+        type="button"
+        data-product-view="${escapeHTML(item.id)}"
+        aria-label="View ${name}"
+      >
+
+        <div class="product-image-wrap">
+
+          <img
+            src="${image}"
+            alt="${name}"
+            class="product-image"
+            loading="lazy"
+            onerror="this.style.opacity='0.35';"
+          >
+
+          <span class="product-number">
+            ${brand}
+            ·
+            ${collection}
+          </span>
+
+        </div>
+
+      </button>
+
+
+      <div class="product-info">
+
+        <div class="product-brand">
+          ${brand}
+        </div>
+
+
+        <h3 class="product-name">
+          ${name}
+        </h3>
+
+
+        <div class="product-bottom">
+
+          <span class="product-price">
+            ${price}
+          </span>
+
+
+          <button
+            type="button"
+            class="add-to-cart"
+            data-add-to-cart="${escapeHTML(item.id)}"
+          >
+            Add to Bag
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+/* =========================================================
+   RENDER PRODUCTS
    ========================================================= */
 
 function renderProducts(){
 
-  const list = filtered();
-
-  $("#resultsMeta").textContent =
-
-    `${list.length} product${
-      list.length === 1 ? "" : "s"
-    } shown`;
+  const containers =
+    $all(
+      "[data-products]"
+    );
 
 
-  $("#productGrid").innerHTML =
+  if(
+    !containers.length
+  ){
 
-    list.map(
+    return;
 
-      item => `
-
-        <article class="product-card">
-
-          <button
-
-            class="product-media"
-
-            data-open="${item.id}"
-
-            aria-label="View ${escapeHTML(item.name)}"
-
-          >
-
-            ${safeImg(
-
-              productImage(item.image),
-
-              item.name
-
-            )}
-
-            <span>
-              ${escapeHTML(item.category)}
-            </span>
-
-          </button>
+  }
 
 
-          <div class="product-body">
+  const products =
+    state.filteredProducts;
 
-            <p class="product-number">
 
-              PRODUCT
-              ${String(item.number).padStart(3,"0")}
+  containers.forEach(
+    container => {
 
-            </p>
+      if(
+        !products.length
+      ){
 
+        container.innerHTML = `
+
+          <div class="empty-products">
 
             <h3>
-              ${escapeHTML(item.name)}
+              No products found
             </h3>
 
-
             <p>
-              ${escapeHTML(item.description)}
+              Try another search,
+              category or collection.
             </p>
-
-
-            <div class="product-row">
-
-              <strong>
-                ${money(item.price)}
-              </strong>
-
-
-              <button
-
-                class="mini-btn"
-
-                data-add="${item.id}"
-
-              >
-
-                Add
-
-              </button>
-
-            </div>
 
           </div>
 
-        </article>
+        `;
 
-      `
+        return;
 
-    ).join("");
+      }
 
 
-  $("#emptyState")
-    .classList
-    .toggle(
-      "hidden",
-      list.length > 0
+      container.innerHTML =
+        products
+          .map(
+            createProductCard
+          )
+          .join("");
+
+    }
+  );
+
+
+  const resultCount =
+    $all(
+      "[data-result-count]"
     );
 
-}
 
+  resultCount.forEach(
+    element => {
 
-/* =========================================================
-   HERO SLIDER
-   ========================================================= */
-
-let heroIndex = 0;
-
-let heroTimer;
-
-
-/* Render slides */
-
-function renderHero(){
-
-  const stage =
-    $("#heroSlides");
-
-  if(!stage) return;
-
-
-  stage.innerHTML =
-
-    HEROES.map(
-
-      (file,index) => `
-
-        <div
-
-          class="hero-slide ${
-            index === 0
-              ? "active"
-              : ""
-          }"
-
-          data-slide="${index}"
-
-        >
-
-          ${safeImg(
-
-            heroImage(file),
-
-            `Area Boyz hero ${index + 1}`
-
-          )}
-
-          <div class="hero-slide-shade"></div>
-
-        </div>
-
-      `
-
-    ).join("");
-
-
-  $("#heroDots").innerHTML =
-
-    HEROES.map(
-
-      (_,index) => `
-
-        <button
-
-          class="hero-dot ${
-            index === 0
-              ? "active"
-              : ""
-          }"
-
-          data-hero="${index}"
-
-          aria-label="Show hero ${index + 1}"
-
-        ></button>
-
-      `
-
-    ).join("");
-
-
-  startHero();
-
-}
-
-
-/* Change slide */
-
-function showHero(index){
-
-  const slides =
-    [...document.querySelectorAll(".hero-slide")];
-
-  const dots =
-    [...document.querySelectorAll(".hero-dot")];
-
-
-  if(!slides.length) return;
-
-
-  heroIndex =
-    (index + slides.length) %
-    slides.length;
-
-
-  slides.forEach(
-
-    (slide,number) => {
-
-      slide.classList.toggle(
-
-        "active",
-
-        number === heroIndex
-
-      );
+      element.textContent =
+        products.length;
 
     }
-
-  );
-
-
-  dots.forEach(
-
-    (dot,number) => {
-
-      dot.classList.toggle(
-
-        "active",
-
-        number === heroIndex
-
-      );
-
-    }
-
-  );
-
-}
-
-
-/* Start automatic slideshow */
-
-function startHero(){
-
-  clearInterval(heroTimer);
-
-  heroTimer = setInterval(
-
-    () => showHero(heroIndex + 1),
-
-    5000
-
   );
 
 }
 
 
 /* =========================================================
-   PRODUCT MODAL
+   PRODUCT MODAL HTML
    ========================================================= */
 
-function openModal(id){
+function createProductModal(){
 
-  const item =
-    product(id);
+  if(
+    $("#product-modal")
+  ){
 
-  if(!item) return;
+    return;
 
-
-  $("#modalContent").innerHTML = `
-
-    <div class="modal-product">
+  }
 
 
-      <div class="modal-product-main">
+  const modal =
+    document.createElement(
+      "div"
+    );
 
-        ${safeImg(
 
-          productImage(item.image),
+  modal.id =
+    "product-modal";
 
-          item.name
 
+  modal.className =
+    "product-modal";
+
+
+  modal.innerHTML = `
+
+    <div
+      class="product-modal-overlay"
+      data-close-product
+    ></div>
+
+
+    <div
+      class="product-modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-modal-title"
+    >
+
+      <button
+        type="button"
+        class="product-modal-close"
+        data-close-product
+        aria-label="Close product"
+      >
+        ×
+      </button>
+
+
+      <div
+        class="product-modal-content"
+        id="product-modal-content"
+      ></div>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    modal
+  );
+
+}
+
+
+/* =========================================================
+   OPEN PRODUCT MODAL
+   ========================================================= */
+
+function openProductModal(
+  id
+){
+
+  const product =
+    getProduct(id);
+
+
+  if(!product){
+
+    return;
+
+  }
+
+
+  state.currentProduct =
+    product;
+
+
+  createProductModal();
+
+
+  const modal =
+    $("#product-modal");
+
+
+  const content =
+    $("#product-modal-content");
+
+
+  if(
+    !modal ||
+    !content
+  ){
+
+    return;
+
+  }
+
+
+  const details =
+    product.details
+      .map(
+        detail => `
+
+          <div class="product-detail-row">
+
+            <span>
+              ${escapeHTML(
+                detail.label
+              )}
+            </span>
+
+            <strong>
+              ${escapeHTML(
+                detail.value
+              )}
+            </strong>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+
+  content.innerHTML = `
+
+    <div class="product-modal-image">
+
+      <img
+        src="${escapeHTML(product.image)}"
+        alt="${escapeHTML(product.name)}"
+      >
+
+    </div>
+
+
+    <div class="product-modal-info">
+
+      <span class="product-modal-number">
+
+        ${escapeHTML(product.brand)}
+        ·
+        ${escapeHTML(product.category)}
+
+      </span>
+
+
+      <h2
+        id="product-modal-title"
+      >
+        ${escapeHTML(product.name)}
+      </h2>
+
+
+      <div class="product-modal-price">
+
+        ${formatMoney(
+          product.price
         )}
 
       </div>
 
 
-      <div class="modal-info">
+      <p class="product-modal-description">
 
-        <p class="eyebrow">
+        ${escapeHTML(
+          product.description
+        )}
 
-          ${escapeHTML(
-            item.collection.toUpperCase()
-          )}
-
-        </p>
+      </p>
 
 
-        <p class="product-number">
+      <div class="product-details">
 
-          PRODUCT
-          ${String(item.number).padStart(3,"0")}
+        ${details}
 
-        </p>
-
-
-        <h2>
-          ${escapeHTML(item.name)}
-        </h2>
+      </div>
 
 
-        <div class="modal-price">
+      <button
+        type="button"
+        class="page-btn product-modal-add"
+        data-add-to-cart="${escapeHTML(product.id)}"
+      >
+        Add to Bag
+      </button>
 
-          ${money(item.price)}
+    </div>
+
+  `;
+
+
+  modal.classList.add(
+    "open"
+  );
+
+
+  document.body.classList.add(
+    "modal-open"
+  );
+
+
+  setTimeout(
+    () => {
+
+      const close =
+        modal.querySelector(
+          "[data-close-product]"
+        );
+
+
+      if(close){
+
+        close.focus();
+
+      }
+
+    },
+    50
+  );
+
+}
+
+
+/* =========================================================
+   CLOSE PRODUCT MODAL
+   ========================================================= */
+
+function closeProductModal(){
+
+  const modal =
+    $("#product-modal");
+
+
+  if(!modal){
+
+    return;
+
+  }
+
+
+  modal.classList.remove(
+    "open"
+  );
+
+
+  document.body.classList.remove(
+    "modal-open"
+  );
+
+
+  state.currentProduct =
+    null;
+
+}
+
+
+/* =========================================================
+   ADD TO CART
+   ========================================================= */
+
+function addToCart(
+  id,
+  quantity = 1
+){
+
+  const product =
+    getProduct(id);
+
+
+  if(!product){
+
+    return;
+
+  }
+
+
+  const existing =
+    state.cart.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if(existing){
+
+    existing.quantity =
+      Number(existing.quantity) +
+      Number(quantity);
+
+  }else{
+
+    state.cart.push({
+
+      id:
+        product.id,
+
+      name:
+        product.name,
+
+      brand:
+        product.brand,
+
+      price:
+        product.price,
+
+      image:
+        product.image,
+
+      quantity:
+        Number(quantity)
+
+    });
+
+  }
+
+
+  saveCart();
+
+  updateCartBadges();
+
+  renderCart();
+
+
+  showToast(
+    `${product.name} added to your bag.`
+  );
+
+}
+
+
+/* =========================================================
+   REMOVE FROM CART
+   ========================================================= */
+
+function removeFromCart(
+  id
+){
+
+  state.cart =
+    state.cart.filter(
+      item =>
+        String(item.id) !==
+        String(id)
+    );
+
+
+  saveCart();
+
+  updateCartBadges();
+
+  renderCart();
+
+}
+
+
+/* =========================================================
+   CHANGE CART QUANTITY
+   ========================================================= */
+
+function changeCartQuantity(
+  id,
+  change
+){
+
+  const item =
+    state.cart.find(
+      cartItem =>
+        String(cartItem.id) ===
+        String(id)
+    );
+
+
+  if(!item){
+
+    return;
+
+  }
+
+
+  item.quantity =
+    Number(item.quantity) +
+    Number(change);
+
+
+  if(
+    item.quantity <= 0
+  ){
+
+    removeFromCart(id);
+
+    return;
+
+  }
+
+
+  saveCart();
+
+  updateCartBadges();
+
+  renderCart();
+
+}
+
+
+/* =========================================================
+   CART DRAWER
+   ========================================================= */
+
+function createCartDrawer(){
+
+  if(
+    $("#cart-drawer")
+  ){
+
+    return;
+
+  }
+
+
+  const drawer =
+    document.createElement(
+      "aside"
+    );
+
+
+  drawer.id =
+    "cart-drawer";
+
+
+  drawer.className =
+    "cart-drawer";
+
+
+  drawer.innerHTML = `
+
+    <div
+      class="cart-overlay"
+      data-close-cart
+    ></div>
+
+
+    <div class="cart-panel">
+
+      <div class="cart-header">
+
+        <div>
+
+          <span class="cart-eyebrow">
+            YOUR BAG
+          </span>
+
+          <h2>
+            Shopping Bag
+          </h2>
 
         </div>
 
 
-        <p>
-          ${escapeHTML(item.description)}
-        </p>
+        <button
+          type="button"
+          class="cart-close"
+          data-close-cart
+          aria-label="Close cart"
+        >
+          ×
+        </button>
+
+      </div>
 
 
-        <ul>
+      <div
+        class="cart-items"
+        id="cart-items"
+      ></div>
 
-          ${item.details.map(
 
-            detail => `
+      <div class="cart-footer">
 
-              <li>
-                ${escapeHTML(detail)}
-              </li>
+        <div class="cart-total-row">
 
-            `
+          <span>
+            Total
+          </span>
 
-          ).join("")}
+          <strong
+            id="cart-total"
+          >
+            ₦0
+          </strong>
 
-        </ul>
+        </div>
 
 
         <button
-
-          class="btn dark full"
-
-          data-add="${item.id}"
-
+          type="button"
+          class="checkout-button"
+          id="checkout-button"
         >
-
-          Add to bag
-
+          Proceed to Checkout
         </button>
 
       </div>
@@ -1107,142 +2644,65 @@ function openModal(id){
   `;
 
 
-  $("#productModal")
-    .classList
-    .add("open");
-
-
-  $("#productModal")
-    .setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-
-  document.body.classList.add("lock");
-
-}
-
-
-function closeModal(){
-
-  $("#productModal")
-    .classList
-    .remove("open");
-
-
-  $("#productModal")
-    .setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-
-  document.body.classList.remove("lock");
-
-}
-
-
-/* =========================================================
-   ADD TO CART
-   ========================================================= */
-
-function add(id){
-
-  const item =
-    product(id);
-
-  if(!item) return;
-
-
-  const line =
-    state.cart.find(
-      entry => entry.id === id
-    );
-
-
-  if(line){
-
-    line.qty++;
-
-  }else{
-
-    state.cart.push({
-
-      id,
-
-      qty:1
-
-    });
-
-  }
-
-
-  saveCart();
-
-  renderCart();
-
-  toast(
-    `${item.name} added to your bag.`
+  document.body.appendChild(
+    drawer
   );
 
 }
 
 
 /* =========================================================
-   CHANGE CART QUANTITY
+   OPEN CART
    ========================================================= */
 
-function change(id,delta){
+function openCart(){
 
-  const line =
-    state.cart.find(
-      entry => entry.id === id
+  createCartDrawer();
+
+  renderCart();
+
+
+  const drawer =
+    $("#cart-drawer");
+
+
+  if(drawer){
+
+    drawer.classList.add(
+      "open"
     );
-
-  if(!line) return;
-
-
-  line.qty += delta;
-
-
-  if(line.qty <= 0){
-
-    state.cart =
-      state.cart.filter(
-        entry => entry.id !== id
-      );
 
   }
 
 
-  saveCart();
-
-  renderCart();
+  document.body.classList.add(
+    "cart-open"
+  );
 
 }
 
 
 /* =========================================================
-   SUBTOTAL
+   CLOSE CART
    ========================================================= */
 
-function subtotal(){
+function closeCart(){
 
-  return state.cart.reduce(
+  const drawer =
+    $("#cart-drawer");
 
-    (total,line) =>
 
-      total +
+  if(drawer){
 
-      (
-        product(line.id)?.price || 0
-      ) *
+    drawer.classList.remove(
+      "open"
+    );
 
-      line.qty,
+  }
 
-    0
 
+  document.body.classList.remove(
+    "cart-open"
   );
 
 }
@@ -1254,24 +2714,36 @@ function subtotal(){
 
 function renderCart(){
 
-  const wrapper =
-    $("#cartItems");
+  const container =
+    $("#cart-items");
 
 
-  if(!state.cart.length){
+  if(!container){
 
-    wrapper.innerHTML = `
+    return;
 
-      <div class="empty">
+  }
 
-        <i class="fa-solid fa-bag-shopping"></i>
+
+  if(
+    !state.cart.length
+  ){
+
+    container.innerHTML = `
+
+      <div class="cart-empty">
+
+        <div class="cart-empty-icon">
+          🛍️
+        </div>
 
         <h3>
           Your bag is empty
         </h3>
 
         <p>
-          Add something from the catalogue.
+          Add something you love
+          and it will appear here.
         </p>
 
       </div>
@@ -1279,1074 +2751,696 @@ function renderCart(){
     `;
 
 
-    $("#cartTotal").textContent =
-      money(0);
+    const total =
+      $("#cart-total");
 
-    $("#cartCount").textContent =
-      "0";
+
+    if(total){
+
+      total.textContent =
+        formatMoney(0);
+
+    }
+
 
     return;
 
   }
 
 
-  wrapper.innerHTML =
+  container.innerHTML =
+    state.cart
+      .map(
+        item => `
 
-    state.cart.map(
+          <div
+            class="cart-item"
+            data-cart-item="${escapeHTML(item.id)}"
+          >
 
-      line => {
-
-        const item =
-          product(line.id);
-
-
-        return `
-
-          <div class="cart-line">
-
-
-            ${safeImg(
-
-              productImage(item.image),
-
-              item.name
-
-            )}
+            <img
+              src="${escapeHTML(item.image)}"
+              alt="${escapeHTML(item.name)}"
+            >
 
 
-            <div class="cart-info">
+            <div class="cart-item-info">
 
-              <h4>
+              <strong>
                 ${escapeHTML(item.name)}
-              </h4>
+              </strong>
+
+              <span>
+                ${formatMoney(item.price)}
+              </span>
 
 
-              <small>
-                ${money(item.price)} each
-              </small>
-
-
-              <div class="qty">
+              <div class="cart-item-controls">
 
                 <button
-
-                  data-qty="${item.id}"
-
-                  data-delta="-1"
-
+                  type="button"
+                  data-cart-minus="${escapeHTML(item.id)}"
+                  aria-label="Decrease quantity"
                 >
-
                   −
-
                 </button>
 
-
-                <b>
-                  ${line.qty}
-                </b>
-
+                <span>
+                  ${Number(item.quantity)}
+                </span>
 
                 <button
-
-                  data-qty="${item.id}"
-
-                  data-delta="1"
-
+                  type="button"
+                  data-cart-plus="${escapeHTML(item.id)}"
+                  aria-label="Increase quantity"
                 >
-
                   +
-
                 </button>
 
               </div>
 
-
-              <button
-
-                class="remove"
-
-                data-remove="${item.id}"
-
-              >
-
-                Remove
-
-              </button>
-
             </div>
 
 
-            <strong>
-
-              ${money(
-                item.price * line.qty
-              )}
-
-            </strong>
-
+            <button
+              type="button"
+              class="cart-item-remove"
+              data-cart-remove="${escapeHTML(item.id)}"
+              aria-label="Remove item"
+            >
+              ×
+            </button>
 
           </div>
 
-        `;
-
-      }
-
-    ).join("");
+        `
+      )
+      .join("");
 
 
-  $("#cartTotal").textContent =
-    money(subtotal());
+  const total =
+    $("#cart-total");
 
 
-  $("#cartCount").textContent =
-    state.cart.reduce(
-      (total,line) =>
-        total + line.qty,
-      0
-    );
+  if(total){
+
+    total.textContent =
+      formatMoney(
+        getCartTotal()
+      );
+
+  }
 
 }
 
 
 /* =========================================================
-   CART OPEN/CLOSE
+   TOAST
    ========================================================= */
 
-function openCart(){
+function showToast(
+  message
+){
 
-  $("#cartDrawer")
-    .classList
-    .add("open");
+  let toast =
+    $("#area-boyz-toast");
 
-  $("#drawerBackdrop")
-    .classList
-    .add("show");
 
-  document.body.classList.add("lock");
+  if(!toast){
 
-}
-
-
-function closeCart(){
-
-  $("#cartDrawer")
-    .classList
-    .remove("open");
-
-  $("#drawerBackdrop")
-    .classList
-    .remove("show");
-
-  document.body.classList.remove("lock");
-
-}
-
-
-/* =========================================================
-   CHECKOUT FORM
-   ========================================================= */
-
-function checkoutForm(){
-
-  if(!state.cart.length){
-
-    toast("Your bag is empty.");
-
-    return;
-
-  }
-
-
-  $("#cartItems").innerHTML = `
-
-    <form
-      class="checkout-form"
-      id="checkoutForm"
-    >
-
-      <h3>
-        Checkout
-      </h3>
-
-
-      <p class="notice">
-
-        Order total:
-
-        <strong>
-          ${money(subtotal())}
-        </strong>
-
-      </p>
-
-
-      <label>
-
-        Full name
-
-        <input
-          name="name"
-          required
-          autocomplete="name"
-        >
-
-      </label>
-
-
-      <label>
-
-        Email
-
-        <input
-          name="email"
-          type="email"
-          required
-          autocomplete="email"
-        >
-
-      </label>
-
-
-      <label>
-
-        Phone
-
-        <input
-          name="phone"
-          required
-          autocomplete="tel"
-        >
-
-      </label>
-
-
-      <button
-        class="btn dark full"
-        type="submit"
-      >
-
-        Continue to Flutterwave
-
-      </button>
-
-
-      <div
-        id="checkoutError"
-        class="error"
-        role="alert">
-      </div>
-
-
-      <button
-        type="button"
-        class="text-btn"
-        id="backToCart">
-
-        ← Back to bag
-
-      </button>
-
-    </form>
-
-  `;
-
-
-  $("#checkoutForm")
-    .addEventListener(
-      "submit",
-      startPayment
-    );
-
-
-  $("#backToCart")
-    .addEventListener(
-      "click",
-      renderCart
-    );
-
-}
-
-
-/* =========================================================
-   START FLUTTERWAVE PAYMENT
-   ========================================================= */
-
-async function startPayment(event){
-
-  event.preventDefault();
-
-
-  const form =
-    new FormData(
-      event.currentTarget
-    );
-
-
-  const customer = {
-
-    name:
-      String(
-        form.get("name") || ""
-      ).trim(),
-
-    email:
-      String(
-        form.get("email") || ""
-      ).trim(),
-
-    phone:
-      String(
-        form.get("phone") || ""
-      ).trim()
-
-  };
-
-
-  const error =
-    $("#checkoutError");
-
-
-  if(
-    !customer.name ||
-    !customer.email ||
-    !customer.phone
-  ){
-
-    error.textContent =
-      "Please complete all fields.";
-
-    return;
-
-  }
-
-
-  if(!CONFIG.supabaseUrl){
-
-    error.textContent =
-      "Checkout is not connected yet. Add your Supabase project URL in js/app.js.";
-
-    return;
-
-  }
-
-
-  const button =
-    event.currentTarget.querySelector(
-      'button[type="submit"]'
-    );
-
-
-  button.disabled = true;
-
-  button.textContent =
-    "Creating secure checkout…";
-
-
-  try{
-
-    const response =
-      await fetch(
-
-        `${CONFIG.supabaseUrl.replace(
-          /\/$/,
-          ""
-        )}/functions/v1/${CONFIG.paymentFunction}`,
-
-        {
-
-          method:"POST",
-
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          body:JSON.stringify({
-
-            customer,
-
-            items:
-              state.cart.map(
-                line => ({
-                  id:line.id,
-                  qty:line.qty
-                })
-              ),
-
-            redirect_url:
-              location.href.split("?")[0]
-
-          })
-
-        }
-
+    toast =
+      document.createElement(
+        "div"
       );
 
 
-    const data =
-      await response
-        .json()
-        .catch(
-          () => ({})
+    toast.id =
+      "area-boyz-toast";
+
+
+    toast.className =
+      "area-boyz-toast";
+
+
+    document.body.appendChild(
+      toast
+    );
+
+  }
+
+
+  toast.textContent =
+    message;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toast._timeout
+  );
+
+
+  toast._timeout =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
         );
 
+      },
+      2600
+    );
 
-    if(
-      !response.ok ||
-      !data.link
-    ){
+}
 
-      throw new Error(
 
-        data.error ||
-        "Unable to create the payment link."
+/* =========================================================
+   FILTER BUTTONS
+   ========================================================= */
 
+function updateFilterButtons(){
+
+  $all(
+    "[data-collection]"
+  ).forEach(
+    button => {
+
+      const value =
+        button.dataset.collection;
+
+
+      button.classList.toggle(
+        "active",
+        value ===
+        state.collection
       );
 
     }
+  );
 
 
-    localStorage.setItem(
+  $all(
+    "[data-category]"
+  ).forEach(
+    button => {
 
-      "areaBoyzPendingTx",
-
-      data.tx_ref || ""
-
-    );
-
-
-    location.href =
-      data.link;
+      const value =
+        button.dataset.category;
 
 
-  }catch(errorObject){
-
-    error.textContent =
-      errorObject.message ||
-      "Unable to start checkout.";
-
-
-    button.disabled = false;
-
-    button.textContent =
-      "Continue to Flutterwave";
-
-  }
-
-}
-
-
-/* =========================================================
-   PAYMENT RETURN
-   ========================================================= */
-
-async function handlePaymentReturn(){
-
-  const query =
-    new URLSearchParams(
-      location.search
-    );
-
-
-  const status =
-    query.get("status");
-
-
-  const transactionId =
-    query.get("transaction_id");
-
-
-  const txRef =
-    query.get("tx_ref") ||
-
-    localStorage.getItem(
-      "areaBoyzPendingTx"
-    ) ||
-
-    "";
-
-
-  if(
-    !status &&
-    !transactionId
-  ){
-
-    return;
-
-  }
-
-
-  if(status === "cancelled"){
-
-    toast(
-      "Payment was cancelled. Your bag is still here."
-    );
-
-  }
-
-
-  else if(status === "failed"){
-
-    toast(
-      "Payment was not completed. Your bag is still here."
-    );
-
-  }
-
-
-  else if(
-
-    status === "successful" &&
-
-    transactionId &&
-
-    txRef
-
-  ){
-
-    if(!CONFIG.supabaseUrl){
-
-      toast(
-        "Payment returned, but verification is not connected yet."
+      button.classList.toggle(
+        "active",
+        value ===
+        state.category
       );
 
     }
-
-    else{
-
-      toast(
-        "Verifying your payment…"
-      );
-
-
-      try{
-
-        const response =
-          await fetch(
-
-            `${CONFIG.supabaseUrl.replace(
-              /\/$/,
-              ""
-            )}/functions/v1/${CONFIG.verifyFunction}`,
-
-            {
-
-              method:"POST",
-
-              headers:{
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:JSON.stringify({
-
-                transaction_id:
-                  transactionId,
-
-                tx_ref:
-                  txRef
-
-              })
-
-            }
-
-          );
-
-
-        const data =
-          await response
-            .json()
-            .catch(
-              () => ({})
-            );
-
-
-        if(
-          !response.ok ||
-          !data.verified
-        ){
-
-          throw new Error(
-
-            data.error ||
-            "Payment verification failed. Your bag is safe."
-
-          );
-
-        }
-
-
-        state.cart = [];
-
-        saveCart();
-
-
-        localStorage.removeItem(
-          "areaBoyzPendingTx"
-        );
-
-
-        localStorage.setItem(
-          "areaBoyzLastTx",
-          txRef
-        );
-
-
-        toast(
-          "Payment verified successfully. Thank you for your order!"
-        );
-
-
-      }catch(errorObject){
-
-        toast(
-
-          errorObject.message ||
-          "We could not verify the payment yet."
-
-        );
-
-      }
-
-    }
-
-  }
-
-
-  history.replaceState(
-
-    {},
-
-    document.title,
-
-    location.pathname +
-    location.hash
-
   );
 
 }
 
 
 /* =========================================================
-   EVENT BINDING
+   SEARCH INPUTS
    ========================================================= */
 
-function bind(){
+function syncSearchInputs(){
 
-  document.addEventListener(
-
-    "click",
-
-    event => {
-
-      const filter =
-        event.target.closest(
-          "[data-filter]"
-        );
-
-
-      if(filter){
-
-        state.collection =
-          filter.dataset.filter;
-
-        renderFilters();
-
-        renderProducts();
-
-        document
-          .querySelector("#shop")
-          ?.scrollIntoView({
-            behavior:"smooth"
-          });
-
-      }
-
-
-      const addButton =
-        event.target.closest(
-          "[data-add]"
-        );
-
-
-      if(addButton){
-
-        add(
-          addButton.dataset.add
-        );
-
-
-        if(
-          $("#productModal")
-            .classList
-            .contains("open")
-        ){
-
-          closeModal();
-
-        }
-
-      }
-
-
-      const openButton =
-        event.target.closest(
-          "[data-open]"
-        );
-
-
-      if(openButton){
-
-        openModal(
-          openButton.dataset.open
-        );
-
-      }
-
-
-      const quantityButton =
-        event.target.closest(
-          "[data-qty]"
-        );
-
-
-      if(quantityButton){
-
-        change(
-
-          quantityButton.dataset.qty,
-
-          Number(
-            quantityButton.dataset.delta
-          )
-
-        );
-
-      }
-
-
-      const removeButton =
-        event.target.closest(
-          "[data-remove]"
-        );
-
-
-      if(removeButton){
-
-        change(
-          removeButton.dataset.remove,
-          -999
-        );
-
-      }
-
+  $all(
+    "[data-product-search]"
+  ).forEach(
+    input => {
 
       if(
-        event.target.closest(
-          "[data-close-modal]"
-        )
+        input.value !==
+        state.search
       ){
 
-        closeModal();
-
-      }
-
-
-      const collection =
-        event.target.closest(
-          "[data-collection]"
-        );
-
-
-      if(collection){
-
-        state.collection =
-          collection.dataset.collection;
-
-        renderFilters();
-
-        renderProducts();
-
-        location.hash =
-          "shop";
-
-      }
-
-
-      const heroDot =
-        event.target.closest(
-          "[data-hero]"
-        );
-
-
-      if(heroDot){
-
-        showHero(
-          Number(
-            heroDot.dataset.hero
-          )
-        );
-
-        startHero();
-
-      }
-
-
-      const previous =
-        event.target.closest(
-          "[data-hero-prev]"
-        );
-
-
-      if(previous){
-
-        showHero(
-          heroIndex - 1
-        );
-
-        startHero();
-
-      }
-
-
-      const next =
-        event.target.closest(
-          "[data-hero-next]"
-        );
-
-
-      if(next){
-
-        showHero(
-          heroIndex + 1
-        );
-
-        startHero();
+        input.value =
+          state.search;
 
       }
 
     }
+  );
 
+}
+
+
+/* =========================================================
+   SORT SELECT
+   ========================================================= */
+
+function syncSortSelect(){
+
+  $all(
+    "[data-product-sort]"
+  ).forEach(
+    select => {
+
+      select.value =
+        state.sort;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   HERO SLIDER
+   ========================================================= */
+
+let heroTimer =
+  null;
+
+
+let heroIndex =
+  0;
+
+
+function getHeroSlides(){
+
+  return $all(
+    "[data-hero-slide]"
+  );
+
+}
+
+
+/* =========================================================
+   RENDER HERO
+   ========================================================= */
+
+function renderHero(){
+
+  const hero =
+    $(
+      "[data-hero]"
+    );
+
+
+  if(!hero){
+
+    return;
+
+  }
+
+
+  const slides =
+    getHeroSlides();
+
+
+  if(
+    slides.length
+  ){
+
+    startHeroSlider();
+
+    return;
+
+  }
+
+
+  const imageList = [
+
+    "hero-1.jpg",
+    "hero-2.jpg",
+    "hero-3.jpg",
+    "hero-4.jpg",
+    "hero-5.jpg",
+    "hero-6.jpg"
+
+  ];
+
+
+  hero.innerHTML =
+    imageList
+      .map(
+        (
+          image,
+          index
+        ) => `
+
+          <div
+            class="hero-slide ${index === 0 ? "active" : ""}"
+            data-hero-slide
+          >
+
+            <img
+              src="${PATHS.hero}${image}"
+              alt="Area Boyz Enterprise fashion collection ${index + 1}"
+            >
+
+          </div>
+
+        `
+      )
+      .join("");
+
+
+  startHeroSlider();
+
+}
+
+
+/* =========================================================
+   START HERO SLIDER
+   ========================================================= */
+
+function startHeroSlider(){
+
+  const slides =
+    getHeroSlides();
+
+
+  if(
+    slides.length <= 1
+  ){
+
+    return;
+
+  }
+
+
+  if(heroTimer){
+
+    clearInterval(
+      heroTimer
+    );
+
+  }
+
+
+  heroIndex =
+    0;
+
+
+  heroTimer =
+    setInterval(
+      () => {
+
+        slides[
+          heroIndex
+        ].classList.remove(
+          "active"
+        );
+
+
+        heroIndex =
+          (
+            heroIndex + 1
+          ) %
+          slides.length;
+
+
+        slides[
+          heroIndex
+        ].classList.add(
+          "active"
+        );
+
+      },
+      5000
+    );
+
+}
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+function setupMobileMenu(){
+
+  const toggle =
+    document.querySelector(
+      "#menu-toggle"
+    );
+
+
+  const nav =
+    document.querySelector(
+      "#nav-links"
+    );
+
+
+  if(
+    !toggle ||
+    !nav
+  ){
+
+    return;
+
+  }
+
+
+  toggle.addEventListener(
+    "click",
+    () => {
+
+      const isOpen =
+        nav.classList.toggle(
+          "open"
+        );
+
+
+      toggle.classList.toggle(
+        "active",
+        isOpen
+      );
+
+
+      toggle.setAttribute(
+        "aria-expanded",
+        String(isOpen)
+      );
+
+    }
   );
 
 
-  $("#sort")
-    .addEventListener(
+  $all(
+    "#nav-links a"
+  ).forEach(
+    link => {
 
-      "change",
+      link.addEventListener(
+        "click",
+        () => {
 
-      event => {
-
-        state.sort =
-          event.target.value;
-
-        renderProducts();
-
-      }
-
-    );
-
-
-  $("#clearFilters")
-    .addEventListener(
-
-      "click",
-
-      () => {
-
-        state.collection =
-          "all";
-
-        state.query =
-          "";
-
-        $("#searchInput").value =
-          "";
-
-        renderFilters();
-
-        renderProducts();
-
-      }
-
-    );
-
-
-  $("#searchBtn")
-    .addEventListener(
-
-      "click",
-
-      () => {
-
-        $("#searchPanel")
-          .classList
-          .toggle("open");
-
-
-        if(
-          $("#searchPanel")
-            .classList
-            .contains("open")
-        ){
-
-          $("#searchInput").focus();
-
-        }
-
-      }
-
-    );
-
-
-  $("#searchClose")
-    .addEventListener(
-
-      "click",
-
-      () => {
-
-        $("#searchPanel")
-          .classList
-          .remove("open");
-
-      }
-
-    );
-
-
-  $("#searchInput")
-    .addEventListener(
-
-      "input",
-
-      event => {
-
-        state.query =
-          event.target.value.trim();
-
-        renderProducts();
-
-      }
-
-    );
-
-
-  $("#cartBtn")
-    .addEventListener(
-      "click",
-      openCart
-    );
-
-
-  $("#cartClose")
-    .addEventListener(
-      "click",
-      closeCart
-    );
-
-
-  $("#drawerBackdrop")
-    .addEventListener(
-      "click",
-      closeCart
-    );
-
-
-  $("#checkoutBtn")
-    .addEventListener(
-      "click",
-      checkoutForm
-    );
-
-
-  $("#menuBtn")
-    .addEventListener(
-
-      "click",
-
-      () => {
-
-        const open =
-          $("#mobileNav")
-            .classList
-            .toggle("open");
-
-
-        $("#menuBtn")
-          .setAttribute(
-            "aria-expanded",
-            String(open)
+          nav.classList.remove(
+            "open"
           );
 
-      }
 
-    );
+          toggle.classList.remove(
+            "active"
+          );
 
 
-  $("#mobileNav")
-    .addEventListener(
-
-      "click",
-
-      event => {
-
-        if(
-          event.target.matches("a")
-        ){
-
-          $("#mobileNav")
-            .classList
-            .remove("open");
+          toggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
 
         }
+      );
 
-      }
+    }
+  );
 
+}
+
+
+/* =========================================================
+   HEADER SCROLL
+   ========================================================= */
+
+function setupHeaderScroll(){
+
+  const header =
+    document.querySelector(
+      "header"
     );
+
+
+  if(!header){
+
+    return;
+
+  }
+
+
+  const update =
+    () => {
+
+      header.classList.toggle(
+        "scrolled",
+        window.scrollY > 20
+      );
+
+    };
+
+
+  update();
 
 
   window.addEventListener(
-
-    "keydown",
-
-    event => {
-
-      if(event.key === "Escape"){
-
-        closeModal();
-
-        closeCart();
-
-      }
-
+    "scroll",
+    update,
+    {
+      passive: true
     }
-
   );
 
 }
 
 
 /* =========================================================
-   INIT
+   REVEAL ANIMATIONS
    ========================================================= */
 
-function init(){
+function setupRevealAnimations(){
 
-  state.cart =
-    loadCart();
+  const elements =
+    $all(
+      ".hidden"
+    );
 
 
-  /*
-   * Read a collection from the URL.
-   *
-   * Example:
-   * shop.html?collection=footwear
-   *
-   * This allows the Collections page
-   * to send customers directly into
-   * the correct catalogue collection.
-   */
+  if(
+    !elements.length
+  ){
+
+    return;
+
+  }
+
+
+  if(
+    !("IntersectionObserver" in window)
+  ){
+
+    elements.forEach(
+      element =>
+        element.classList.add(
+          "active"
+        )
+    );
+
+    return;
+
+  }
+
+
+  const observer =
+    new IntersectionObserver(
+      entries => {
+
+        entries.forEach(
+          entry => {
+
+            if(
+              entry.isIntersecting
+            ){
+
+              entry.target.classList.add(
+                "active"
+              );
+
+
+              observer.unobserve(
+                entry.target
+              );
+
+            }
+
+          }
+        );
+
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+
+  elements.forEach(
+    element =>
+      observer.observe(
+        element
+      )
+  );
+
+}
+
+
+/* =========================================================
+   YEAR
+   ========================================================= */
+
+function updateYear(){
+
+  const year =
+    document.querySelector(
+      "#year"
+    );
+
+
+  if(year){
+
+    year.textContent =
+      new Date()
+        .getFullYear();
+
+  }
+
+}
+
+
+/* =========================================================
+   PRELOADER
+   ========================================================= */
+
+function hidePreloader(){
+
+  const preloader =
+    document.querySelector(
+      "#preloader"
+    );
+
+
+  if(!preloader){
+
+    return;
+
+  }
+
+
+  window.setTimeout(
+    () => {
+
+      preloader.classList.add(
+        "hide"
+      );
+
+    },
+    450
+  );
+
+}
+
+
+/* =========================================================
+   URL COLLECTION FILTER
+   ========================================================= */
+
+function loadCollectionFromURL(){
 
   const params =
     new URLSearchParams(
@@ -2354,65 +3448,1320 @@ function init(){
     );
 
 
-  const requestedCollection =
-    (
-      params.get("collection") || ""
-    )
-      .trim()
-      .toLowerCase();
+  const collection =
+    params.get(
+      "collection"
+    );
 
 
   if(
+    collection &&
     CATEGORIES.includes(
-      requestedCollection
+      collection
     )
   ){
 
     state.collection =
-      requestedCollection;
+      collection;
+
+    localStorage.setItem(
+      COLLECTION_STORAGE_KEY,
+      collection
+    );
 
   }
 
 
-  const year =
-    $("#year");
+  updateFilterButtons();
 
-  if(year){
+}
 
-    year.textContent =
-      new Date().getFullYear();
+
+/* =========================================================
+   RESTORE COLLECTION
+   ========================================================= */
+
+function restoreCollection(){
+
+  if(
+    state.collection !==
+    "all"
+  ){
+
+    return;
 
   }
 
 
-  renderHero();
+  try{
 
-  renderFilters();
+    const saved =
+      localStorage.getItem(
+        COLLECTION_STORAGE_KEY
+      );
+
+
+    if(
+      saved &&
+      CATEGORIES.includes(
+        saved
+      )
+    ){
+
+      state.collection =
+        saved;
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Unable to restore collection:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   BIND SEARCH
+   ========================================================= */
+
+function bindSearch(){
+
+  $all(
+    "[data-product-search]"
+  ).forEach(
+    input => {
+
+      input.addEventListener(
+        "input",
+        event => {
+
+          state.search =
+            event.target.value;
+
+
+          syncSearchInputs();
+
+          applyFilters();
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   BIND SORT
+   ========================================================= */
+
+function bindSort(){
+
+  $all(
+    "[data-product-sort]"
+  ).forEach(
+    select => {
+
+      select.addEventListener(
+        "change",
+        event => {
+
+          state.sort =
+            event.target.value;
+
+
+          syncSortSelect();
+
+          applyFilters();
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   BIND FILTERS
+   ========================================================= */
+
+function bindFilters(){
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      const collectionButton =
+        event.target.closest(
+          "[data-collection]"
+        );
+
+
+      if(
+        collectionButton
+      ){
+
+        const collection =
+          collectionButton.dataset.collection;
+
+
+        if(
+          CATEGORIES.includes(
+            collection
+          )
+        ){
+
+          state.collection =
+            collection;
+
+
+          localStorage.setItem(
+            COLLECTION_STORAGE_KEY,
+            collection
+          );
+
+
+          updateFilterButtons();
+
+          applyFilters();
+
+        }
+
+        return;
+
+      }
+
+
+      const categoryButton =
+        event.target.closest(
+          "[data-category]"
+        );
+
+
+      if(
+        categoryButton
+      ){
+
+        const category =
+          categoryButton.dataset.category;
+
+
+        if(
+          CATEGORIES.includes(
+            category
+          )
+        ){
+
+          state.category =
+            category;
+
+
+          updateFilterButtons();
+
+          applyFilters();
+
+        }
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   BIND PRODUCT ACTIONS
+   ========================================================= */
+
+function bindProductActions(){
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      const viewButton =
+        event.target.closest(
+          "[data-product-view]"
+        );
+
+
+      if(
+        viewButton
+      ){
+
+        openProductModal(
+          viewButton.dataset.productView
+        );
+
+        return;
+
+      }
+
+
+      const addButton =
+        event.target.closest(
+          "[data-add-to-cart]"
+        );
+
+
+      if(
+        addButton
+      ){
+
+        addToCart(
+          addButton.dataset.addToCart
+        );
+
+
+        return;
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   BIND CART ACTIONS
+   ========================================================= */
+
+function bindCartActions(){
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      const plus =
+        event.target.closest(
+          "[data-cart-plus]"
+        );
+
+
+      if(plus){
+
+        changeCartQuantity(
+          plus.dataset.cartPlus,
+          1
+        );
+
+        return;
+
+      }
+
+
+      const minus =
+        event.target.closest(
+          "[data-cart-minus]"
+        );
+
+
+      if(minus){
+
+        changeCartQuantity(
+          minus.dataset.cartMinus,
+          -1
+        );
+
+        return;
+
+      }
+
+
+      const remove =
+        event.target.closest(
+          "[data-cart-remove]"
+        );
+
+
+      if(remove){
+
+        removeFromCart(
+          remove.dataset.cartRemove
+        );
+
+        return;
+
+      }
+
+
+      const closeCartButton =
+        event.target.closest(
+          "[data-close-cart]"
+        );
+
+
+      if(
+        closeCartButton
+      ){
+
+        closeCart();
+
+        return;
+
+      }
+
+
+      const openCartButton =
+        event.target.closest(
+          "[data-open-cart]"
+        );
+
+
+      if(
+        openCartButton
+      ){
+
+        openCart();
+
+        return;
+
+      }
+
+
+      if(
+        event.target.closest(
+          "#cart-button"
+        )
+      ){
+
+        openCart();
+
+        return;
+
+      }
+
+
+      if(
+        event.target.closest(
+          "#checkout-button"
+        )
+      ){
+
+        handleCheckout();
+
+        return;
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   MODAL ACTIONS
+   ========================================================= */
+
+function bindModalActions(){
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      if(
+        event.target.closest(
+          "[data-close-product]"
+        )
+      ){
+
+        closeProductModal();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if(
+        event.key ===
+        "Escape"
+      ){
+
+        closeProductModal();
+
+        closeCart();
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FLUTTERWAVE CONFIGURATION
+   =========================================================
+
+   IMPORTANT:
+   The public key may exist in the frontend.
+
+   NEVER put a Flutterwave secret key here.
+
+   ========================================================= */
+
+const FLUTTERWAVE_PUBLIC_KEY =
+  "FLWPUBK_TEST-REPLACE_WITH_YOUR_PUBLIC_KEY";
+
+
+/* =========================================================
+   FLUTTERWAVE SCRIPT
+   ========================================================= */
+
+function loadFlutterwave(){
+
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
+
+      if(
+        window.FlutterwaveCheckout
+      ){
+
+        resolve();
+
+        return;
+
+      }
+
+
+      const existing =
+        document.querySelector(
+          'script[src*="flutterwave"]'
+        );
+
+
+      if(existing){
+
+        existing.addEventListener(
+          "load",
+          resolve
+        );
+
+
+        existing.addEventListener(
+          "error",
+          reject
+        );
+
+
+        return;
+
+      }
+
+
+      const script =
+        document.createElement(
+          "script"
+        );
+
+
+      script.src =
+        "https://checkout.flutterwave.com/v3.js";
+
+
+      script.async =
+        true;
+
+
+      script.onload =
+        resolve;
+
+
+      script.onerror =
+        reject;
+
+
+      document.head.appendChild(
+        script
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CUSTOMER DETAILS
+   ========================================================= */
+
+function getCustomerDetails(){
+
+  const savedName =
+    localStorage.getItem(
+      "areaBoyzCustomerName"
+    ) ||
+    "";
+
+
+  const savedEmail =
+    localStorage.getItem(
+      "areaBoyzCustomerEmail"
+    ) ||
+    "";
+
+
+  const name =
+    window.prompt(
+      "Enter your full name:",
+      savedName
+    );
+
+
+  if(
+    !name ||
+    !name.trim()
+  ){
+
+    return null;
+
+  }
+
+
+  const email =
+    window.prompt(
+      "Enter your email address:",
+      savedEmail
+    );
+
+
+  if(
+    !email ||
+    !email.trim()
+  ){
+
+    return null;
+
+  }
+
+
+  localStorage.setItem(
+    "areaBoyzCustomerName",
+    name.trim()
+  );
+
+
+  localStorage.setItem(
+    "areaBoyzCustomerEmail",
+    email.trim()
+  );
+
+
+  return {
+
+    name:
+      name.trim(),
+
+    email:
+      email.trim()
+
+  };
+
+}
+
+
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
+
+async function handleCheckout(){
+
+  if(
+    !state.cart.length
+  ){
+
+    showToast(
+      "Your bag is empty."
+    );
+
+    return;
+
+  }
+
+
+  const customer =
+    getCustomerDetails();
+
+
+  if(!customer){
+
+    showToast(
+      "Checkout cancelled."
+    );
+
+    return;
+
+  }
+
+
+  const amount =
+    getCartTotal();
+
+
+  try{
+
+    showToast(
+      "Preparing secure checkout..."
+    );
+
+
+    await loadFlutterwave();
+
+
+    if(
+      typeof window.FlutterwaveCheckout !==
+      "function"
+    ){
+
+      throw new Error(
+        "Flutterwave checkout is unavailable."
+      );
+
+    }
+
+
+    const transactionReference =
+      `ABZ-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 9)
+        .toUpperCase()}`;
+
+
+    window.FlutterwaveCheckout({
+
+      public_key:
+        FLUTTERWAVE_PUBLIC_KEY,
+
+      tx_ref:
+        transactionReference,
+
+      amount:
+        amount,
+
+      currency:
+        "NGN",
+
+      payment_options:
+        "card,banktransfer,ussd",
+
+      customer: {
+
+        email:
+          customer.email,
+
+        name:
+          customer.name
+
+      },
+
+      customizations: {
+
+        title:
+          "Area Boyz Enterprise",
+
+        description:
+          "Fashion & lifestyle purchase",
+
+        logo:
+          `${SITE_ROOT}images/logo.png`
+
+      },
+
+      callback:
+        function(payment){
+
+          handleFlutterwaveResponse(
+            payment,
+            transactionReference
+          );
+
+        },
+
+      onclose:
+        function(){
+
+          showToast(
+            "Checkout window closed."
+          );
+
+        }
+
+    });
+
+  }catch(error){
+
+    console.error(
+      "Checkout error:",
+      error
+    );
+
+
+    showToast(
+      "Unable to initialize payment."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FLUTTERWAVE RESPONSE
+   ========================================================= */
+
+function handleFlutterwaveResponse(
+  payment,
+  reference
+){
+
+  console.log(
+    "Flutterwave payment response:",
+    payment
+  );
+
+
+  if(
+    payment &&
+    (
+      payment.status === "successful" ||
+      payment.status === "completed"
+    )
+  ){
+
+    showToast(
+      "Payment successful. Thank you for shopping with Area Boyz."
+    );
+
+
+    localStorage.setItem(
+      "areaBoyzLastTransaction",
+      JSON.stringify({
+
+        reference:
+          reference,
+
+        payment:
+          payment,
+
+        total:
+          getCartTotal(),
+
+        cart:
+          state.cart,
+
+        date:
+          new Date().toISOString()
+
+      })
+    );
+
+
+    state.cart = [];
+
+    saveCart();
+
+    updateCartBadges();
+
+    renderCart();
+
+
+    setTimeout(
+      () => {
+
+        closeCart();
+
+      },
+      1000
+    );
+
+
+    return;
+
+  }
+
+
+  showToast(
+    "Payment was not completed."
+  );
+
+}
+
+
+/* =========================================================
+   PAYMENT RETURN CHECK
+   ========================================================= */
+
+function handlePaymentReturn(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const status =
+    params.get(
+      "status"
+    );
+
+
+  const transactionId =
+    params.get(
+      "transaction_id"
+    );
+
+
+  if(
+    status
+  ){
+
+    console.log(
+      "Payment return:",
+      {
+        status,
+        transactionId
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SHOP PAGE DETECTION
+   ========================================================= */
+
+function isShopPage(){
+
+  const path =
+    window.location.pathname
+      .toLowerCase();
+
+
+  return (
+    path.endsWith(
+      "/shop.html"
+    ) ||
+    path.endsWith(
+      "/shop"
+    ) ||
+    document.querySelector(
+      "[data-products]"
+    )
+  );
+
+}
+
+
+/* =========================================================
+   INITIALIZE STORE CONTROLS
+   ========================================================= */
+
+function initializeStore(){
+
+  if(
+    !isShopPage()
+  ){
+
+    return;
+
+  }
+
+
+  createCartDrawer();
 
   renderProducts();
 
   renderCart();
 
-  handlePaymentReturn();
+  updateCartBadges();
 
-  bind();
+  updateFilterButtons();
+
+  syncSearchInputs();
+
+  syncSortSelect();
+
+}
 
 
-  setTimeout(
+/* =========================================================
+   GLOBAL LINK HANDLING
+   ========================================================= */
 
-    () => {
+function setupSmoothScroll(){
 
-      $("#preloader")
-        ?.classList
-        .add("hide");
+  $all(
+    'a[href^="#"]'
+  ).forEach(
+    link => {
 
-    },
+      link.addEventListener(
+        "click",
+        event => {
 
-    450
+          const targetId =
+            link.getAttribute(
+              "href"
+            );
 
+
+          if(
+            !targetId ||
+            targetId === "#"
+          ){
+
+            return;
+
+          }
+
+
+          const target =
+            document.querySelector(
+              targetId
+            );
+
+
+          if(!target){
+
+            return;
+
+          }
+
+
+          event.preventDefault();
+
+
+          target.scrollIntoView({
+
+            behavior:
+              "smooth",
+
+            block:
+              "start"
+
+          });
+
+        }
+      );
+
+    }
   );
 
 }
+
+
+/* =========================================================
+   IMAGE ERROR HANDLING
+   ========================================================= */
+
+function setupImageFallback(){
+
+  document.addEventListener(
+    "error",
+    event => {
+
+      const image =
+        event.target;
+
+
+      if(
+        image &&
+        image.tagName ===
+        "IMG"
+      ){
+
+        image.classList.add(
+          "image-error"
+        );
+
+      }
+
+    },
+    true
+  );
+
+}
+
+
+/* =========================================================
+   CART BUTTON AUTO-DETECTION
+   ========================================================= */
+
+function setupCartButtons(){
+
+  $all(
+    "[data-open-cart]"
+  ).forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          openCart();
+
+        }
+      );
+
+    }
+  );
+
+
+  const cartButton =
+    document.querySelector(
+      "#cart-button"
+    );
+
+
+  if(cartButton){
+
+    cartButton.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        openCart();
+
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PRODUCT COLLECTION LINKS
+   ========================================================= */
+
+function setupCollectionLinks(){
+
+  $all(
+    'a[href*="shop.html?collection="]'
+  ).forEach(
+    link => {
+
+      link.addEventListener(
+        "click",
+        () => {
+
+          const href =
+            link.getAttribute(
+              "href"
+            );
+
+
+          if(!href){
+
+            return;
+
+          }
+
+
+          const match =
+            href.match(
+              /collection=([^&]+)/i
+            );
+
+
+          if(
+            match &&
+            match[1]
+          ){
+
+            const collection =
+              decodeURIComponent(
+                match[1]
+              );
+
+
+            if(
+              CATEGORIES.includes(
+                collection
+              )
+            ){
+
+              localStorage.setItem(
+                COLLECTION_STORAGE_KEY,
+                collection
+              );
+
+            }
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PRODUCT IMAGE PRELOAD
+   ========================================================= */
+
+function preloadHeroImages(){
+
+  const heroImages = [
+
+    "hero-1.jpg",
+    "hero-2.jpg",
+    "hero-3.jpg",
+    "hero-4.jpg",
+    "hero-5.jpg",
+    "hero-6.jpg"
+
+  ];
+
+
+  heroImages.forEach(
+    filename => {
+
+      const image =
+        new Image();
+
+
+      image.src =
+        `${PATHS.hero}${filename}`;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   STORE DATA ACCESS
+   ========================================================= */
+
+window.AreaBoyzStore = {
+
+  products:
+    PRODUCTS,
+
+  getProduct,
+
+  addToCart,
+
+  removeFromCart,
+
+  changeCartQuantity,
+
+  openCart,
+
+  closeCart,
+
+  getCartCount,
+
+  getCartTotal,
+
+  formatMoney
+
+};
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+function init(){
+
+  try{
+
+    loadCart();
+
+    loadCollectionFromURL();
+
+    restoreCollection();
+
+    updateYear();
+
+    renderHero();
+
+    initializeStore();
+
+    bindSearch();
+
+    bindSort();
+
+    bindFilters();
+
+    bindProductActions();
+
+    bindCartActions();
+
+    bindModalActions();
+
+    setupMobileMenu();
+
+    setupHeaderScroll();
+
+    setupRevealAnimations();
+
+    setupSmoothScroll();
+
+    setupImageFallback();
+
+    setupCartButtons();
+
+    setupCollectionLinks();
+
+    preloadHeroImages();
+
+    handlePaymentReturn();
+
+    hidePreloader();
+
+
+    /*
+      Re-render once after all listeners are ready.
+    */
+
+    applyFilters();
+
+
+  }catch(error){
+
+    console.error(
+      "Area Boyz initialization error:",
+      error
+    );
+
+
+    hidePreloader();
+
+  }
+
+}
+
+
 /* =========================================================
    START
    ========================================================= */
@@ -2430,4 +4779,4 @@ if(
 
   init();
 
-      }
+          }
