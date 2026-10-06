@@ -2314,8 +2314,52 @@ function init(){
     loadCart();
 
 
-  $("#year").textContent =
-    new Date().getFullYear();
+  /*
+   * Read a collection from the URL.
+   *
+   * Example:
+   * shop.html?collection=footwear
+   *
+   * This allows the Collections page
+   * to send customers directly into
+   * the correct catalogue collection.
+   */
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const requestedCollection =
+    (
+      params.get("collection") || ""
+    )
+      .trim()
+      .toLowerCase();
+
+
+  if(
+    CATEGORIES.includes(
+      requestedCollection
+    )
+  ){
+
+    state.collection =
+      requestedCollection;
+
+  }
+
+
+  const year =
+    $("#year");
+
+  if(year){
+
+    year.textContent =
+      new Date().getFullYear();
+
+  }
 
 
   renderHero();
@@ -2346,8 +2390,6 @@ function init(){
   );
 
 }
-
-
 /* =========================================================
    START
    ========================================================= */
