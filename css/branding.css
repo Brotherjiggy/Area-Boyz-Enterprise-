@@ -153,3 +153,6 @@
     min-width: 40px !important;
   }
 }
+body {
+    outline: 5px solid red !important;
+}
