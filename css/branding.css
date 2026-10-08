@@ -1,0 +1,155 @@
+/* =========================================================
+   AREA BOYZ ENTERPRISE
+   BRANDING SYSTEM
+   Logo + Motto
+   ========================================================= */
+
+:root {
+  --area-brand-black: #050505;
+  --area-brand-yellow: #f5c400;
+  --area-brand-white: #ffffff;
+}
+
+/* ---------------------------------------------------------
+   MAIN LOGO
+   --------------------------------------------------------- */
+
+.area-brand-logo {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 6px;
+  background: var(--area-brand-black);
+}
+
+/* Larger logo where more space is available */
+.site-header .area-brand-logo,
+.header .area-brand-logo {
+  width: 50px;
+  height: 50px;
+}
+
+/* Footer */
+.site-footer .area-brand-logo,
+.footer .area-brand-logo,
+.equity-footer .area-brand-logo {
+  width: 52px;
+  height: 52px;
+}
+
+/* Investment pages */
+.checkout-logo .area-brand-logo,
+.confirmation-logo .area-brand-logo {
+  width: 46px;
+  height: 46px;
+}
+
+/* ---------------------------------------------------------
+   LOGO CONTAINER
+   --------------------------------------------------------- */
+
+.area-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.area-brand-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+}
+
+.area-brand-name {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+}
+
+.area-brand-motto {
+  margin-top: 5px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.72;
+  line-height: 1.2;
+}
+
+/* ---------------------------------------------------------
+   OLD AB MARK
+   If an old AB element remains in any page,
+   this prevents it from appearing visually.
+   --------------------------------------------------------- */
+
+.logo-mark {
+  font-size: 0 !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent !important;
+  border: 0 !important;
+  color: transparent !important;
+}
+
+.logo-mark::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url("../images/brand/area-boyz-footprint.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: 6px;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .area-brand-logo,
+  .site-header .area-brand-logo,
+  .header .area-brand-logo,
+  .logo-mark {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+  }
+
+  .area-brand-name {
+    font-size: 13px;
+  }
+
+  .area-brand-motto {
+    font-size: 7px;
+    letter-spacing: 0.08em;
+  }
+}
+
+@media (max-width: 480px) {
+  .area-brand-copy {
+    display: none;
+  }
+
+  .area-brand-logo,
+  .site-header .area-brand-logo,
+  .header .area-brand-logo,
+  .logo-mark {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+  }
+}
