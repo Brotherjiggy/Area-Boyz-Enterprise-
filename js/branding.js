@@ -1,198 +1,181 @@
-/* =========================================================
-   AREA BOYZ ENTERPRISE
-   BRANDING CONTROLLER
-   ========================================================= */
+/* =========================================
+   AREA BOYZ ENTERPRISE — BRANDING CONTROLLER
+========================================= */
 
 (function () {
-  "use strict";
+    "use strict";
 
-  const BRAND_NAME = "AREA BOYZ";
-  const BRAND_MOTTO = "OUT OF PEOPLE THOUGHTS.";
-  const LOGO_PATH = "area-boyz-footprint.jpg";
-
-  /*
-   * Automatically works from:
-   *
-   * /index.html
-   * /pages/shop.html
-   * /pages/collections.html
-   * /investment/index.html
-   * etc.
-   */
-
-  function getLogoPath() {
-    const path = window.location.pathname;
-
-    if (
-      path.includes("/pages/") ||
-      path.includes("/investment/") ||
-      path.includes("/account/") ||
-      path.includes("/admin/")
-    ) {
-      return "../images/brand/" + LOGO_PATH;
-    }
-
-    return "images/brand/" + LOGO_PATH;
-  }
-
-  const logoPath = getLogoPath();
-
-  /* -------------------------------------------------------
-     Create official Area Boyz logo
-     ------------------------------------------------------- */
-
-  function createLogoImage(extraClass) {
-    const image = document.createElement("img");
-
-    image.src = logoPath;
-    image.alt = "Area Boyz footprint logo";
-    image.className = extraClass || "area-brand-logo";
-    image.loading = "eager";
-    image.decoding = "async";
-
-    return image;
-  }
-
-  /* -------------------------------------------------------
-     Replace old AB logo marks
-     ------------------------------------------------------- */
-
-  function replaceOldLogoMarks() {
-    document.querySelectorAll(".logo-mark").forEach(function (mark) {
-      mark.textContent = "";
-
-      const image = createLogoImage();
-
-      mark.appendChild(image);
-    });
+    const BRAND_NAME = "AREA BOYZ";
+    const BRAND_MOTTO = "OUT OF PEOPLE THOUGHTS.";
 
     /*
-     * Some existing pages use:
+     * Find the project root based on the location
+     * of this JavaScript file.
      *
-     * <b>AB</b>
-     *
-     * Replace only those exact AB elements.
+     * This allows the logo path to work from
+     * the homepage and nested pages.
      */
 
-    document.querySelectorAll("b").forEach(function (element) {
-      if (element.textContent.trim() !== "AB") {
-        return;
-      }
+    const scriptElement = document.currentScript;
 
-      const image = createLogoImage("area-brand-logo");
+    const scriptURL = scriptElement
+        ? scriptElement.src
+        : new URL("branding.js", window.location.href).href;
 
-      element.replaceWith(image);
-    });
-  }
+    const projectRoot = new URL("../", scriptURL);
 
-  /* -------------------------------------------------------
-     Replace old motto text
-     ------------------------------------------------------- */
+    const LOGO_URL = new URL(
+        "images/brand/Area-boyz-footprint.jpg",
+        projectRoot
+    ).href;
 
-  function replaceTextInNode(node) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const original = node.nodeValue;
+    /* =========================================
+       CREATE FOOTPRINT LOGO
+    ========================================= */
 
-      if (
-        original.includes("Styles that fit your life") ||
-        original.includes("Styles That Fit Your Life")
-      ) {
-        node.nodeValue = original
-          .replace(
-            /Styles that fit your life/gi,
-            BRAND_MOTTO
-          )
-          .replace(
-            /Styles That Fit Your Life/gi,
-            BRAND_MOTTO
-          );
-      }
+    function createLogo() {
+        const image = document.createElement("img");
 
-      return;
+        image.src = LOGO_URL;
+        image.alt = "Area Boyz Enterprise footprint logo";
+        image.className = "area-brand-logo";
+        image.loading = "eager";
+        image.decoding = "async";
+
+        return image;
     }
 
-    /*
-     * Don't modify scripts, styles, or metadata internals
-     * recursively.
-     */
+    /* =========================================
+       REPLACE OLD LOGO MARKS
+    ========================================= */
 
-    if (
-      node.nodeName === "SCRIPT" ||
-      node.nodeName === "STYLE"
-    ) {
-      return;
+    function replaceOldLogos() {
+        document.querySelectorAll(".logo-mark").forEach(function (element) {
+            element.replaceChildren(createLogo());
+            element.setAttribute(
+                "aria-label",
+                "Area Boyz Enterprise"
+            );
+        });
+
+        /*
+         * Replace standalone bold AB logos.
+         * Only elements containing exactly "AB"
+         * are replaced.
+         */
+
+        document.querySelectorAll("b").forEach(function (element) {
+            if (element.textContent.trim() !== "AB") {
+                return;
+            }
+
+            const image = createLogo();
+
+            element.replaceWith(image);
+        });
     }
 
-    Array.from(node.childNodes).forEach(replaceTextInNode);
-  }
+    /* =========================================
+       REPLACE THE OLD MOTTO
+    ========================================= */
 
-  function replaceOldMotto() {
-    replaceTextInNode(document.body);
-  }
+    function replaceMotto() {
+        const walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT
+        );
 
-  /* -------------------------------------------------------
-     Update page metadata
-     ------------------------------------------------------- */
+        const textNodes = [];
 
-  function updateMetadata() {
-    const description = document.querySelector(
-      'meta[name="description"]'
-    );
+        while (walker.nextNode()) {
+            textNodes.push(walker.currentNode);
+        }
 
-    if (description) {
-      const current = description.getAttribute("content") || "";
+        textNodes.forEach(function (node) {
+            const parent = node.parentElement;
 
-      description.setAttribute(
-        "content",
-        current
-          .replace(/Styles that fit your life/gi, BRAND_MOTTO)
-          .replace(/Styles That Fit Your Life/gi, BRAND_MOTTO)
-      );
+            if (!parent) {
+                return;
+            }
+
+            if (
+                parent.closest(
+                    "script, style, textarea, input, noscript"
+                )
+            ) {
+                return;
+            }
+
+            node.nodeValue = node.nodeValue.replace(
+                /Styles that fit your life/gi,
+                BRAND_MOTTO
+            );
+        });
     }
 
-    if (document.title) {
-      document.title = document.title
-        .replace(/Styles that fit your life/gi, BRAND_MOTTO)
-        .replace(/Styles That Fit Your Life/gi, BRAND_MOTTO);
+    /* =========================================
+       UPDATE PAGE TITLE AND DESCRIPTION
+    ========================================= */
+
+    function updateMetadata() {
+        const description = document.querySelector(
+            'meta[name="description"]'
+        );
+
+        if (description) {
+            description.content = description.content.replace(
+                /Styles that fit your life/gi,
+                BRAND_MOTTO
+            );
+        }
+
+        if (document.title) {
+            document.title = document.title.replace(
+                /Styles that fit your life/gi,
+                BRAND_MOTTO
+            );
+        }
     }
-  }
 
-  /* -------------------------------------------------------
-     Favicon
-     ------------------------------------------------------- */
+    /* =========================================
+       UPDATE FAVICON
+    ========================================= */
 
-  function updateFavicon() {
-    let favicon = document.querySelector(
-      'link[rel="icon"]'
-    );
+    function updateFavicon() {
+        let favicon = document.querySelector(
+            'link[rel="icon"]'
+        );
 
-    if (!favicon) {
-      favicon = document.createElement("link");
-      favicon.rel = "icon";
-      document.head.appendChild(favicon);
+        if (!favicon) {
+            favicon = document.createElement("link");
+            favicon.rel = "icon";
+            document.head.appendChild(favicon);
+        }
+
+        favicon.href = LOGO_URL;
+        favicon.type = "image/jpeg";
     }
 
-    favicon.type = "image/jpeg";
-    favicon.href = logoPath;
-  }
+    /* =========================================
+       INITIALIZE BRANDING
+    ========================================= */
 
-  /* -------------------------------------------------------
-     Main branding initialization
-     ------------------------------------------------------- */
+    function initializeBranding() {
+        replaceOldLogos();
+        replaceMotto();
+        updateMetadata();
+        updateFavicon();
 
-  function initializeBranding() {
-    replaceOldLogoMarks();
-    replaceOldMotto();
-    updateMetadata();
-    updateFavicon();
-  }
+        console.log("Area Boyz branding initialized.");
+        console.log("Footprint logo:", LOGO_URL);
+    }
 
-  if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      initializeBranding
-    );
-  } else {
-    initializeBranding();
-  }
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            initializeBranding
+        );
+    } else {
+        initializeBranding();
+    }
 })();
