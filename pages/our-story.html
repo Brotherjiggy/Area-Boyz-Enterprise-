@@ -1,1 +1,892 @@
 
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"><meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
+«»
+
+<meta
+name="description"
+content="Discover the philosophy, identity, and collections of Area Boyz Enterprise. Style is personal. Make it yours."
+
+«»
+
+  <meta name="theme-color" content="#ffd400">  <title>Our Story | Area Boyz Enterprise</title>  <!-- FONT AWESOME -->  <link
+    rel="preconnect"
+    href="https://cdnjs.cloudflare.com"
+  >  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >  <!-- EXISTING WEBSITE STYLESHEETS -->  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/branding.css">  <!-- BRANDING CONTROLLER -->  <script src="../js/branding.js" defer></script>  <style>
+    /* OUR STORY PAGE ONLY */
+
+    .story-intro {
+      padding: 75px 0 65px;
+    }
+
+    .story-intro .page-container {
+      max-width: 1100px;
+    }
+
+    .story-intro h1 {
+      max-width: 900px;
+      font-size: clamp(42px, 8vw, 88px);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+      margin: 20px 0;
+    }
+
+    .story-intro h1 span {
+      color: #d9aa00;
+    }
+
+    .story-intro .story-lead {
+      max-width: 680px;
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .story-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .story-label::before {
+      content: "";
+      width: 26px;
+      height: 3px;
+      background: #ffd400;
+    }
+
+    .story-banner {
+      background: #080808;
+      color: #fff;
+      padding: 65px 0;
+      margin: 10px 0 20px;
+    }
+
+    .story-banner .page-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 45px;
+      align-items: center;
+    }
+
+    .story-banner h2 {
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.08;
+      margin: 18px 0;
+      letter-spacing: -0.04em;
+    }
+
+    .story-banner p {
+      color: #d0d0d0;
+      line-height: 1.9;
+    }
+
+    .story-banner .story-highlight {
+      color: #ffd400;
+    }
+
+    .story-statement {
+      border: 1px solid #353535;
+      padding: 30px;
+      border-radius: 18px;
+    }
+
+    .story-statement i {
+      font-size: 30px;
+      color: #ffd400;
+      margin-bottom: 22px;
+    }
+
+    .story-statement blockquote {
+      margin: 0;
+      font-size: clamp(23px, 3vw, 35px);
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .story-statement p {
+      margin-bottom: 0;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .story-values {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .story-value {
+      padding: 27px;
+      border: 1px solid var(--page-line, #dedede);
+      border-radius: 18px;
+      background: var(--page-white, #fff);
+    }
+
+    .story-value .story-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 22px;
+      background: #ffd400;
+      color: #080808;
+      border-radius: 13px;
+      font-size: 20px;
+    }
+
+    .story-value h3 {
+      font-size: 19px;
+      margin: 0 0 12px;
+    }
+
+    .story-value p {
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .story-collections {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .story-collection {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 27px;
+      border: 1px solid var(--page-line, #dedede);
+      border-radius: 18px;
+      text-decoration: none;
+      color: inherit;
+      background: var(--page-white, #fff);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .story-collection:hover {
+      transform: translateY(-4px);
+      border-color: #d9aa00;
+    }
+
+    .story-collection i {
+      color: #b58b00;
+      font-size: 25px;
+      margin-bottom: 20px;
+    }
+
+    .story-collection h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
+
+    .story-collection p {
+      line-height: 1.8;
+      margin: 0 0 18px;
+    }
+
+    .story-collection span {
+      margin-top: auto;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .story-cta {
+      background: #ffd400;
+      color: #080808;
+      border-radius: 22px;
+      padding: 45px;
+    }
+
+    .story-cta h2 {
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.1;
+      margin: 16px 0;
+    }
+
+    .story-cta p {
+      max-width: 650px;
+      line-height: 1.8;
+    }
+
+    .story-cta .page-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .story-intro {
+        padding: 50px 0 45px;
+      }
+
+      .story-banner .page-container {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .story-values {
+        grid-template-columns: 1fr;
+      }
+
+      .story-collections {
+        grid-template-columns: 1fr;
+      }
+
+      .story-cta {
+        padding: 28px 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .story-collection {
+        transition: none;
+      }
+
+      .story-collection:hover {
+        transform: none;
+      }
+    }
+  </style></head><body>  <!-- PRELOADER -->  <div
+    id="preloader"
+    class="preloader"
+    aria-hidden="true"
+  >
+    <div class="loader-mark">
+      <b>AB</b>
+      <strong>AREA BOYZ</strong>
+      <span>ENTERPRISE</span>
+    </div>
+  </div>  <!-- HEADER -->  <header class="site-header"><div class="header-inner">
+
+  <!-- BRAND -->
+  <a
+    href="../index.html"
+    class="logo"
+    aria-label="Area Boyz Enterprise home"
+  >
+    <span class="logo-mark">AB</span>
+
+    <span class="logo-text">
+      <strong>AREA BOYZ</strong>
+      <small>ENTERPRISE</small>
+    </span>
+  </a>
+
+
+  <!-- DESKTOP NAVIGATION -->
+  <nav
+    id="nav-links"
+    class="nav-links"
+    aria-label="Main navigation"
+  >
+
+    <a href="../index.html">Home</a>
+
+    <a href="shop.html">Shop</a>
+
+    <a href="collections.html">Collections</a>
+
+    <a href="../investment/index.html">Equity</a>
+
+    <a
+      href="our-story.html"
+      class="active"
+      aria-current="page"
+    >
+      Our Story
+    </a>
+
+    <a href="contact.html">Contact</a>
+
+  </nav>
+
+
+  <!-- HEADER ACTIONS -->
+  <div class="header-actions">
+
+    <a
+      href="shop.html"
+      class="header-cart"
+      aria-label="Shop Area Boyz Enterprise"
+    >
+      <i class="fa-solid fa-bag-shopping"></i>
+    </a>
+
+    <button
+      id="menu-toggle"
+      class="menu-toggle"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      aria-controls="nav-links"
+    >
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+  </div>
+
+</div>
+
+  </header>  <!-- MOBILE NAVIGATION -->  <div
+    id="mobile-nav"
+    class="mobile-nav"
+    aria-hidden="true"
+  ><div class="mobile-nav-inner">
+
+  <a href="../index.html">Home</a>
+
+  <a href="shop.html">Shop</a>
+
+  <a href="collections.html">Collections</a>
+
+  <a href="../investment/index.html">Equity</a>
+
+  <a
+    href="our-story.html"
+    class="active"
+    aria-current="page"
+  >
+    Our Story
+  </a>
+
+  <a href="contact.html">Contact</a>
+
+</div>
+
+  </div>  <!-- MAIN CONTENT -->  <main class="page-main"><!-- OUR STORY HERO -->
+<section class="page-hero story-intro">
+
+  <div class="page-container">
+
+    <span class="story-label">
+      The identity behind the brand
+    </span>
+
+    <h1>
+      More than a fit.<br>
+      <span>A way to express yourself.</span>
+    </h1>
+
+    <p class="story-lead">
+      Area Boyz Enterprise is built around a simple idea:
+      personal style should give you the freedom to express
+      who you are. From everyday streetwear to distinctive
+      handmade pieces, footwear and accessories, we bring
+      different expressions of style together in one place.
+    </p>
+
+    <div
+      style="
+        display:flex;
+        flex-wrap:wrap;
+        gap:12px;
+        margin-top:28px;
+      "
+    >
+
+      <a href="shop.html" class="page-btn yellow">
+        Explore the store
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+      <a href="collections.html" class="page-btn light">
+        Discover collections
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- BRAND PHILOSOPHY -->
+<section class="story-banner">
+
+  <div class="page-container">
+
+    <div>
+
+      <span class="story-label">
+        What we stand for
+      </span>
+
+      <h2>
+        Your style.<br>
+        Your identity.<br>
+        <span class="story-highlight">Your rules.</span>
+      </h2>
+
+      <p>
+        Style is personal. It can be bold, understated,
+        expressive, carefully tailored or effortlessly
+        casual. There is no single way to make a look your
+        own.
+      </p>
+
+      <p>
+        Our philosophy is to bring different styles together
+        so you can explore what feels right for you, build
+        your own combinations and wear your choices with
+        confidence.
+      </p>
+
+    </div>
+
+
+    <div class="story-statement">
+
+      <i class="fa-solid fa-quote-left"></i>
+
+      <blockquote>
+        OUT OF PEOPLE THOUGHTS.
+      </blockquote>
+
+      <p>
+        Independent expression. Individual style.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- OUR APPROACH -->
+<section class="page-section">
+
+  <div class="page-container">
+
+    <span class="story-label">
+      The Area Boyz approach
+    </span>
+
+    <h2 class="page-heading">
+      Built around individuality.
+    </h2>
+
+    <p>
+      We believe clothing should be more than something you
+      put on. It can reflect your personality, complement
+      your lifestyle and help you express yourself without
+      saying a word.
+    </p>
+
+
+    <div class="story-values">
+
+      <!-- VALUE 1 -->
+      <article class="story-value">
+
+        <div class="story-icon">
+          <i class="fa-solid fa-fingerprint"></i>
+        </div>
+
+        <h3>Individuality</h3>
+
+        <p>
+          Your style belongs to you. Explore different
+          pieces, experiment with combinations and create
+          a look that feels personal rather than forced.
+        </p>
+
+      </article>
+
+
+      <!-- VALUE 2 -->
+      <article class="story-value">
+
+        <div class="story-icon">
+          <i class="fa-solid fa-shirt"></i>
+        </div>
+
+        <h3>Versatility</h3>
+
+        <p>
+          From casual everyday outfits to distinctive
+          statement pieces, discover options for different
+          moods, occasions and ways of living.
+        </p>
+
+      </article>
+
+
+      <!-- VALUE 3 -->
+      <article class="story-value">
+
+        <div class="story-icon">
+          <i class="fa-solid fa-compass"></i>
+        </div>
+
+        <h3>Self-expression</h3>
+
+        <p>
+          Trends can inspire you, but they don't have to
+          define you. Choose the pieces that reflect your
+          personality and make them your own.
+        </p>
+
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- OUR COLLECTIONS -->
+<section class="page-section">
+
+  <div class="page-container">
+
+    <span class="story-label">
+      Find your expression
+    </span>
+
+    <h2 class="page-heading">
+      Different styles. One destination.
+    </h2>
+
+    <p>
+      Explore the different sides of Area Boyz Enterprise
+      and discover pieces that complement your personal
+      style.
+    </p>
+
+
+    <div class="story-collections">
+
+      <!-- STREETWEAR -->
+      <a
+        href="shop.html?collection=streetwear"
+        class="story-collection"
+      >
+
+        <i class="fa-solid fa-person-walking"></i>
+
+        <h3>Streetwear</h3>
+
+        <p>
+          Expressive everyday pieces inspired by relaxed
+          fits, contemporary style and individual attitude.
+        </p>
+
+        <span>
+          Explore Streetwear
+          <i class="fa-solid fa-arrow-right"></i>
+        </span>
+
+      </a>
+
+
+      <!-- HANDMADE -->
+      <a
+        href="shop.html?collection=handmade"
+        class="story-collection"
+      >
+
+        <i class="fa-solid fa-scissors"></i>
+
+        <h3>Handmade</h3>
+
+        <p>
+          Distinctive tailored and crafted pieces for
+          those who appreciate considered details and
+          a more personal look.
+        </p>
+
+        <span>
+          Explore Handmade
+          <i class="fa-solid fa-arrow-right"></i>
+        </span>
+
+      </a>
+
+
+      <!-- FOOTWEAR -->
+      <a
+        href="shop.html?collection=footwear"
+        class="story-collection"
+      >
+
+        <i class="fa-solid fa-shoe-prints"></i>
+
+        <h3>Footwear</h3>
+
+        <p>
+          Complete your outfit with footwear that brings
+          your chosen look together from the ground up.
+        </p>
+
+        <span>
+          Explore Footwear
+          <i class="fa-solid fa-arrow-right"></i>
+        </span>
+
+      </a>
+
+
+      <!-- ACCESSORIES -->
+      <a
+        href="shop.html?collection=accessories"
+        class="story-collection"
+      >
+
+        <i class="fa-solid fa-gem"></i>
+
+        <h3>Accessories</h3>
+
+        <p>
+          Discover the finishing touches that can add
+          character, contrast and personality to an outfit.
+        </p>
+
+        <span>
+          Explore Accessories
+          <i class="fa-solid fa-arrow-right"></i>
+        </span>
+
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- OUR COMMITMENT -->
+<section class="page-section">
+
+  <div class="page-container">
+
+    <div class="page-grid-2">
+
+      <div>
+
+        <span class="story-label">
+          Our commitment
+        </span>
+
+        <h2 class="page-heading">
+          Your choices matter.
+        </h2>
+
+      </div>
+
+
+      <div class="page-card">
+
+        <p>
+          Our goal is to make it easier for you to explore
+          different expressions of style in one place.
+          We want the experience of discovering a piece,
+          combining it with your wardrobe and making it
+          your own to feel straightforward and enjoyable.
+        </p>
+
+        <p>
+          As Area Boyz Enterprise grows, we aim to keep
+          individuality, thoughtful presentation and the
+          customer experience at the centre of what we do.
+        </p>
+
+        <p>
+          This is a brand for people who want to explore
+          their own style rather than be limited to one
+          definition of it.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CALL TO ACTION -->
+<section class="page-section">
+
+  <div class="page-container">
+
+    <div class="story-cta">
+
+      <span class="story-label">
+        Your next look starts here
+      </span>
+
+      <h2>
+        Find what feels like you.
+      </h2>
+
+      <p>
+        Explore the Area Boyz Enterprise catalogue,
+        discover different collections and put together
+        a look that reflects your individuality.
+      </p>
+
+      <a href="shop.html" class="page-btn dark">
+        Shop the catalogue
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+  </main>  <!-- FOOTER -->  <footer class="site-footer"><div class="page-container">
+
+  <div class="footer-content">
+
+    <div>
+
+      <a
+        href="../index.html"
+        class="logo"
+        aria-label="Area Boyz Enterprise home"
+      >
+
+        <span class="logo-mark">AB</span>
+
+        <span class="logo-text">
+          <strong>AREA BOYZ</strong>
+          <small>ENTERPRISE</small>
+        </span>
+
+      </a>
+
+      <p>
+        OUT OF PEOPLE THOUGHTS.
+      </p>
+
+    </div>
+
+
+    <div class="footer-links">
+
+      <a href="shop.html">Shop</a>
+
+      <a href="collections.html">Collections</a>
+
+      <a href="../investment/index.html">Equity</a>
+
+      <a href="our-story.html">Our Story</a>
+
+      <a href="contact.html">Contact</a>
+
+    </div>
+
+  </div>
+
+
+  <div class="footer-bottom">
+
+    <p>
+      © <span id="year"></span>
+      Area Boyz Enterprise.
+      All rights reserved.
+    </p>
+
+  </div>
+
+</div>
+
+  </footer>  <!-- PAGE FUNCTIONALITY -->  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      /* CURRENT YEAR */
+
+      const year = document.getElementById("year");
+
+      if (year) {
+        year.textContent = new Date().getFullYear();
+      }
+
+
+      /* PRELOADER */
+
+      const preloader = document.getElementById("preloader");
+
+      if (preloader) {
+        window.setTimeout(function () {
+          preloader.classList.add("hide");
+        }, 450);
+      }
+
+
+      /* MOBILE NAVIGATION */
+
+      const menuToggle = document.getElementById("menu-toggle");
+      const mobileNav = document.getElementById("mobile-nav");
+
+      if (menuToggle && mobileNav) {
+
+        menuToggle.addEventListener("click", function () {
+
+          const isOpen = mobileNav.classList.toggle("open");
+
+          menuToggle.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+          );
+
+          mobileNav.setAttribute(
+            "aria-hidden",
+            isOpen ? "false" : "true"
+          );
+
+          menuToggle.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+
+        });
+
+
+        /* CLOSE MENU AFTER CLICKING A LINK */
+
+        mobileNav.querySelectorAll("a").forEach(function (link) {
+
+          link.addEventListener("click", function () {
+
+            mobileNav.classList.remove("open");
+
+            menuToggle.setAttribute("aria-expanded", "false");
+
+            mobileNav.setAttribute("aria-hidden", "true");
+
+            menuToggle.innerHTML =
+              '<i class="fa-solid fa-bars"></i>';
+
+          });
+
+        });
+
+      }
+
+    });
+  </script></body>
+</html>
